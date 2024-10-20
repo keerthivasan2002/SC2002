@@ -4,8 +4,8 @@ import java.util.ArrayList;
 class ReadFile {
 
     public static final String delimiter = ",";  // Correct delimiter (comma)
-    public static final String patientCSV = "C:\\Users\\tan_g\\OneDrive\\Documents\\GitHub\\Hospital_Management_System\\CSV File\\Patient_List.csv";
-    public static final String staffCSV = "C:\\Users\\tan_g\\OneDrive\\Documents\\GitHub\\Hospital_Management_System\\CSV File\\Staff_List.csv";
+    public static final String patientCSV = "C:\\Users\\tan_g\\OneDrive\\Documents\\GitHub\\SC2002\\CSV File\\Patient_List.csv";
+    public static final String staffCSV = "C:\\Users\\tan_g\\OneDrive\\Documents\\GitHub\\SC2002\\CSV File\\Staff_List.csv";
     public ArrayList<String[]> List = new ArrayList<>();
 
     public ReadFile getInstance() 
@@ -39,7 +39,7 @@ class ReadFile {
 
         return patientList;
     }
-
+    
     public ArrayList<String[]> readStaffListCSV() throws Exception
     {
         BufferedReader reader = null;
@@ -66,8 +66,8 @@ class ReadFile {
         return staffList;
     }
 
-
-    public void printPatientList(ArrayList<String[]> List)
+    //debug purpose
+    public void printTable(ArrayList<String[]> List)
     {
         if (List.isEmpty()) {
             System.out.println("The file is empty or could not be read.");

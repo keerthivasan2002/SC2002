@@ -1,25 +1,29 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args)
     {
-        ReadFile readFile = new ReadFile();
-        ArrayList<String[]> patientList = new ArrayList<>();
-        ArrayList<String[]> staffList = new ArrayList<>();
+        Scanner sc = new Scanner(System.in);
+        LoginManager loginManager = new LoginManager();
+        loginManager.loadUserData();
 
-        try {
-            patientList = readFile.readPatientListCSV();
-            System.out.println("Patient List:");
-            readFile.printPatientList(patientList);
+        // // Sample login details for testing
+        // String inputHospitalID = "P1001"; // Example: HospitalID starts with 'P' for patient
+        // String inputPassword = "password";
 
-            // Reading and printing the staff list
-            staffList = readFile.readStaffListCSV();
-            System.out.println("\nStaff List:");
-            readFile.printPatientList(staffList);
+       
+
+        // Attempt to authenticate the user
+        User user =  loginManager.loginMenu();
+        if (user != null) {
+            System.out.println("Login successful.");
+            user.menu(sc); // Display menu base on their role
+        } else {
+            System.out.println("Login failed. Invalid credentials.");
+
         }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        sc.close();
     }
 }
+
