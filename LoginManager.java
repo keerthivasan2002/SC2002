@@ -84,7 +84,6 @@ class LoginManager{
     }
 
     public User loginMenu(){
-        
         Scanner sc = new Scanner(System.in);
         System.out.println("Welcome to the login page");
         System.out.println("Please enter your Hospital ID and Password");
@@ -92,7 +91,6 @@ class LoginManager{
         String hospitalID = sc.nextLine();
         System.out.println("Password: ");
         String password = sc.nextLine();
-        sc.close();
 
         return authenticate(hospitalID, password);
     }

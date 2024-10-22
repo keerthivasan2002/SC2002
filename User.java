@@ -44,7 +44,7 @@ class Patient extends User {
     public int menu(Scanner sc){
         int choice = -1;
         while (true) {
-            try {
+            try{ 
                 System.out.println("-----------------------------------");
                 System.out.println("Patient Menu:");
                 System.out.println("1. View Medical Record");
@@ -58,27 +58,16 @@ class Patient extends User {
                 System.out.println("9. Logout");
                 System.out.println("-----------------------------------");
                 System.out.print("Enter your choice: ");
-                
-                 // Check if the input is an integer
-                 if (sc.hasNextInt()) {
-                    choice = sc.nextInt();
-
-                    // Validate if the choice is within the menu range
-                    if (choice > 0 && choice < 10) {
-                        // Exit the loop if the choice is valid
-                        break;
-                    } else {
-                        System.out.println("Invalid choice. Please enter a number between 1 and 9.");
-                    }
+                choice = sc.nextInt();
+                if(choice >= 1 && choice <= 9){
+                    System.out.println("You entered: "+ choice);
+                    break;
                 } else {
-                    // If it's not an integer, consume the invalid input
                     System.out.println("Invalid input. Please enter a valid number.");
-                    sc.next(); // Consume the invalid input
                 }
-            } catch (Exception e) {
-                // Handle non-integer inputs
+            } catch (NoSuchElementException e){
                 System.out.println("An error occurred. Please try again.");
-                sc.nextLine(); // Clear the invalid input from the scanner
+                sc.nextLine(); // Consume the invalid input
             }
         }
         return choice;
