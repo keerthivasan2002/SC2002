@@ -11,7 +11,7 @@ public class LogInManager {
         this.password = password;
     }
 
-    public void authoriseLogin(){
+    public boolean authoriseLogin(){
         String id = userName.toLowerCase();
         String pass = password.toLowerCase();
         FileManager openFile = new FileManager(fileName);
@@ -29,6 +29,8 @@ public class LogInManager {
         if(!isAuthenticated) {
             System.out.println("Please try again! Those are the wrong particulars.");
         }
+
+        return isAuthenticated;
     }
 
 }

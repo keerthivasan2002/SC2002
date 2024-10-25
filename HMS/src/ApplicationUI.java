@@ -12,10 +12,19 @@ public class ApplicationUI {
         String password = sc.next();
 
         LogInManager login = new LogInManager(userName, password);
-        login.authoriseLogin();
+        boolean accept = login.authoriseLogin();
     }
 
-    public static void userOption(String username, String password) {
+    public static void userOption(String userName) {
+        if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
+            PatientUI patient = new PatientUI();
+        }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 3){
+            //pharmacist UI
+        }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
+            //doctorUI
+        }else{
+            //adminUI
+        }
 
     }
 }
