@@ -13,6 +13,16 @@ public abstract class User {
         this.password = password;
     }
 
+    // Additional constructor for initializing all fields
+    public User(String userID, String password, String name, Gender gender, String emailAddress, int phoneNumber, HospitalRole role) {
+        this(userID, password);  // Call the first constructor
+        this.name = name;
+        this.gender = gender;
+        this.emailAddress = emailAddress;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
+
     //getter methods for the subclasses
     public String getUserID(){
         return userID;
@@ -26,11 +36,19 @@ public abstract class User {
         return emailAddress;
     }
 
+    public int getPhoneNumber(){
+        return phoneNumber;
+    }
+
     public Gender getGender(){
         return gender;
     }
 
-    public HospitalRole role(){
+    public String getPassword(){
+        return password;
+    }
+
+    public HospitalRole getrole(){
         return role;
     }
 

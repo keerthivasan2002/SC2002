@@ -13,11 +13,18 @@ public class ApplicationUI {
 
         LogInManager login = new LogInManager(userName, password);
         boolean accept = login.authoriseLogin();
+        if (accept) {
+            System.out.println("Welcome");
+            userOption(userName);
+        } else {
+            System.out.println("Login failed.");
+        }
     }
 
     public static void userOption(String userName) {
-        if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
-            PatientUI patient = new PatientUI();
+        if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){
+            PatientManager pm = new PatientManager();
+            PatientUI patientUI = new PatientUI(userName, pm);
         }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 3){
             //pharmacist UI
         }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){

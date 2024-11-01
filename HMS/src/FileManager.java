@@ -1,7 +1,9 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.Buffer;
 import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class FileManager {
     private String file;
@@ -52,4 +54,7 @@ public class FileManager {
 
         return dataArray; // Return the 2D array
     }
+
+    //write the function that will dynamically update the csv file
+
 }
