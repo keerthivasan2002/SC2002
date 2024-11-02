@@ -22,9 +22,44 @@ public class PatientUI {
 
     public void PatientOption(){
         int choice;
-
         System.out.println("Hello " + patient.getName() + ".");
         System.out.println("What would you like to do today?");
+        patientMenu();
+        choice = sc.nextInt();
+
+        while(choice < 10){
+            switch (choice){
+                case 1: //view medical record
+                    break;
+                case 2: //update Personal information
+                    patientInfo();
+                    updatePatientInfo();
+                    break;
+                case 3: //View Available appointment Slots
+                    break;
+                case 4: //Schedule an Appointment
+                    break;
+                case 5: //Reschedule an Appointment
+                    break;
+                case 6: //Cancel an Appointment
+                    break;
+                case 7: //View Scheduled Appointment
+                    break;
+                case 8: //View Past Appointment Records
+                    break;
+                case 9://logout
+                    break;
+
+            }
+            System.out.println("What else would you like to do today?");
+            patientMenu();
+            choice = sc.nextInt();
+        }
+        System.out.println("Thank you! Hope to see you soon :)");
+    }
+
+    //create a function for the patient menu
+    private void patientMenu(){
         System.out.println("-----------------------------------");
         System.out.println("Patient Menu:");
         System.out.println("1. View Medical Record");
@@ -38,33 +73,6 @@ public class PatientUI {
         System.out.println("9. Logout");
         System.out.println("-----------------------------------");
         System.out.print("Enter your choice: ");
-
-        choice = sc.nextInt();
-
-        switch (choice){
-            case 1: //view medical record
-                break;
-            case 2: //update Personal information
-                patientInfo();
-                updatePatientInfo();
-                break;
-            case 3: //View Available appointment Slots
-                break;
-            case 4: //Schedule an Appointment
-                break;
-            case 5: //Reschedule an Appointment
-                break;
-            case 6: //Cancel an Appointment
-                break;
-            case 7: //View Scheduled Appointment
-                break;
-            case 8: //View Past Appointment Records
-                break;
-            case 9://logout
-                System.out.println("Thank you! Hope to see you soon :)");
-                break;
-
-        }
     }
 
     //method for testing purposes
@@ -93,42 +101,43 @@ public class PatientUI {
 
         PatientManager pm = new PatientManager(); //creating a new instance of patient manager here to update the csv
 
-        switch (change_choice){
-            case 1:
-                String new_Email;
-                System.out.println("Please key in your new email:");
-                new_Email = sc.nextLine();
-                patient.updateEmailAddress(new_Email);
-                System.out.println(patient.getEmailAddress());
-                break;
+        while(change_choice < 4){
+            switch (change_choice){
+                case 1:
+                    String new_Email;
+                    System.out.println("Please key in your new email:");
+                    new_Email = sc.nextLine();
+                    patient.updateEmailAddress(new_Email);
+                    System.out.println(patient.getEmailAddress());
+                    break;
 
-            case 2:
-                int new_PhoneNumber;
-                System.out.println("Please key in your new number:");
-                new_PhoneNumber = sc.nextInt();
-                patient.updatePhoneNumber(new_PhoneNumber);
-                System.out.println(patient.getPhoneNumber());
-                break;
+                case 2:
+                    int new_PhoneNumber;
+                    System.out.println("Please key in your new number:");
+                    new_PhoneNumber = sc.nextInt();
+                    patient.updatePhoneNumber(new_PhoneNumber);
+                    System.out.println(patient.getPhoneNumber());
+                    break;
 
-            case 3:
-                String new_password;
-                String verify;
-                System.out.println("Key in your current password for verification:");
-                verify = sc.nextLine();
-                if(verify.equals(patient.password)){
-                    System.out.println("New password:");
-                    new_password = sc.nextLine();
-                    patient.updatePassword(new_password);
-                    System.out.println(patient.getPassword());
-                }else{
-                    System.out.println("Wrong Password.");
-                    System.out.println("Please try again with the correct password!");
-                }
+                case 3:
+                    String new_password;
+                    String verify;
+                    System.out.println("Key in your current password for verification:");
+                    verify = sc.nextLine();
+                    if(verify.equals(patient.password)){
+                        System.out.println("New password:");
+                        new_password = sc.nextLine();
+                        patient.updatePassword(new_password);
+                        System.out.println(patient.getPassword());
+                    }else{
+                        System.out.println("Wrong Password.");
+                        System.out.println("Please try again with the correct password!");
+                    }
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
+
     }
-
-
 }
