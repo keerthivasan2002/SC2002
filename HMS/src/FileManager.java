@@ -56,5 +56,16 @@ public class FileManager {
     }
 
     //write the function that will dynamically update the csv file
+    public void writeFile(String[][] data, boolean append) {
+        String filePath = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, append))) {
+            for (String[] row : data) {
+                writer.write(String.join(",", row));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

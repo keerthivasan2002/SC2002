@@ -48,14 +48,14 @@ public class PatientUI {
                 case 8: //View Past Appointment Records
                     break;
                 case 9://logout
-                    break;
-
+                    System.out.println("Thank you! Hope to see you soon :) \n");
+                    System.exit(0);
+                    return;
             }
             System.out.println("What else would you like to do today?");
             patientMenu();
             choice = sc.nextInt();
         }
-        System.out.println("Thank you! Hope to see you soon :)");
     }
 
     //create a function for the patient menu
@@ -89,55 +89,63 @@ public class PatientUI {
     }
 
     private void updatePatientInfo(){
-        int change_choice;
+        int changeChoice;
         System.out.println("Which information would you like to change?");
         System.out.println("1. Change Email Address");
         System.out.println("2. Change Phone Number");
         System.out.println("3. Change Password");
-        System.out.println("press any other numbers to exit this!");
+        System.out.println("Press any other number to exit.");
 
-        change_choice = sc.nextInt();
-        sc.nextLine(); //clears any buffer
+        changeChoice = sc.nextInt();
+        sc.nextLine(); // Clear the buffer
 
-        PatientManager pm = new PatientManager(); //creating a new instance of patient manager here to update the csv
-
-        while(change_choice < 4){
-            switch (change_choice){
+        while (changeChoice > 0 && changeChoice < 4) {
+            switch (changeChoice) {
                 case 1:
-                    String new_Email;
-                    System.out.println("Please key in your new email:");
-                    new_Email = sc.nextLine();
-                    patient.updateEmailAddress(new_Email);
-                    System.out.println(patient.getEmailAddress());
+                    System.out.print("Please enter your new email: ");
+                    String newEmail = sc.nextLine();
+                    patient.updateEmailAddress(newEmail);
+                    System.out.println("Updated Email: " + patient.getEmailAddress());
                     break;
 
                 case 2:
-                    int new_PhoneNumber;
-                    System.out.println("Please key in your new number:");
-                    new_PhoneNumber = sc.nextInt();
-                    patient.updatePhoneNumber(new_PhoneNumber);
-                    System.out.println(patient.getPhoneNumber());
+                    System.out.print("Please enter your new phone number: ");
+                    int newPhoneNumber = sc.nextInt();
+                    sc.nextLine();
+                    patient.updatePhoneNumber(newPhoneNumber);
+                    System.out.println("Updated Phone Number: " + patient.getPhoneNumber());
                     break;
 
                 case 3:
-                    String new_password;
-                    String verify;
-                    System.out.println("Key in your current password for verification:");
-                    verify = sc.nextLine();
-                    if(verify.equals(patient.password)){
-                        System.out.println("New password:");
-                        new_password = sc.nextLine();
-                        patient.updatePassword(new_password);
-                        System.out.println(patient.getPassword());
-                    }else{
-                        System.out.println("Wrong Password.");
-                        System.out.println("Please try again with the correct password!");
+                    System.out.print("Enter your current password for verification: ");
+                    String verify = sc.nextLine();
+                    if (verify.equals(patient.getPassword())) {
+                        System.out.print("Enter new password: ");
+                        String newPassword = sc.nextLine();
+                        patient.updatePassword(newPassword);
+                        System.out.println("Password updated successfully.");
+                    } else {
+                        System.out.println("Incorrect password. Please try again.");
                     }
+                    break;
 
                 default:
+                    System.out.println("Invalid choice. Returning to the main menu.");
                     break;
             }
-        }
 
+            // Save the updated patient list to the file
+            pm.savePatients();
+            System.out.println("Information updated and saved successfully.");
+
+            // Ask if they want to continue updating
+            System.out.println("\nWould you like to update more information?");
+            System.out.println("1. Change Email Address");
+            System.out.println("2. Change Phone Number");
+            System.out.println("3. Change Password");
+            System.out.println("Press any other number to exit.");
+            changeChoice = sc.nextInt();
+            sc.nextLine(); // Clear the buffer
+        }
     }
 }

@@ -1,13 +1,15 @@
 import java.util.Date;
 
-public class medicalRecord {
+public class MedicalRecord {
+    private String patientID;
     private Date dateOfDiagnosis;
     private String diagnosis;
     private String prescription;
     private boolean prescriptionStatus;
 
 
-    public medicalRecord(Date dateOfDiagnosis, String diagnosis, String prescription, boolean prescriptionStatus){
+    public MedicalRecord(String patientID, Date dateOfDiagnosis, String diagnosis, String prescription, boolean prescriptionStatus){
+        this.patientID = patientID;
         this.dateOfDiagnosis = dateOfDiagnosis;
         this.diagnosis = diagnosis;
         this.prescription = prescription;

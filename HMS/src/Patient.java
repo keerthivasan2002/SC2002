@@ -10,18 +10,19 @@ public class Patient extends User {
 
     }
 
-    //tester function
-    //to check if the patients are loaded in correctly
-    public String toString() {
-        return "Patient{" +
-                "userID='" + userID + '\'' +
-                ", name='" + name + '\'' +
-                ", dateOfbirth='" + dateOfbirth + '\'' +
-                ", gender=" + gender +
-                ", bloodType=" + bloodType +
-                ", emailAddress='" + emailAddress + '\'' +
-                ", phoneNumber=" + phoneNumber +
-                '}';
+    //function used to add to the csv
+    public String[] toArray() {
+        return new String[]{
+                userID,
+                password,
+                name,
+                dateOfbirth,
+                gender.toString(),
+                bloodType.toString(),
+                emailAddress,
+                String.valueOf(phoneNumber),
+                role.toString()
+        };
     }
 
     public String getDateOfbirth(){

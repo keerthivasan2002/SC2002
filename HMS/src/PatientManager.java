@@ -1,6 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class PatientManager{
@@ -55,6 +52,23 @@ public class PatientManager{
 
         System.out.println("An error has occurred: Patient with ID " + patientID + "not found!");
         return null;
+    }
+
+
+    // Save all patients to the CSV file
+    public void savePatients() {
+        FileManager patientFileManager = new FileManager(patient_File);
+
+        // Convert each patient to a string array
+        String[][] patientData = new String[patients.size() + 1][];
+        patientData[0] = new String[]{"UserID", "Password", "Name", "DateOfBirth", "Gender", "BloodType", "EmailAddress", "PhoneNumber", "Role"}; // Header row
+
+        for (int i = 0; i < patients.size(); i++) {
+            patientData[i + 1] = patients.get(i).toArray();
+        }
+
+        // Write to file
+        patientFileManager.writeFile(patientData, false);
     }
 
     //tester function
