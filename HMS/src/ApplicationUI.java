@@ -32,7 +32,8 @@ public class ApplicationUI {
     public static void userOption(String userName) {
         if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){
             PatientManager pm = new PatientManager();
-            PatientUI patientUI = new PatientUI(userName, pm);
+            MedicalRecordManager mrm = new MedicalRecordManager();
+            PatientUI patientUI = new PatientUI(userName, pm, mrm);
         }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 3){
             //pharmacist UI
         }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){

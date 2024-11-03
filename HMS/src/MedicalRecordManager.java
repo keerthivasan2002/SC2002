@@ -47,4 +47,17 @@ public class MedicalRecordManager {
             }
         }
     }
+
+
+    // Method to get all medical records for a specific patient by userID
+    public ArrayList<MedicalRecord> getAllRecordsForPatient(String userID) {
+        ArrayList<MedicalRecord> patientRecords = new ArrayList<>();
+        for (MedicalRecord record : MedicalRecords) {
+            if (record.getPatientID().equals(userID)) {
+                patientRecords.add(record);
+            }
+        }
+        return patientRecords;
+    }
+
 }

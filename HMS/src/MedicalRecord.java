@@ -32,4 +32,8 @@ public class MedicalRecord {
     public boolean isPrescriptionStatus() {
         return prescriptionStatus;
     }
+
+    public String getPatientID() {
+        return patientID;
+    }
 }

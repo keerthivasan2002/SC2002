@@ -1,15 +1,18 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PatientUI {
     private String userID;
     Patient patient;
     PatientManager pm; //keep reference to a PatientManager
+    MedicalRecordManager mrm;
 
     Scanner sc = new Scanner(System.in);
 
-    public PatientUI(String userID, PatientManager pm){
+    public PatientUI(String userID, PatientManager pm, MedicalRecordManager mrm){
         this.userID = userID;
         this.pm = pm;
+        this.mrm = mrm;
         this.patient = pm.selectPatient(userID);
 
         //Handling errors with the code
@@ -30,6 +33,7 @@ public class PatientUI {
         while(choice < 10){
             switch (choice){
                 case 1: //view medical record
+                    viewMedicalRecords();
                     break;
                 case 2: //update Personal information
                     patientInfo();
@@ -55,6 +59,22 @@ public class PatientUI {
             System.out.println("What else would you like to do today?");
             patientMenu();
             choice = sc.nextInt();
+        }
+    }
+
+    // Function to view medical records
+    private void viewMedicalRecords() {
+        ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(userID);
+        if (records.isEmpty()) {
+            System.out.println("No medical records found for the patient.");
+        } else {
+            for (MedicalRecord record : records) {
+                System.out.println("Diagnosis Date: " + record.getDateOfDiagnosis());
+                System.out.println("Diagnosis: " + record.getDiagnosis());
+                System.out.println("Prescription: " + record.getPrescription());
+                System.out.println("Prescription Status: " + (record.isPrescriptionStatus() ? "Approved" : "Not Approved"));
+                System.out.println("-----------------------------------");
+            }
         }
     }
 
