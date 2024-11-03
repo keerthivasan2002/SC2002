@@ -13,7 +13,7 @@ public abstract class User {
         this.password = password;
     }
 
-    // Additional constructor for initializing all fields
+    // Additional constructor to initialise Patients
     public User(String userID, String password, String name, Gender gender, String emailAddress, int phoneNumber, HospitalRole role) {
         this(userID, password);  // Call the first constructor
         this.name = name;
@@ -22,6 +22,9 @@ public abstract class User {
         this.phoneNumber = phoneNumber;
         this.role = role;
     }
+
+    //constructor to initialise Doctors
+    public User(String UserID, String password, String name, Gender gender, HospitalRole role, int phoneNumber, String emailAddress)
 
     //getter methods for the subclasses
     public String getUserID(){

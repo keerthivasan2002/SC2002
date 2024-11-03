@@ -34,7 +34,7 @@ public class ApplicationUI {
             PatientManager pm = new PatientManager();
             MedicalRecordManager mrm = new MedicalRecordManager();
             PatientUI patientUI = new PatientUI(userName, pm, mrm);
-        }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 3){
+        }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
             //pharmacist UI
         }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
             //doctorUI
