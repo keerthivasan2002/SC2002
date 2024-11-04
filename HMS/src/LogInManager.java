@@ -15,12 +15,11 @@ public class LogInManager {
         String id = userName.toLowerCase();
         String pass = password.toLowerCase();
         FileManager openFile = new FileManager(fileName);
-        String[][] data = openFile.readFile();//placing the data into a 2D array
+        String[][] data = openFile.readFile();
 
         boolean isAuthenticated = false;
         for (int i = 0; i < data.length; i++) {
                 if (id.equals(data[i][0].toLowerCase()) && pass.equals(data[i][1].toLowerCase())){
-                    System.out.println("Welcome");
                     isAuthenticated = true;
                     break;
                 }

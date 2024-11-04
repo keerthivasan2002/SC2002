@@ -1,0 +1,3 @@
+Patient ID,Date,Diagnosis,Prescription,Prescription Status
+P1003,2002-03-14,Flu,Glue,True
+P1003,2002-03-17,Addiction,Nicotine,False
