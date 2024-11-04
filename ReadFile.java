@@ -92,4 +92,41 @@ class ReadFile {
             }
         }
     }
+
+    public void writeStaffListCSV(ArrayList<String[]> staffList) {
+        FileWriter writer = null;
+
+        try {
+            writer = new FileWriter(staffCSV);
+
+            // Write header line first
+            writer.append("Staff ID").append(delimiter)
+                  .append("Password").append(delimiter)
+                  .append("Name").append(delimiter)
+                  .append("Role").append(delimiter)
+                  .append("Gender").append(delimiter)
+                  .append("Age").append(delimiter)
+                  .append("Email").append(delimiter)
+                  .append("Phone number").append("\n");
+
+            // Write each staff member's data
+            for (String[] staff : staffList) {
+                writer.append(String.join(delimiter, staff)).append("\n");
+            }
+
+            System.out.println("CSV file written successfully.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.flush();
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

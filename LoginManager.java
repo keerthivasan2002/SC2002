@@ -84,13 +84,23 @@ class LoginManager{
     }
 
     public User loginMenu(){
+
+        // Sample login details for testing
+        String inputHospitalID = "D001"; 
+        String inputPassword = "password";
         Scanner sc = new Scanner(System.in);
         System.out.println("Welcome to the login page");
         System.out.println("Please enter your Hospital ID and Password");
         System.out.println("Hospital ID: ");
-        String hospitalID = sc.nextLine();
+        // String hospitalID = sc.nextLine();
+        String hospitalID = inputHospitalID;
+        System.out.println(hospitalID);
         System.out.println("Password: ");
-        String password = sc.nextLine();
+        String password = inputPassword;
+        System.out.println(password);
+        // String password = sc.nextLine();
+
+
 
         return authenticate(hospitalID, password);
     }
