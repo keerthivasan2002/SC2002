@@ -21,7 +21,7 @@ public class FileManager {
 
     //read the file in 2D array
     public String[][] readFile(){
-        String file = System.getProperty("user.dir") + "/dependencies/" + getFile(); //i think should work on everbody computer
+        String file = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile(); //i think should work on everbody computer
 
         BufferedReader reader = null;
         String line = "";

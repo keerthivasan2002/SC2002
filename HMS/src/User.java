@@ -24,7 +24,7 @@ public abstract class User {
     }
 
     //constructor to initialise Doctors
-    public User(String UserID, String password, String name, Gender gender, HospitalRole role, int phoneNumber, String emailAddress)
+    //public User(String UserID, String password, String name, Gender gender, HospitalRole role, int phoneNumber, String emailAddress)
 
     //getter methods for the subclasses
     public String getUserID(){

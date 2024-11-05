@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class ApplicationUI {
     public static void main(String[] args) {
+        System.out.println(System.getProperty("user.dir"));
         Scanner sc = new Scanner(System.in);
         String exit = "0";
 
