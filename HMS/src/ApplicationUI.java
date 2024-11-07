@@ -38,6 +38,8 @@ public class ApplicationUI {
             PatientUI patientUI = new PatientUI(userName, pm, mrm); //
         }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
             //pharmacist UI
+            StaffManager sm = new StaffManager();
+            PharmacistUI pharmacistUI = new PharmacistUI(userName, sm);
         }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
             StaffManager sm = new StaffManager();
             DoctorUI doctorUI = new DoctorUI(userName, sm);
