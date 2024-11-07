@@ -62,7 +62,7 @@ public class DoctorUI{
                 // Handle non-integer inputs
                 System.out.println("Invalid input. Please enter a valid number.");
                 sc.nextLine(); // Clear the invalid input from the scanner
-            }
+            }catch ()
         }
         return choice;
     }

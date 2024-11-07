@@ -19,18 +19,72 @@ public class PatientUI {
         if(this.patient == null){
             System.out.println("No patient found with the given ID:" + userID);
         }else{
-            PatientOption();
+            patientOption();
         }
     }
 
+
+    public int getOption(){
+        int option = 0;
+        Scanner sc = new Scanner(System.in);
+        try{
+            System.out.println("Enter your option from 1 to 9: ");
+            option = sc.nextInt();
+            System.out.println("You entered: " + option);
+            if (option < 0){
+                throw new IntNonNegativeException();
+            }else if (option == 0 || option > 9){
+                throw new InvalidPositiveOptionException();
+            }
+        }catch (IntNonNegativeException e){
+            //Handle negative numbers
+            System.out.println(e.getMessage());
+            option = getOption();
+        }catch (InvalidPositiveOptionException e){
+            //Handle invalid positive numbers
+            System.out.println(e.getMessage());
+            option = getOption();
+        }catch (Exception e){
+            //handle non integer numebr
+            System.out.println("Invalid input. Please enter a valid number.");
+            option = getOption();
+        }
+        return option;
+        
+    }
+
+    public int getOptionAgain(){
+        int option = 0;
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter your option: ");
+        option = sc.nextInt();
+
+        if (option < 0){
+            System.out.println("Error: your option MUST NOT be negative number!");
+            System.out.println("You are out! ");
+            System.out.println("Program Terminating! ");
+            System.exit(0);
+        }else if (option == 0 || option > 9){
+            System.out.println("Error: your option MUST be between 1 to 9!");
+            System.out.println("You are out! ");
+            System.out.println("Program Terminating! ");
+            System.exit(0);
+        }else{
+            System.out.println("Error: your are idiot!");
+            System.out.println("You are out! ");
+            System.out.println("Program Terminating! ");
+            System.exit(0);
+        }
+        return option;
+    }
+
     public void PatientOption(){
-        int choice;
+        int choice = -1;
         System.out.println("Hello " + patient.getName() + ".");
         System.out.println("What would you like to do today?");
-        patientMenu();
-        choice = sc.nextInt();
-
-        while(choice < 10){
+        while (true){
+            patientMenu();
+            choice = getOption();
             switch (choice){
                 case 1: //view medical record
                     viewMedicalRecords();
@@ -55,6 +109,8 @@ public class PatientUI {
                     System.out.println("Thank you! Hope to see you soon :) \n");
                     System.exit(0);
                     return;
+                default: 
+                    break;
             }
             System.out.println("What else would you like to do today?");
             patientMenu();
