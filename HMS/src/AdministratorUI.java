@@ -35,10 +35,11 @@ public class AdministratorUI {
     AdminManager am;
     ..
      */
+    Scanner sc = new Scanner(System.in);
 
     public void AdminOption(){
         int choice;
-        System.out.println("Hello " + admin.getName() + ".");
+        //System.out.println("Hello " + admin.getName() + ".");
         System.out.println("What would you like to do today?");
         adminMenu();
         choice = sc.nextInt();
@@ -75,5 +76,9 @@ public class AdministratorUI {
     }
 
 }
+
+//private void manageStaffRecords(){
+
+//}
 
 
