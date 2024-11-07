@@ -1,4 +1,3 @@
-import javax.print.Doc;
 import java.util.Scanner;
 
 
@@ -40,13 +39,13 @@ public class ApplicationUI {
         }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
             //pharmacist UI
         }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
-            //doctorUI
             StaffManager sm = new StaffManager();
             DoctorUI doctorUI = new DoctorUI(userName, sm);
+            //doctorUI
         }else if(userName.charAt(0) == 'a' || userName.charAt(0) == 'A'){
             //adminUI
         }else{
-            System.out.println("Invalid UserID");
+            System.out.println("Invalid user ID");
         }
     }
 }

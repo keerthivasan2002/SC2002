@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Date;
+import java.io.File;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -60,4 +62,52 @@ public class MedicalRecordManager {
         return patientRecords;
     }
 
+    // public void saveMedicalRecords(){
+    //     FileManager medicalRecordFM = new FileManager(Mr_file);
+
+    //     String[][] medicalRecordData = new String[MedicalRecords.size() + 1][];
+    //     medicalRecordData[0] = new String[]{"PatientID", "DateOfDiagnosis", "Diagnosis", "Prescription", "PrescriptionStatus"};
+
+
+    //     // for(MedicalRecord record : MedicalRecords){
+    //     //     String[] recordData = new String[5];
+    //     //     recordData[0] = record.getPatientID();
+    //     //     recordData[1] = record.getDateOfDiagnosis().toString();
+    //     //     recordData[2] = record.getDiagnosis();
+    //     //     recordData[3] = record.getPrescription();
+    //     //     recordData[4] = String.valueOf(record.isPrescriptionStatus());
+    //     //     medicalRecordData.add(recordData);
+    //     // }
+
+    //     for (int i = 0; i < MedicalRecords.size(); i++) {
+    //         medicalRecordData[i + 1] = MedicalRecords.get(i).toArray();
+    //     }
+    //     medicalRecordFM.addNewRow(medicalRecordData);
+    // }
+
+    // public void addMedicalRecord(MedicalRecord record){
+    //     MedicalRecords.add(record);
+    //     saveMedicalRecords();
+    // }
+
+    public void addNewRecord(String patientID, Date dateOfDiagnosis, String diagnosis, String prescription, Boolean prescriptionStatus){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = dateFormat.format(dateOfDiagnosis);
+        String[] recordData = new String[]{patientID, date, diagnosis, prescription, String.valueOf(prescriptionStatus)};
+        MedicalRecord newRecord = new MedicalRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus);
+        MedicalRecords.add(newRecord);
+
+        FileManager medicalRecordFM = new FileManager(Mr_file);
+        medicalRecordFM.addNewRow(recordData);
+    }
+
+    public ArrayList<MedicalRecord> getMedicalRecords(String userID){ 
+        ArrayList<MedicalRecord> patientRecords = new ArrayList<>();
+        for(MedicalRecord record : MedicalRecords){
+            if (record.getPatientID().equals(userID)) {
+                patientRecords.add(record);
+            }
+        }
+        return patientRecords;
+    }
 }

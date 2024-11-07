@@ -26,28 +26,33 @@ public class PatientUI {
     // Function to get the option from the user
     public int getOption(){
         int option = 0;
+        boolean valid = false;
         Scanner sc = new Scanner(System.in);
-        try{
-            System.out.println("Enter your option from 1 to 9: ");
-            option = sc.nextInt();
-            System.out.println("You entered: " + option);
-            if (option < 0){
-                throw new IntNonNegativeException();
-            }else if (option == 0 || option > 9){
-                throw new InvalidPositiveOptionException();
+        while (!valid){
+            try{
+                System.out.println("Enter your option from 1 to 9: ");
+                option = sc.nextInt();
+                System.out.println("You entered: " + option);
+                if (option < 0){
+                    throw new IntNonNegativeException();
+                }else if (option == 0 || option > 9){
+                    throw new InvalidPositiveOptionException();
+                }else {
+                    valid = true;
+                }
+            }catch (IntNonNegativeException e){
+                //Handle negative numbers
+                System.out.println(e.getMessage());
+                option = getOption();
+            }catch (InvalidPositiveOptionException e){
+                //Handle invalid positive numbers
+                System.out.println(e.getMessage());
+                option = getOption();
+            }catch (Exception e){
+                //handle non integer numebr
+                System.out.println("Invalid input. Please enter a valid number.");
+                option = getOption();
             }
-        }catch (IntNonNegativeException e){
-            //Handle negative numbers
-            System.out.println(e.getMessage());
-            option = getOption();
-        }catch (InvalidPositiveOptionException e){
-            //Handle invalid positive numbers
-            System.out.println(e.getMessage());
-            option = getOption();
-        }catch (Exception e){
-            //handle non integer numebr
-            System.out.println("Invalid input. Please enter a valid number.");
-            option = getOption();
         }
         return option;
         
@@ -82,37 +87,34 @@ public class PatientUI {
         int choice = -1;
         System.out.println("Hello " + patient.getName() + ".");
         System.out.println("What would you like to do today?");
-        while (true){
-            patientMenu();
-            choice = getOption();
-            switch (choice){
-                case 1: //view medical record
-                    viewMedicalRecords();
-                    break;
-                case 2: //update Personal information
-                    patientInfo();
-                    updatePatientInfo();
-                    break;
-                case 3: //View Available appointment Slots
-                    break;
-                case 4: //Schedule an Appointment
-                    break;
-                case 5: //Reschedule an Appointment
-                    break;
-                case 6: //Cancel an Appointment
-                    break;
-                case 7: //View Scheduled Appointment
-                    break;
-                case 8: //View Past Appointment Records
-                    break;
-                case 9://logout
-                    System.out.println("Thank you! Hope to see you soon :) \n");
-                    System.exit(0);
-                    return;
-                default: 
-                    break;
-            }
-            System.out.println("What else would you like to do today?");
+        patientMenu();
+        choice = getOption();
+        switch (choice){
+            case 1: //view medical record
+                viewMedicalRecords();
+                break;
+            case 2: //update Personal information
+                patientInfo();
+                updatePatientInfo();
+                break;
+            case 3: //View Available appointment Slots
+                break;
+            case 4: //Schedule an Appointment
+                break;
+            case 5: //Reschedule an Appointment
+                break;
+            case 6: //Cancel an Appointment
+                break;
+            case 7: //View Scheduled Appointment
+                break;
+            case 8: //View Past Appointment Records
+                break;
+            case 9://logout
+                System.out.println("Thank you! Hope to see you soon :) \n");
+                System.exit(0);
+                return;
+            default: 
+                break;
         }
     }
 

@@ -16,6 +16,16 @@ public class MedicalRecord {
         this.prescriptionStatus = prescriptionStatus;
     }
 
+    public String[] toArray(){
+        return new String[]{
+                patientID,
+                dateOfDiagnosis.toString(),
+                diagnosis,
+                prescription,
+                String.valueOf(prescriptionStatus)
+        };
+    }
+
     //getter functions
     public Date getDateOfDiagnosis() {
         return dateOfDiagnosis;
