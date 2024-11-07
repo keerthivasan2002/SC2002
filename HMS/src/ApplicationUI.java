@@ -1,3 +1,4 @@
+import javax.print.Doc;
 import java.util.Scanner;
 
 
@@ -40,18 +41,12 @@ public class ApplicationUI {
             //pharmacist UI
         }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
             //doctorUI
-        }else if(userName.charAt(0) == 'a' || userName.charAt(0) == 'A'){
-        if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){ //Patient UI
-            PatientManager pm = new PatientManager();
-            MedicalRecordManager mrm = new MedicalRecordManager();
-            PatientUI patientUI = new PatientUI(userName, pm, mrm);
-        }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
-            //pharmacist UI
-        }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){//DoctorUI
             StaffManager sm = new StaffManager();
             DoctorUI doctorUI = new DoctorUI(userName, sm);
-        }else{
+        }else if(userName.charAt(0) == 'a' || userName.charAt(0) == 'A'){
             //adminUI
+        }else{
+            System.out.println("Invalid UserID");
         }
     }
 }
