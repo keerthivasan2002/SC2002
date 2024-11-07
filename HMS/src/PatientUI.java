@@ -23,7 +23,7 @@ public class PatientUI {
         }
     }
 
-
+    // Function to get the option from the user
     public int getOption(){
         int option = 0;
         Scanner sc = new Scanner(System.in);
@@ -78,7 +78,7 @@ public class PatientUI {
         return option;
     }
 
-    public void PatientOption(){
+    public void patientOption(){
         int choice = -1;
         System.out.println("Hello " + patient.getName() + ".");
         System.out.println("What would you like to do today?");
@@ -113,8 +113,6 @@ public class PatientUI {
                     break;
             }
             System.out.println("What else would you like to do today?");
-            patientMenu();
-            choice = sc.nextInt();
         }
     }
 
