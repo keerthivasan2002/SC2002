@@ -85,36 +85,40 @@ public class PatientUI {
 
     public void patientOption(){
         int choice = -1;
+
         System.out.println("Hello " + patient.getName() + ".");
         System.out.println("What would you like to do today?");
-        patientMenu();
-        choice = getOption();
-        switch (choice){
-            case 1: //view medical record
-                viewMedicalRecords();
-                break;
-            case 2: //update Personal information
-                patientInfo();
-                updatePatientInfo();
-                break;
-            case 3: //View Available appointment Slots
-                break;
-            case 4: //Schedule an Appointment
-                break;
-            case 5: //Reschedule an Appointment
-                break;
-            case 6: //Cancel an Appointment
-                break;
-            case 7: //View Scheduled Appointment
-                break;
-            case 8: //View Past Appointment Records
-                break;
-            case 9://logout
-                System.out.println("Thank you! Hope to see you soon :) \n");
-                System.exit(0);
-                return;
-            default: 
-                break;
+        while (true){
+            patientMenu();
+            choice = getOption();
+            switch (choice){
+                case 1: //view medical record
+                    viewMedicalRecords();
+                    break;
+                case 2: //update Personal information
+                    patientInfo();
+                    updatePatientInfo();
+                    break;
+                case 3: //View Available appointment Slots
+                    break;
+                case 4: //Schedule an Appointment
+                    break;
+                case 5: //Reschedule an Appointment
+                    break;
+                case 6: //Cancel an Appointment
+                    break;
+                case 7: //View Scheduled Appointment
+                    break;
+                case 8: //View Past Appointment Records
+                    break;
+                case 9://logout
+                    System.out.println("Thank you! Hope to see you soon :) \n");
+                    System.exit(0);
+                    return;
+                default: 
+                    break;
+            }
+
         }
     }
 

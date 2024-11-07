@@ -90,34 +90,36 @@ public class DoctorUI {
         int choice;
         System.out.println("Hello " + doctor.getName() + ".");
         System.out.println("What would you like to do today?");
-        doctorMenu();
-        choice = getOption();
-        // System.out.println("I am here " );
-        switch (choice){
-            case 1: //view Patient Medical Record
-                System.out.println("View Patient Medical Record");
-                viewPatientMedicalRecord();
-                break;
-            case 2: //Update patient Medical Record
-                System.out.println("Update Patient Medical Record");
-                updatePatientMedicalRecord();
-                break;
-            case 3: //view Personal Schedule
-                break;
-            case 4: //Set availability for appointment
-                break;
-            case 5: //Accept or Decline Appointment Request
-                break;
-            case 6: //View Upcoming Appointment
-                break;
-            case 7: //Record Appointment Outcome
-                break;
-            case 8: //Log out
-                System.out.println("Thank you! Hope to see you soon :)\n");
-                System.exit(0);
-                return;
-            default:
-                break;
+        while(true){
+            doctorMenu();
+            choice = getOption();
+            // System.out.println("I am here " );
+            switch (choice){
+                case 1: //view Patient Medical Record
+                    System.out.println("View Patient Medical Record");
+                    viewPatientMedicalRecord();
+                    break;
+                case 2: //Update patient Medical Record
+                    System.out.println("Update Patient Medical Record");
+                    updatePatientMedicalRecord();
+                    break;
+                case 3: //view Personal Schedule
+                    break;
+                case 4: //Set availability for appointment
+                    break;
+                case 5: //Accept or Decline Appointment Request
+                    break;
+                case 6: //View Upcoming Appointment
+                    break;
+                case 7: //Record Appointment Outcome
+                    break;
+                case 8: //Log out
+                    System.out.println("Thank you! Hope to see you soon :)\n");
+                    System.exit(0);
+                    return;
+                default:
+                    break;
+            }
         }
     }
 
