@@ -32,6 +32,15 @@ public class ApplicationUI {
     }
 
     public static void userOption(String userName) {
+        if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){
+            PatientManager pm = new PatientManager(); // Create new object from class
+            MedicalRecordManager mrm = new MedicalRecordManager(); // Create new object from class
+            PatientUI patientUI = new PatientUI(userName, pm, mrm); //
+        }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
+            //pharmacist UI
+        }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
+            //doctorUI
+        }else if(userName.charAt(0) == 'a' || userName.charAt(0) == 'A'){
         if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){ //Patient UI
             PatientManager pm = new PatientManager();
             MedicalRecordManager mrm = new MedicalRecordManager();
@@ -44,8 +53,6 @@ public class ApplicationUI {
         }else{
             //adminUI
         }
-
-
     }
 }
 

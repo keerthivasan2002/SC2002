@@ -69,7 +69,6 @@ public class DoctorUI{
 
     public void viewPatientMedicalRecord(){
         System.out.println("View Patient Medical Record");
-        User
     }
 
     public void updatePatientMedicalRecord(){
