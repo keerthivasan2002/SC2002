@@ -19,7 +19,7 @@ public class PatientUI {
         if(this.patient == null){
             System.out.println("No patient found with the given ID:" + userID);
         }else{
-            PatientOption();
+            patientOption();
         }
     }
 
@@ -78,7 +78,7 @@ public class PatientUI {
         return option;
     }
 
-    public void PatientOption(){
+    public void patientOption(){
         int choice = -1;
         System.out.println("Hello " + patient.getName() + ".");
         System.out.println("What would you like to do today?");
