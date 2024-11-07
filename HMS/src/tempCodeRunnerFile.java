@@ -1,7 +1,5 @@
 import java.util.Scanner;
 
-test test
-
 public class ApplicationUI {
     public static void main(String[] args) {
         System.out.println(System.getProperty("user.dir"));
@@ -33,20 +31,18 @@ public class ApplicationUI {
     }
 
     public static void userOption(String userName) {
-        if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){ //Patient UI
+        if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){
             PatientManager pm = new PatientManager();
             MedicalRecordManager mrm = new MedicalRecordManager();
             PatientUI patientUI = new PatientUI(userName, pm, mrm);
         }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
             //pharmacist UI
-        }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){//DoctorUI
-            StaffManager sm = new StaffManager();
-            DoctorUI doctorUI = new DoctorUI(userName, sm);
+        }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
+            //doctorUI
         }else{
             //adminUI
         }
 
-        
     }
 }
 
