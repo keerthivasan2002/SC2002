@@ -1,6 +1,5 @@
 import java.util.Scanner;
 
-test test
 
 public class ApplicationUI {
     public static void main(String[] args) {
@@ -46,7 +45,7 @@ public class ApplicationUI {
             //adminUI
         }
 
-        
+
     }
 }
 

@@ -19,11 +19,11 @@ public class PatientUI {
         if(this.patient == null){
             System.out.println("No patient found with the given ID:" + userID);
         }else{
-            patientOption();
+            PatientOption();
         }
     }
 
-
+    // Function to get the option from the user
     public int getOption(){
         int option = 0;
         Scanner sc = new Scanner(System.in);
@@ -113,8 +113,6 @@ public class PatientUI {
                     break;
             }
             System.out.println("What else would you like to do today?");
-            patientMenu();
-            choice = sc.nextInt();
         }
     }
 
