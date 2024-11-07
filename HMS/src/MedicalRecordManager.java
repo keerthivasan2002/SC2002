@@ -90,16 +90,20 @@ public class MedicalRecordManager {
     //     saveMedicalRecords();
     // }
 
-    public void addNewRecord(String patientID, Date dateOfDiagnosis, String diagnosis, String prescription, Boolean prescriptionStatus){
+    public void addNewRecord(String patientID, Date dateOfDiagnosis, String diagnosis, String prescription, Boolean prescriptionStatus) {
+        // Create the record as an array of Strings for the CSV file
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String date = dateFormat.format(dateOfDiagnosis);
         String[] recordData = new String[]{patientID, date, diagnosis, prescription, String.valueOf(prescriptionStatus)};
+
+        // Add to the in-memory list
         MedicalRecord newRecord = new MedicalRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus);
         MedicalRecords.add(newRecord);
 
         FileManager medicalRecordFM = new FileManager(Mr_file);
         medicalRecordFM.addNewRow(recordData);
     }
+
 
     public ArrayList<MedicalRecord> getMedicalRecords(String userID){ 
         ArrayList<MedicalRecord> patientRecords = new ArrayList<>();

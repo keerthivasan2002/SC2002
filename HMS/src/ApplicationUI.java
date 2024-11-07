@@ -41,8 +41,9 @@ public class ApplicationUI {
             StaffManager sm = new StaffManager();
             PharmacistUI pharmacistUI = new PharmacistUI(userName, sm);
         }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
+            MedicalRecordManager mrm = new MedicalRecordManager();
             StaffManager sm = new StaffManager();
-            DoctorUI doctorUI = new DoctorUI(userName, sm);
+            DoctorUI doctorUI = new DoctorUI(userName, sm, mrm);
             //doctorUI
         }else if(userName.charAt(0) == 'a' || userName.charAt(0) == 'A'){
             //adminUI

@@ -8,14 +8,16 @@ public class DoctorUI {
     private String userID;
     Staff doctor;
     StaffManager sm;
+    MedicalRecordManager mrm;
 
     Scanner sc = new Scanner(System.in);
 
 
-    public DoctorUI(String userID, StaffManager sm){
+    public DoctorUI(String userID, StaffManager sm, MedicalRecordManager mrm){
         this.userID = userID;
         this.sm = sm;
         this.doctor = sm.selectStaff(userID);
+        this.mrm = mrm;
 
         //Handling errors with the code
         if(this.doctor == null){
@@ -164,17 +166,6 @@ public class DoctorUI {
             System.out.println("-----------------------------------");
         }
 
-        // if (records.isEmpty()) {
-        //     System.out.println("No medical records found for the patient.");
-        // } else {
-        //     for (MedicalRecord record : records) {
-        //         System.out.println("Diagnosis Date: " + record.getDateOfDiagnosis());
-        //         System.out.println("Diagnosis: " + record.getDiagnosis());
-        //         System.out.println("Prescription: " + record.getPrescription());
-        //         System.out.println("Prescription Status: " + (record.isPrescriptionStatus() ? "Approved" : "Not Approved"));
-        //         System.out.println("-----------------------------------");
-        //     }
-        // }
     }
 
     public void updatePatientMedicalRecord(){
@@ -186,9 +177,9 @@ public class DoctorUI {
             System.out.println("Patient not found.");
             return;
         }
-        MedicalRecordManager mrm = new MedicalRecordManager();
+//        MedicalRecordManager mrm = new MedicalRecordManager();
         ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(patientID);
-        if(records.size() == 0){
+        if(records.isEmpty()){
             System.out.println("No medical records found for patient " + patientID);
             return;
         }
