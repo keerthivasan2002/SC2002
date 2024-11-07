@@ -30,7 +30,7 @@ public class DoctorUI {
         doctorMenu();
         choice = sc.nextInt();
 
-        while(choice < 8){
+        while(choice < 9){
             switch (choice){
                 case 1: //view Patient Medical Record
                     break;
@@ -50,6 +50,8 @@ public class DoctorUI {
                     System.out.println("Thank you! Hope to see you soon :)\n");
                     System.exit(0);
                     return;
+                default:
+                    break;
             }
 
             System.out.println("What else would you like to do today?");
