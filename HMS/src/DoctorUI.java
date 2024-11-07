@@ -37,6 +37,8 @@ public class DoctorUI {
                 case 2: //Update patient Medical Record
                     break;
                 case 3: //view Personal Schedule
+                    Schedule schedule = new Schedule();
+                    schedule.viewTodaySchedule();
                     break;
                 case 4: //Set availability for appointment
                     break;

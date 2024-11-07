@@ -8,6 +8,11 @@ public abstract class User {
     protected String password;
     protected int age;
 
+    //constructor for User class
+    public User(String userID){
+        this.userID = userID;
+    }
+
     // Constructor for User class
     public User(String userID, String password) {
         this.userID = userID;

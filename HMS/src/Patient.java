@@ -10,6 +10,11 @@ public class Patient extends User {
 
     }
 
+    //constructor to use in the
+    public Patient(String userID){
+        super(userID); //call it from the user class
+    }
+
     //function used to add to the csv
     public String[] toArray() {
         return new String[]{
