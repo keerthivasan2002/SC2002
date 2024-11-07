@@ -1,9 +1,7 @@
 import java.io.*;
 import java.nio.Buffer;
 import java.util.ArrayList;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.List;
 
 public class FileManager {
     private String file;
@@ -70,5 +68,59 @@ public class FileManager {
             e.printStackTrace();
         }
     }
+
+    //add new row in the csv file
+    public void addNewRow(String[] newRow) {
+        String filePath = System.getProperty("user.dir") + "/dependencies/" + getFile();
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write(String.join(",", newRow));
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // public void updateRow(String uniqueId, String[] updatedRow){
+    //     String filePath = System.getProperty("user.dir") + "/dependencies/" + getFile();
+    // List<String[]> existingData = new ArrayList<>();
+
+    // // Step 1: Read existing data from the file
+    // try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+    //     String line;
+    //     while ((line = reader.readLine()) != null) {
+    //         existingData.add(line.split(","));
+    //     }
+    // } catch (IOException e) {
+    //     e.printStackTrace();
+    // }
+
+    // // Step 2: Update the row if the unique identifier is found
+    // boolean isUpdated = false;
+    // for (int i = 0; i < existingData.size(); i++) {
+    //     String[] row = existingData.get(i);
+        
+    //     // Assuming the first column is the unique identifier
+    //     if (row[0].equals(uniqueId)) {
+    //         existingData.set(i, updatedRow); // Update the row
+    //         isUpdated = true;
+    //         break;
+    //     }
+    // }
+
+    // // Step 3: If the row was found and updated, write the data back to the file
+    // if (isUpdated) {
+    //     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, false))) {
+    //         for (String[] row : existingData) {
+    //             writer.write(String.join(",", row));
+    //             writer.newLine();
+    //         }
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // } else {
+    //     System.out.println("No row found with unique identifier: " + uniqueId);
+    // }
+    // }
 
 }
