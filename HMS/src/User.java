@@ -6,6 +6,7 @@ public abstract class User {
     protected int phoneNumber;
     protected String userID;
     protected String password;
+    protected int age;
 
     // Constructor for User class
     public User(String userID, String password) {
@@ -23,8 +24,11 @@ public abstract class User {
         this.role = role;
     }
 
-    //constructor to initialise Doctors
-    //public User(String UserID, String password, String name, Gender gender, HospitalRole role, int phoneNumber, String emailAddress)
+    //Constructor to initialize Doctors
+    public User(String userID, String password, String name, Gender gender, int age, HospitalRole role, String emailAddress, int phoneNumber) {
+        this(userID, password, name, gender, emailAddress, phoneNumber, role);
+        this.age = age;
+    }
 
     //getter methods for the subclasses
     public String getUserID(){
