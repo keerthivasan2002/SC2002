@@ -2,6 +2,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
+import java.sql.Time;
 
 public class Schedule {
     private Map<String, String[]> weekSchedule;
@@ -136,4 +138,43 @@ public class Schedule {
         }
     }
 
+    //This is to book an appointment
+    public void bookTimeSlot(Date date, Time time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        String dayName = getDayName(calendar);
+        String[] timeSlots = weekSchedule.get(dayName);
+        Calendar timeCalendar = Calendar.getInstance();
+        timeCalendar.setTime(time);
+        int hour = timeCalendar.get(Calendar.HOUR_OF_DAY);
+        if (timeSlots != null && "Free".equals(timeSlots[hour])) {
+            timeSlots[hour] = "Booked";
+        }
+    }
+
+    //This is to check if the slot is available
+    public boolean isTimeSlotAvailable(Date date, Time time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        String dayName = getDayName(calendar);
+        String[] timeSlots = weekSchedule.get(dayName); 
+        Calendar timeCalendar = Calendar.getInstance();
+        timeCalendar.setTime(time);
+        int hour = timeCalendar.get(Calendar.HOUR_OF_DAY);
+        return timeSlots != null && "Free".equals(timeSlots[hour]);
+    }
+
+    //This is to cancel an appointment
+    public void freeTimeSlot(Date date, Time time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        String dayName = getDayName(calendar);
+        String[] timeSlots = weekSchedule.get(dayName);
+        Calendar timeCalendar = Calendar.getInstance();
+        timeCalendar.setTime(time);
+        int hour = timeCalendar.get(Calendar.HOUR_OF_DAY);
+        if (timeSlots != null && "Booked".equals(timeSlots[hour])) {
+            timeSlots[hour] = "Free";
+        }    
+    }
 }

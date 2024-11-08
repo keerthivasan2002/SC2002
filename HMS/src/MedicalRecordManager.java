@@ -47,6 +47,16 @@ public class MedicalRecordManager {
             }else{
                 System.out.println("Incomplete data in row, skipping: " + String.join(",", row));
             }
+            // For debug purposes [ensure file from medical record is read properly]
+            // System.out.println("Loaded Medical Records:");
+            // for (MedicalRecord record : MedicalRecords) {
+            //     System.out.println("Patient ID: " + record.getPatientID());
+            //     System.out.println("Diagnosis Date: " + record.getDateOfDiagnosis());
+            //     System.out.println("Diagnosis: " + record.getDiagnosis());
+            //     System.out.println("Prescription: " + record.getPrescription());
+            //     System.out.println("Prescription Status: " + (record.isPrescriptionStatus() ? "Approved" : "Not Approved"));
+            //     System.out.println("-----------------------------------");
+            // }
         }
     }
 
@@ -55,35 +65,34 @@ public class MedicalRecordManager {
     public ArrayList<MedicalRecord> getAllRecordsForPatient(String userID) {
         ArrayList<MedicalRecord> patientRecords = new ArrayList<>();
         for (MedicalRecord record : MedicalRecords) {
-            if (record.getPatientID().equals(userID)) {
+            if (record.getPatientID().trim().equalsIgnoreCase(userID.trim())) {
                 patientRecords.add(record);
             }
         }
         return patientRecords;
     }
 
-    // public void saveMedicalRecords(){
-    //     FileManager medicalRecordFM = new FileManager(Mr_file);
-
-    //     String[][] medicalRecordData = new String[MedicalRecords.size() + 1][];
-    //     medicalRecordData[0] = new String[]{"PatientID", "DateOfDiagnosis", "Diagnosis", "Prescription", "PrescriptionStatus"};
-
-
-    //     // for(MedicalRecord record : MedicalRecords){
-    //     //     String[] recordData = new String[5];
-    //     //     recordData[0] = record.getPatientID();
-    //     //     recordData[1] = record.getDateOfDiagnosis().toString();
-    //     //     recordData[2] = record.getDiagnosis();
-    //     //     recordData[3] = record.getPrescription();
-    //     //     recordData[4] = String.valueOf(record.isPrescriptionStatus());
-    //     //     medicalRecordData.add(recordData);
-    //     // }
-
-    //     for (int i = 0; i < MedicalRecords.size(); i++) {
-    //         medicalRecordData[i + 1] = MedicalRecords.get(i).toArray();
-    //     }
-    //     medicalRecordFM.addNewRow(medicalRecordData);
-    // }
+    public void saveMedicalRecords() {
+        FileManager medicalRecordFM = new FileManager(Mr_file);
+    
+        // Header for CSV
+        String[] header = {"PatientID", "DateOfDiagnosis", "Diagnosis", "Prescription", "PrescriptionStatus"};
+        medicalRecordFM.addNewRow(header, false); // Write header
+    
+        // Loop through each MedicalRecord and write individually
+        for (MedicalRecord record : MedicalRecords) {
+            String[] recordData = new String[5];
+            recordData[0] = record.getPatientID();
+            recordData[1] = new SimpleDateFormat("yyyy-MM-dd").format(record.getDateOfDiagnosis());
+            recordData[2] = record.getDiagnosis();
+            recordData[3] = record.getPrescription();
+            recordData[4] = String.valueOf(record.isPrescriptionStatus());
+    
+            // Append each record to the file
+            medicalRecordFM.addNewRow(recordData, true);
+        }
+    }
+    
 
     // public void addMedicalRecord(MedicalRecord record){
     //     MedicalRecords.add(record);
@@ -113,5 +122,9 @@ public class MedicalRecordManager {
             }
         }
         return patientRecords;
+    }
+
+    public ArrayList<MedicalRecord> getMedicalRecords(){
+        return MedicalRecords;
     }
 }

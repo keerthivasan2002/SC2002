@@ -46,4 +46,5 @@ public class MedicalRecord {
     public String getPatientID() {
         return patientID;
     }
+
 }

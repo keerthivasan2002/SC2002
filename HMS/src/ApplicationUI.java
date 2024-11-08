@@ -10,11 +10,16 @@ public class ApplicationUI {
         while(!exit.equals("1")){
             System.out.println("Welcome to the login page");
             System.out.println("Please enter your Hospital ID and Password");
-            System.out.print("Username: ");
-            String userName = sc.next();
 
-            System.out.print("Password: ");
-            String password = sc.next();
+            // System.out.print("Username: ");
+            // String userName = sc.next();
+
+            // System.out.print("Password: ");
+            // String password = sc.next();
+
+            //debug purposes
+            String userName = "P1003";
+            String password = "password";
 
             LogInManager login = new LogInManager(userName, password);
             boolean accept = login.authoriseLogin();
@@ -35,7 +40,10 @@ public class ApplicationUI {
         if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){
             PatientManager pm = new PatientManager(); // Create new object from class
             MedicalRecordManager mrm = new MedicalRecordManager(); // Create new object from class
-            PatientUI patientUI = new PatientUI(userName, pm, mrm); //
+            Schedule schedule = new Schedule();
+            AppointmentManager am = new AppointmentManager(schedule);
+
+            PatientUI patientUI = new PatientUI(userName, pm, mrm, schedule, am); //
         }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
             //pharmacist UI
             StaffManager sm = new StaffManager();
@@ -43,6 +51,8 @@ public class ApplicationUI {
         }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
             MedicalRecordManager mrm = new MedicalRecordManager();
             StaffManager sm = new StaffManager();
+            // AppointmentManager am = new AppointmentManager();
+            // Schedule schedule = new Schedule();
             DoctorUI doctorUI = new DoctorUI(userName, sm, mrm);
             //doctorUI
         }else if(userName.charAt(0) == 'a' || userName.charAt(0) == 'A'){

@@ -1,3 +1,5 @@
-Patient ID,Date,Diagnosis,Prescription,Prescription Status
-P1003,2002-03-14,Flu,Glue,True
-P1003,2002-03-17,Addiction,Nicotine,False
+PatientID,DateOfDiagnosis,Diagnosis,Prescription,PrescriptionStatus
+P1003,2000-05-14,Flu,Glue,TRUE
+P1003,2000-05-17,Addiction,Nicotine,FALSE
+P1003,2020-01-23,druggy,drug,false
+P1002,2020-01-01,meow,meow,true

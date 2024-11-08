@@ -26,4 +26,8 @@ public class Staff extends User {
                 String.valueOf(phoneNumber)
         };
     }
+
+    public String toString(){
+        return userID;
+    }
 }

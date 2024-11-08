@@ -8,6 +8,7 @@ public class DoctorUI {
     private String userID;
     Staff doctor;
     StaffManager sm;
+    Patient patient;
     MedicalRecordManager mrm;
 
     Scanner sc = new Scanner(System.in);
@@ -143,15 +144,14 @@ public class DoctorUI {
     }
 
     public void viewPatientMedicalRecord(){
+        PatientManager pm = new PatientManager();
         System.out.println("Enter the patient ID: ");
         String patientID = sc.next();
-        PatientManager pm = new PatientManager();
         Patient patient = pm.selectPatient(patientID);
         if(patient == null){
             System.out.println("Patient not found.");
             return;
         }
-        MedicalRecordManager mrm = new MedicalRecordManager();
         ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(patientID);
         if(records.size() == 0){
             System.out.println("No medical records found for patient " + patientID);
@@ -168,47 +168,48 @@ public class DoctorUI {
 
     }
 
-    public void updatePatientMedicalRecord(){
-        System.out.println("Enter the patient ID: ");
-        String patientID = sc.next();
+    public void updatePatientMedicalRecord() {
         PatientManager pm = new PatientManager();
-        Patient patient = pm.selectPatient(patientID);
-        if(patient == null){
-            System.out.println("Patient not found.");
-            return;
-        }
-//        MedicalRecordManager mrm = new MedicalRecordManager();
-        ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(patientID);
-        if(records.isEmpty()){
-            System.out.println("No medical records found for patient " + patientID);
-            return;
-        }
-        System.out.println("Medical records for patient " + patientID + ":");
-        for(MedicalRecord record : records){
-            System.out.println("Diagnosis Date: " + record.getDateOfDiagnosis());
-            System.out.println("Diagnosis: " + record.getDiagnosis());
-            System.out.println("Prescription: " + record.getPrescription());
-            System.out.println("Prescription Status: " + (record.isPrescriptionStatus() ? "Approved" : "Not Approved"));
-            System.out.println("-----------------------------------");
-        }
+    
+        // System.out.println("Enter the patient ID: ");
+        // String patientID = sc.next();
+        // Patient patient = pm.selectPatient(patientID);
+        // if (patient == null) {
+        //     System.out.println("Patient not found.");
+        //     return;
+        // }
+    
+        // ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(patientID);
+        // if (records.isEmpty()) {
+        //     System.out.println("No medical records found for patient " + patientID);
+        //     return;
+        // }
+
+        System.out.println("Enter patientID: ");
+        String patientID = sc.next();    
         System.out.println("Enter the date of diagnosis (yyyy-MM-dd): ");
         String dateInput = sc.next();
         Date dateOfDiagnosis;
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             dateOfDiagnosis = dateFormat.parse(dateInput);
-        }catch (ParseException e){
+        } catch (ParseException e) {
             System.out.println("Error parsing date: " + e.getMessage());
             return;
         }
+    
         System.out.println("Enter the diagnosis: ");
         String diagnosis = sc.next();
         System.out.println("Enter the prescription: ");
         String prescription = sc.next();
         System.out.println("Enter the prescription status (true/false): ");
         boolean prescriptionStatus = sc.nextBoolean();
+    
+        // Create a new MedicalRecord object
         MedicalRecord newRecord = new MedicalRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus);
-        records.add(newRecord);
+        mrm.addNewRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus); // Add to MedicalRecordManager
+    
         System.out.println("Medical record added successfully.");
     }
+    
 }

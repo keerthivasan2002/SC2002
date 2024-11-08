@@ -1,19 +1,29 @@
+import java.sql.Time;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PatientUI {
     private String userID;
-    Patient patient;
-    PatientManager pm; //keep reference to a PatientManager
-    MedicalRecordManager mrm;
+    private Patient patient;
+    private PatientManager pm; //keep reference to a PatientManager
+    private MedicalRecordManager mrm;
+    private Schedule schedule;
+    private AppointmentManager appointmentManager;
+    private ArrayList<Appointment> Appointment_Record;
 
-    Scanner sc = new Scanner(System.in);
+    private Scanner sc = new Scanner(System.in);
 
-    public PatientUI(String userID, PatientManager pm, MedicalRecordManager mrm){
+    public PatientUI(String userID, PatientManager pm, MedicalRecordManager mrm, Schedule schedule, AppointmentManager am){
         this.userID = userID;
         this.pm = pm;
         this.mrm = mrm;
         this.patient = pm.selectPatient(userID);
+        this.schedule = schedule;
+        
+        this.appointmentManager = am;
 
         //Handling errors with the code
         if(this.patient == null){
@@ -100,16 +110,22 @@ public class PatientUI {
                     updatePatientInfo();
                     break;
                 case 3: //View Available appointment Slots
+                    // viewAvailableAppointmentSlots();
                     break;
                 case 4: //Schedule an Appointment
+                    requestNewAppointment();
                     break;
                 case 5: //Reschedule an Appointment
+                    rescheduleAppointment();
                     break;
                 case 6: //Cancel an Appointment
+                    cancelAppointment();
                     break;
                 case 7: //View Scheduled Appointment
+                    viewAppointments();
                     break;
                 case 8: //View Past Appointment Records
+                    viewAppointmentOutcome();
                     break;
                 case 9://logout
                     System.out.println("Thank you! Hope to see you soon :) \n");
@@ -226,6 +242,104 @@ public class PatientUI {
             System.out.println("Press any other number to exit.");
             changeChoice = sc.nextInt();
             sc.nextLine(); // Clear the buffer
+        }
+    }
+
+    //request new appointment
+    private void requestNewAppointment() {
+        System.out.println("Add Appointment");
+        System.out.println("Enter the following details to schedule an appointment:");
+        System.out.print("Doctor ID: ");
+        String doctorID = sc.nextLine();
+        try{
+            System.out.print("Date (yyyy-MM-dd): ");
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(sc.nextLine());
+            
+            System.out.print("Time (HH:mm): ");
+            Time time = Time.valueOf(sc.nextLine() + ":00");
+
+            boolean success = appointmentManager.addAppointment(userID, doctorID, date, time);
+            
+            if (success) {
+                System.out.println("Appointment scheduled successfully.");
+            } else {
+                System.out.println("Failed to schedule appointment. Please try another time slot.");
+            }
+        } catch (ParseException e) {
+            System.out.println("Invalid date or time format. Please try again.");
+        }
+    }
+
+    //reschedule appointment
+    private void rescheduleAppointment() {
+        System.out.print("Enter Appointment ID to Reschedule: ");
+        int appointmentID = sc.nextInt();
+        sc.nextLine(); // Consume newline
+
+        try {
+            System.out.print("Enter New Appointment Date (yyyy-MM-dd): ");
+            Date newDate = new SimpleDateFormat("yyyy-MM-dd").parse(sc.nextLine());
+
+            System.out.print("Enter New Appointment Time (HH:mm): ");
+            Time newTime = Time.valueOf(sc.nextLine() + ":00");
+
+            boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newTime);
+            if (success) {
+                System.out.println("Appointment rescheduled successfully.");
+            } else {
+                System.out.println("Failed to reschedule appointment. New time slot may not be available.");
+            }
+        } catch (ParseException e) {
+            System.out.println("Invalid date or time format. Please try again.");
+        }
+        System.out.println("End of appointment rescheduled .");
+    }
+
+    //cancel appointment
+    private void cancelAppointment() {
+        System.out.print("Enter Appointment ID to Cancel: ");
+        int appointmentID = sc.nextInt();
+        sc.nextLine(); // Consume newline
+
+        boolean success = appointmentManager.cancelAppointment(appointmentID);
+        if (success) {
+            System.out.println("Appointment canceled successfully.");
+        } else {
+            System.out.println("Failed to cancel appointment. Appointment may not exist or is already canceled.");
+        }
+    }
+
+    protected void viewAppointments() {
+        System.out.println("Viewing Appointments");
+        
+        ArrayList<Appointment> Appointment_Record =  appointmentManager.viewPatientAppointments(userID);
+        if (Appointment_Record.size() == 0) {
+            System.out.println("No appointments found for patient. " + userID);
+            return;
+        }
+        for (Appointment appointment : Appointment_Record) {
+            System.out.println("Appointment ID: " + appointment.getAppointmentID());
+            System.out.println("Doctor: " + appointment.getDoctor().getName());
+            System.out.println("Date: " + appointment.getDate());
+            System.out.println("Time: " + appointment.getTime());
+            System.out.println("Status: " + appointment.getAppointmentStatus());
+            System.out.println("Outcome: " + appointment.getOutcome());
+            System.out.println("-----------------------------------");
+        }
+        System.out.println("End of Appointments");
+    }
+
+    protected void viewAppointmentOutcome() {
+        System.out.print("Enter Appointment ID to view outcome: ");
+        int appointmentID = sc.nextInt();
+        sc.nextLine(); // Consume newline
+    
+        Appointment appointment = appointmentManager.findAppointmentByID(appointmentID);
+        if (appointment != null && appointment.getPatient().getPatientID().equals(userID)) {
+            String outcome = appointment.getOutcome();
+            System.out.println("Appointment Outcome: " + (outcome.isEmpty() ? "No outcome recorded" : outcome));
+        } else {
+            System.out.println("Appointment not found or not authorized to view.");
         }
     }
 }
