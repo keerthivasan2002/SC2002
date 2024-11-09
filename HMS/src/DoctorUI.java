@@ -197,11 +197,13 @@ public class DoctorUI {
             System.out.println("Error parsing date: " + e.getMessage());
             return;
         }
+
+        sc.nextLine(); //clear the buffer
     
         System.out.println("Enter the diagnosis: ");
-        String diagnosis = sc.next();
+        String diagnosis = sc.nextLine();
         System.out.println("Enter the prescription: ");
-        String prescription = sc.next();
+        String prescription = sc.nextLine();
         System.out.println("Enter the prescription status (true/false): ");
         boolean prescriptionStatus = sc.nextBoolean();
     

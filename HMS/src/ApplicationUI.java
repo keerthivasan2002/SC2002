@@ -11,15 +11,12 @@ public class ApplicationUI {
             System.out.println("Welcome to the login page");
             System.out.println("Please enter your Hospital ID and Password");
 
-            // System.out.print("Username: ");
-            // String userName = sc.next();
+            System.out.print("Username: ");
+            String userName = sc.next();
 
-            // System.out.print("Password: ");
-            // String password = sc.next();
+            System.out.print("Password: ");
+            String password = sc.next();
 
-            //debug purposes
-            String userName = "P1003";
-            String password = "password";
 
             LogInManager login = new LogInManager(userName, password);
             boolean accept = login.authoriseLogin();
