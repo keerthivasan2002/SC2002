@@ -10,18 +10,18 @@ public class PatientUI {
     private Patient patient;
     private PatientManager pm; //keep reference to a PatientManager
     private MedicalRecordManager mrm;
-    private Schedule schedule;
+    private ScheduleManager scheduleManager;
     private AppointmentManager appointmentManager;
     private ArrayList<Appointment> Appointment_Record;
 
     private Scanner sc = new Scanner(System.in);
 
-    public PatientUI(String userID, PatientManager pm, MedicalRecordManager mrm, Schedule schedule, AppointmentManager am){
+    public PatientUI(String userID, PatientManager pm, MedicalRecordManager mrm, ScheduleManager scheduleManager, AppointmentManager am){
         this.userID = userID;
         this.pm = pm;
         this.mrm = mrm;
         this.patient = pm.selectPatient(userID);
-        this.schedule = schedule;
+        this.scheduleManager = scheduleManager;
         
         this.appointmentManager = am;
 

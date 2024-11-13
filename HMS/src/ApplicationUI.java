@@ -35,13 +35,14 @@ public class ApplicationUI {
     }
 
     public static void userOption(String userName) {
+        //initialise outside to avoid initialising multiple times
+        ScheduleManager scheduleManager = new ScheduleManager();
+        AppointmentManager am = new AppointmentManager(scheduleManager);
+
         if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){
             PatientManager pm = new PatientManager(); // Create new object from class
             MedicalRecordManager mrm = new MedicalRecordManager(); // Create new object from class
-            Schedule schedule = new Schedule();
-            AppointmentManager am = new AppointmentManager(schedule);
-
-            PatientUI patientUI = new PatientUI(userName, pm, mrm, schedule, am); //
+            PatientUI patientUI = new PatientUI(userName, pm, mrm, scheduleManager, am); //
         }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
             //pharmacist UI
             StaffManager sm = new StaffManager();
@@ -49,9 +50,7 @@ public class ApplicationUI {
         }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
             MedicalRecordManager mrm = new MedicalRecordManager();
             StaffManager sm = new StaffManager();
-            // AppointmentManager am = new AppointmentManager();
-            // Schedule schedule = new Schedule();
-            DoctorUI doctorUI = new DoctorUI(userName, sm, mrm);
+            DoctorUI doctorUI = new DoctorUI(userName, sm, mrm, am, scheduleManager);
             //doctorUI
         }else if(userName.charAt(0) == 'a' || userName.charAt(0) == 'A'){
             //adminUI

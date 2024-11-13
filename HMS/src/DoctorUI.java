@@ -10,15 +10,17 @@ public class DoctorUI {
     StaffManager sm;
     Patient patient;
     MedicalRecordManager mrm;
+    ScheduleManager scheduleManager;
 
     Scanner sc = new Scanner(System.in);
 
 
-    public DoctorUI(String userID, StaffManager sm, MedicalRecordManager mrm){
+    public DoctorUI(String userID, StaffManager sm, MedicalRecordManager mrm, AppointmentManager am, ScheduleManager scheduleManager){
         this.userID = userID;
         this.sm = sm;
         this.doctor = sm.selectStaff(userID);
         this.mrm = mrm;
+        this.am = am;
 
         //Handling errors with the code
         if(this.doctor == null){
@@ -107,6 +109,7 @@ public class DoctorUI {
                     updatePatientMedicalRecord();
                     break;
                 case 3: //view Personal Schedule
+                    scheduleManager.viewTodaySchedule();
                     break;
                 case 4: //Set availability for appointment
                     break;
