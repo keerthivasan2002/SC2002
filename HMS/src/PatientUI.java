@@ -148,7 +148,7 @@ public class PatientUI {
             System.out.println("No medical records found for the patient.");
         } else {
             for (MedicalRecord record : records) {
-                System.out.println("Diagnosis Date: " + record.getDateOfDiagnosis());
+                System.out.println("Diagnosis Date: " + record.getStringDateOfDiagnosis());
                 System.out.println("Diagnosis: " + record.getDiagnosis());
                 System.out.println("Prescription: " + record.getPrescription());
                 System.out.println("Prescription Status: " + (record.isPrescriptionStatus() ? "Approved" : "Not Approved"));

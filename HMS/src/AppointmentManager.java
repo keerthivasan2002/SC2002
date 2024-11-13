@@ -371,4 +371,8 @@ public class AppointmentManager {
         //Write to file
         appointmentFileManager.writeFile(appointmentData, false);
     }
+
+    public void getAppointmentOutcome(){
+        
+    }
 }

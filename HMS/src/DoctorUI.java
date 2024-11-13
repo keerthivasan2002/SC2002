@@ -167,7 +167,7 @@ public class DoctorUI {
         }
         System.out.println("Medical records for patient " + patientID + ":");
         for(MedicalRecord record : records){
-            System.out.println("Diagnosis Date: " + record.getDateOfDiagnosis());
+            System.out.println("Diagnosis Date: " + record.getStringDateOfDiagnosis());
             System.out.println("Diagnosis: " + record.getDiagnosis());
             System.out.println("Prescription: " + record.getPrescription());
             System.out.println("Prescription Status: " + (record.isPrescriptionStatus() ? "Approved" : "Not Approved"));
@@ -241,8 +241,8 @@ public class DoctorUI {
             System.out.println("before the loop");
             for (Appointment appointment : appointments){
                 System.out.println("Appointment ID: " + appointment.getAppointmentID());
-                System.out.println("Date: " + appointment.getDate());
-                System.out.println("Time: " + appointment.getTime());
+                System.out.println("Date: " + appointment.getStringDate());
+                System.out.println("Time: " + appointment.getStringTime());
                 System.out.println("Outcome: " + appointment.getOutcome());
                 System.out.println("-----------------------------------");
             }
@@ -250,6 +250,8 @@ public class DoctorUI {
             System.out.println("Enter the appointment ID: ");
             int appointmentID = sc.nextInt();
             Appointment appointment = am.findAppointmentByID(appointmentID);
+            sc.nextLine();
+
             try {
                 if(appointment == null){
                     throw new Exception("Appointment not found.");
@@ -259,21 +261,17 @@ public class DoctorUI {
                 return;
             }
             System.out.println("Enter the outcome of the appointment: ");
-            String outcome = sc.next();
+            String outcome = sc.nextLine();
+            if (outcome.isEmpty()){
+                outcome = "No outcome recorded.";
+                System.out.println("Outcome = " + outcome);
+                return;
+            }
+            System.out.println("Outcome = " + outcome);
             appointment.setOutcome(outcome);
             am.saveAppointments();
             System.out.println("Appointment outcome recorded successfully.");
-
-            System.out.println("Debug purpose what is updated");
-            for (Appointment app : appointments){
-                System.out.println("Appointment ID: " + appointment.getAppointmentID());
-                System.out.println("Date: " + appointment.getStringDate());
-                System.out.println("Time: " + appointment.getStringTime());
-                System.out.println("Outcome: " + appointment.getOutcome());
-                System.out.println("-----------------------------------");
-            }
-
-            sc.nextLine(); // Clear the buffer
+            // sc.nextLine(); // Clear the buffer
         }
 
         

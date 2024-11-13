@@ -83,7 +83,7 @@ public class MedicalRecordManager {
         for (MedicalRecord record : MedicalRecords) {
             String[] recordData = new String[5];
             recordData[0] = record.getPatientID();
-            recordData[1] = new SimpleDateFormat("yyyy-MM-dd").format(record.getDateOfDiagnosis());
+            recordData[1] = record.getStringDateOfDiagnosis();
             recordData[2] = record.getDiagnosis();
             recordData[3] = record.getPrescription();
             recordData[4] = String.valueOf(record.isPrescriptionStatus());

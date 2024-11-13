@@ -13,8 +13,8 @@ public class ApplicationUI {
 
             System.out.println();
             System.out.print("Username: ");
-            // String userName = sc.next();
-            String userName = "D001"; // speed up testing purpose
+            String userName = sc.next();
+            // String userName = "D001"; // speed up testing purpose
             
             System.out.print("Password: ");
             // String password = sc.next();

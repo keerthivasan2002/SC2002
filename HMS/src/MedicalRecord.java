@@ -18,10 +18,9 @@ public class MedicalRecord {
     }
 
     public String[] toArray(){
-        String formattedDate = getDateOfDiagnosis();
         return new String[]{
                 patientID,
-                formattedDate,
+                getStringDateOfDiagnosis(),
                 diagnosis,
                 prescription,
                 String.valueOf(prescriptionStatus)
@@ -29,9 +28,13 @@ public class MedicalRecord {
     }
 
     //getter functions
-    public String getDateOfDiagnosis() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    public String getStringDateOfDiagnosis() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(dateOfDiagnosis);
+    }
+
+    public Date getDateOfDiagnosis() {
+        return dateOfDiagnosis;
     }
 
     public String getDiagnosis(){
