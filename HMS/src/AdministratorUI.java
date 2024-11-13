@@ -27,12 +27,12 @@ public class AdministratorUI {
     request is approved, the stock level will be updated automatically
     */
         private String userID; // Why is there error here
-        private Staff admin, doctor, pharmacist;
+        private Staff staff, admin;
         private StaffManager sm;
         private PatientManager pm;
         private Patient patient;
         private AppointmentManager am;
-        private InventoryManager im;
+        // private InventoryManager im;
         
         Scanner sc = new Scanner(System.in);
 
@@ -145,7 +145,7 @@ public class AdministratorUI {
     }
 
     private void adminMenu() {
-c       System.out.println("Patient Menu:");
+        System.out.println("Patient Menu:");
         System.out.println("1. View and Manage Staff Records");
         System.out.println("2. View if scheduled appointment is updated");
         System.out.println("3. View and manage inventory of medication ");
@@ -174,21 +174,33 @@ c       System.out.println("Patient Menu:");
             // wait for Gui Shan to manage Staff Records...
     private void viewAndManageStaffRecords(){
         int choice = -1;
+        String staffIDString = "";
         while (choice != 5){
             staffRecordMenu();
-            choice = getOption();
+            choice = sc.nextInt();
+            sc.nextLine();
             switch (choice){
                 case 1:
-                    addStaffMember();
+                    sm.addStaffMember();
                     break;
                 case 2:
-                    updateStaffMember();
+                    System.out.println("Update Staff Member: ");
+                    System.out.println("---------------------------------");
+                    System.out.println("Enter the ID of the staff member to Update: ");
+                    staffIDString = sc.nextLine();
+                    System.out.println("StaffID = " + staffIDString);
+                    sm.updateStaffMember(staffIDString);
                     break;
                 case 3:
-                    removeStaffMember();
+                    System.out.println("Remove Staff Member: ");
+                    System.out.println("---------------------------------");
+                    System.out.println("Enter the ID of the staff member to remove: ");
+                    staffIDString = sc.nextLine();
+                    System.out.println("StaffID = " + staffIDString);
+                    sm.removeStaffMember(staffIDString);
                     break;
                 case 4:
-                    displayStaffMembers();
+                    sm.displayStaffMembers();
                     break;
                 case 5:
                     break;
@@ -202,8 +214,10 @@ c       System.out.println("Patient Menu:");
 
     }
 
-    private void manageAppointment(){
 
+
+    private void manageAppointment(){
+        
     }
 
 }

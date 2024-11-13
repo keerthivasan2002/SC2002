@@ -58,9 +58,10 @@ public class ApplicationUI {
             } 
             //Admin
             else if (useString.startsWith("a") || useString.startsWith("A")){
-                AdminManager adm = new AdminManager();
+                System.out.println("teehee");
+                // AdminManager adm = new AdminManager();
                 StaffManager sm = new StaffManager();
-                AdminUI adminUI = new AdminUI(userName, sm, adm);
+                AdministratorUI adminUI = new AdministratorUI(useString, sm);
             } 
             //Pharmacist
             else if (useString.startsWith("p") || useString.startsWith("P") || userName.startsWith("PH") || userName.startsWith("pH")){
