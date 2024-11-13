@@ -1,8 +1,12 @@
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Iterator;
+
 
 public class MedicineInventory {
-    private ArrayList<Medicines> medicines;
+    public ArrayList<Medicines> medicines;
     private String medicine_File = "Medicine_List.csv";
+    Scanner sc = new Scanner(System.in);
 
     public MedicineInventory(){
         medicines = new ArrayList<Medicines>();
@@ -42,6 +46,39 @@ public class MedicineInventory {
             System.out.printf("%-15s %-10d %-15d\n", med.name, med.stock, med.lowStockAlert);
         }
     }
+    public void add() {
+        // Prompt and accept input for userID
+        System.out.print("Enter name: ");
+        String name = sc.nextLine();
 
+        // Prompt and accept input for password
+        System.out.print("Enter stock: ");
+        int stock = Integer.parseInt(sc.nextLine());
+
+        // Prompt and accept input for name
+        System.out.print("Enter Low Stock Alert Limit");
+        int lowStockAlert = Integer.parseInt(sc.nextLine());
+        Medicines meds = new Medicines(name, stock, lowStockAlert);
+        medicines.add(meds);
+    }
+    public void rm(){
+        System.out.print("Enter name of Medicine to be removed: ");
+        String toberemoved = sc.nextLine();
+        Iterator<Medicines> iterator = medicines.iterator();
+
+        while (iterator.hasNext()) {
+            Medicines medicine = iterator.next(); // wah i don't unds this part
+            if (medicine.name.equals(toberemoved)) { // Check if name matches
+                iterator.remove(); // Remove the medicine from the list
+                System.out.println("Medicine " + toberemoved + " removed.");
+                return; // Indicate that the removal was successful
+            }
+        }
+        System.out.println("Medicine " + toberemoved + " not found.");
+        // Indicate that no matching medicine was found
+    }
+    public void update(){
+        // Do I only change the stock level (yes because
+    }
 
 }

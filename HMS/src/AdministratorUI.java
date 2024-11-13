@@ -32,7 +32,8 @@ public class AdministratorUI {
         private PatientManager pm;
         private Patient patient;
         private AppointmentManager am;
-        private InventoryManager im;
+        private MedicineInventory mi;
+       // private InventoryManager im;
         
         Scanner sc = new Scanner(System.in);
 
@@ -66,7 +67,7 @@ public class AdministratorUI {
                 option = sc.nextInt();
                 System.out.println("You entered: " + option);
                 if (option < 0){
-                    throw new IntNonNegativeException();
+                    throw new IntNonNegativeException(); //[ethan] what is throw
                 }else if (option == 0 || option > 4){
                     throw new InvalidPositiveOptionException();
                 }else {
@@ -132,7 +133,7 @@ public class AdministratorUI {
                     //manageAppointment();
                     break;
                 case 3:
-                    //manageInventory();
+                    manageMedicationInventory();
                     break;
                 case 4:
                     System.out.println("Thank you! Hope to see you soon :) \n");
@@ -145,7 +146,7 @@ public class AdministratorUI {
     }
 
     private void adminMenu() {
-c       System.out.println("Patient Menu:");
+        System.out.println("Patient Menu:");
         System.out.println("1. View and Manage Staff Records");
         System.out.println("2. View if scheduled appointment is updated");
         System.out.println("3. View and manage inventory of medication ");
@@ -179,19 +180,19 @@ c       System.out.println("Patient Menu:");
             choice = getOption();
             switch (choice){
                 case 1:
-                    addStaffMember();
-                    break;
+                    //addStaffMember();
+                    //break;
                 case 2:
-                    updateStaffMember();
-                    break;
+                   // updateStaffMember();
+                   // break;
                 case 3:
-                    removeStaffMember();
-                    break;
+                   // removeStaffMember();
+                   // break;
                 case 4:
-                    displayStaffMembers();
+                  //  displayStaffMembers();
                     break;
                 case 5:
-                    break;
+                   // break;
                 default:
                     break;
             }
@@ -204,6 +205,57 @@ c       System.out.println("Patient Menu:");
 
     private void manageAppointment(){
 
+    }
+    public void MedicationInventoryMenu() {
+        System.out.println("-----------------------------------");
+        System.out.println("Medication Inventory Menu");
+        System.out.println("1. View Medication Inventory");
+        System.out.println("2. Add Medication Inventory");
+        System.out.println("3. Remove Medication Inventory");
+        System.out.println("4. Updating Medication Stock Level");
+        System.out.println("5. Back to Main Menu");
+        System.out.println("-----------------------------------");
+
+    }
+
+    public void viewMedicationInventory(){
+        mi.loadMedicalInventory();
+    } // Case 1
+
+    public void addMedicationInventory(){
+        mi.add();
+    }
+    public void removeMedicationInventory(){
+        mi.rm();
+    }
+    public void updatingMedicationStockLevel(){
+        mi.update();
+    }
+    private void manageMedicationInventory(){
+        int choice = -1;
+        while(choice != 5){
+            MedicationInventoryMenu();
+            choice = getOption();
+            switch (choice){
+                case 1:
+                    viewMedicationInventory();
+                    break;
+                case 2:
+                    addMedicationInventory();
+                    break;
+                case 3:
+                    removeMedicationInventory();
+                    break;
+                case 4:
+                    updatingMedicationStockLevel();
+                    break;
+                case 5:
+                   // backtoMainMenu();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
 }
