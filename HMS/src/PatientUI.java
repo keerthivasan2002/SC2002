@@ -61,7 +61,7 @@ public class PatientUI {
             }catch (Exception e){
                 //handle non integer numebr
                 System.out.println("Invalid input. Please enter a valid number.");
-                option = getOption();
+                // option = getOption();
             }
         }
         return option;

@@ -68,10 +68,12 @@ public class AppointmentManager {
 
                 // Parse date and time from the CSV file
                 try {
-                    String dateInput = row[3].trim(); // Assuming date is in the third column
-                    date = originalFormat.parse(dateInput); // Assuming date is in the third column
-                    String formattedDate = dateFormat.format(date); // Format the date to desired format
-                    row[3] = formattedDate; // Update the date in the record
+                    // String dateInput = row[3].trim(); // Assuming date is in the third column
+                    // date = originalFormat.parse(dateInput); // Assuming date is in the third column
+                    // String formattedDate = dateFormat.format(date); // Format the date to desired format
+                    // String formattedDate = dateFormat.format(dateInput); // Format the date to desired format
+                    // row[3] = formattedDate; // Update the date in the record
+                    date = dateFormat.parse(row[3]); // Convert String to Date
                     Date parsedTime = timeFormat.parse(row[4]);
                     time = new Time(parsedTime.getTime()); // Convert Date to Time
                 } catch (ParseException e) {
@@ -373,6 +375,6 @@ public class AppointmentManager {
     }
 
     public void getAppointmentOutcome(){
-        
+
     }
 }
