@@ -19,8 +19,8 @@ public class FileManager {
 
     //read the file in 2D array
     public String[][] readFile(){
-        String file = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile(); //i think should work on everbody computer
-        //String file = System.getProperty("user.dir") + "/dependencies/" + getFile(); //i think should work on everbody computer
+        // String file = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile(); //i think should work on everbody computer
+        String file = System.getProperty("user.dir") + "/dependencies/" + getFile(); //i think should work on everbody computer
 
         BufferedReader reader = null;
         String line = "";
@@ -56,8 +56,8 @@ public class FileManager {
 
     //write the function that will dynamically update the csv file
     public void writeFile(String[][] data, boolean append) {
-        String filePath = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile();
-        //String filePath = System.getProperty("user.dir") + "/dependencies/" + getFile();
+        // String filePath = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile();
+        String filePath = System.getProperty("user.dir") + "/dependencies/" + getFile();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, append))) {
             for (String[] row : data) {
@@ -76,8 +76,8 @@ public class FileManager {
 
     // Overloaded addNewRow with append parameter
     public void addNewRow(String[] rowData, boolean append) {
-        //String filePath = System.getProperty("user.dir") + "/dependencies/" + getFile();
-        String filePath = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile();
+        String filePath = System.getProperty("user.dir") + "/dependencies/" + getFile();
+        // String filePath = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, append))) {
             writer.write(String.join(",", rowData));

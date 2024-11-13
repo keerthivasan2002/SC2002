@@ -92,6 +92,23 @@ public class AppointmentManager {
         }
     }
 
+    public boolean patientIsMatch(String patientID, String doctorID, Date date, Time time) {
+        for (Appointment appointment : appointments) {
+            if (appointment.getPatient().getUserID().equals(patientID) && appointment.getDoctor().getUserID().equals(doctorID) && appointment.getDate().equals(date) && appointment.getTime().equals(time)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean doctorAndTimeMatch(String doctorID, Date date, Time time) {
+        for (Appointment appointment : appointments) {
+            if (appointment.getDoctor().getUserID().equals(doctorID) && appointment.getDate().equals(date) && appointment.getTime().equals(time)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // Add a new appointment
     public boolean addAppointment(String patientID, String doctorID, Date date, Time time) {
@@ -100,45 +117,93 @@ public class AppointmentManager {
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         int appointmentID = appointments.size() + 1;
 
-        if (schedule.isTimeSlotAvailable(date, time)) {
+        if (patientIsMatch(patientID, doctorID, date, time) == true || doctorAndTimeMatch(doctorID, date, time) == true) {
+            System.out.println("Appointment already exists.");
+            return false;
+        }else {
             Appointment newAppointment = new Appointment(patientID, doctorID, date, time);
             appointments.add(newAppointment);
-            schedule.bookTimeSlot(date, time); // Mark the slot as booked
             System.out.println("Appointment scheduled with ID: " + newAppointment.getAppointmentID());
 
-            // Save the new appointment to the file
-            String[] appointment = new String[]{String.valueOf(appointmentID), patientID, doctorID, dateFormat.format(date), timeFormat.format(time), "PENDING", "NULL"};
-            FileManager appointmentFM = new FileManager(appointment_File);
-            appointmentFM.addNewRow(appointment);
-
+             // Save the new appointment to the file
+             String[] appointment = new String[]{String.valueOf(appointmentID), patientID, doctorID, dateFormat.format(date), timeFormat.format(time), "PENDING", "NULL"};
+             FileManager appointmentFM = new FileManager(appointment_File);
+             appointmentFM.addNewRow(appointment);
+            
             return true;
-        } else {
-            System.out.println("Selected time slot is not available.");
-            return false;
         }
+
+        // if (schedule.isTimeSlotAvailable(date, time)) {
+        //     Appointment newAppointment = new Appointment(patientID, doctorID, date, time);
+        //     appointments.add(newAppointment);
+        //     schedule.bookTimeSlot(date, time); // Mark the slot as booked
+        //     System.out.println("Appointment scheduled with ID: " + newAppointment.getAppointmentID());
+
+        //     // Save the new appointment to the file
+        //     String[] appointment = new String[]{String.valueOf(appointmentID), patientID, doctorID, dateFormat.format(date), timeFormat.format(time), "PENDING", "NULL"};
+        //     FileManager appointmentFM = new FileManager(appointment_File);
+        //     appointmentFM.addNewRow(appointment);
+
+        //     return true;
+        // } else {
+        //     System.out.println("Selected time slot is not available.");
+        //     return false;
+        // }
+
+        
     }
 
     //reschedule an existing appointment
     public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newTime) {
         Appointment appointment = findAppointmentByID(appointmentID);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        
         if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELED) {
-            Date oldDate = appointment.getDate();
-            Time oldTime = appointment.getTime();
+            String doctorID = appointment.getDoctor().getUserID();
 
-            // Check availability for the new time slot
-            if (schedule.isTimeSlotAvailable(newDate, newTime)) {
-                // Update appointment and free the old slot
-                schedule.freeTimeSlot(oldDate, oldTime);
-                appointment.setDate(newDate);
-                appointment.setTime(newTime);
-                schedule.bookTimeSlot(newDate, newTime);
-                System.out.println("Appointment ID " + appointmentID + " rescheduled.");
-                saveAppointments();
-                return true;
-            } else {
-                System.out.println("New time slot is not available.");
+            try{
+                String dateString =  appointment.getStringDate();
+                String timeString = appointment.getStringTime();
+
+                Date oldDate = dateFormat.parse(dateString);
+                Date praseTime = timeFormat.parse(timeString);
+                Time oldTime = new Time(praseTime.getTime());
+
+                
+            } catch (ParseException e) {
+                System.out.println("Error parsing date: " + e.getMessage());
                 return false;
             }
+
+            if (doctorAndTimeMatch(doctorID, newDate, newTime) == true) {
+                System.out.println("Appointment already occupied.");
+                return false;
+            }else {
+                appointment.setDate(newDate);
+                appointment.setTime(newTime);
+                System.out.println("Appointment ID " + appointmentID + " rescheduled.");
+                System.out.println("New Date: " + newDate + ", New Time: " + newTime);
+                saveAppointments();
+                
+                return true;
+            }
+
+            // // Check availability for the new time slot
+            // if (schedule.isTimeSlotAvailable(newDate, newTime)) {
+            //     // Update appointment and free the old slot
+            //     schedule.freeTimeSlot(oldDate, oldTime);
+            //     appointment.setDate(newDate);
+            //     appointment.setTime(newTime);
+            //     schedule.bookTimeSlot(newDate, newTime);
+            //     System.out.println("Appointment ID " + appointmentID + " rescheduled.");
+            //     System.out.println("New Date: " + newDate + ", New Time: " + newTime);
+            //     saveAppointments();
+            //     return true;
+            // } else {
+            //     System.out.println("New time slot is not available.");
+            //     return false;
+            // }
         } else {
             System.out.println("Appointment not found or already canceled.");
             return false;
@@ -150,7 +215,7 @@ public class AppointmentManager {
         Appointment appointment = findAppointmentByID(appointmentID);
         if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELED) {
             appointment.setAppointmentStatus(AppointmentStatus.CANCELED);
-            schedule.freeTimeSlot(appointment.getDate(),appointment.getTime());
+            // schedule.freeTimeSlot(appointment.getDate(),appointment.getTime());
             System.out.println("Appointment ID " + appointmentID + " has been canceled.");
             saveAppointments();
             return true;

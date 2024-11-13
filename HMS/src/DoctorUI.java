@@ -214,4 +214,19 @@ public class DoctorUI {
         System.out.println("Medical record added successfully.");
     }
     
+    public void recordAppointmentOutcome(){
+        AppointmentManager am = new AppointmentManager();
+        System.out.println("Enter the appointment ID: ");
+        int appointmentID = sc.nextInt();
+        Appointment appointment = am.selectAppointment(appointmentID);
+        if(appointment == null){
+            System.out.println("Appointment not found.");
+            return;
+        }
+        System.out.println("Enter the outcome of the appointment: ");
+        String outcome = sc.next();
+        appointment.setOutcome(outcome);
+        System.out.println("Appointment outcome recorded successfully.");
+    }
+
 }

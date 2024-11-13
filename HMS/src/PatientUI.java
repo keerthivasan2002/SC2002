@@ -247,16 +247,27 @@ public class PatientUI {
 
     //request new appointment
     private void requestNewAppointment() {
+        sc.nextLine(); // Clear the buffer
         System.out.println("Add Appointment");
         System.out.println("Enter the following details to schedule an appointment:");
         System.out.print("Doctor ID: ");
         String doctorID = sc.nextLine();
-        try{
-            System.out.print("Date (yyyy-MM-dd): ");
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(sc.nextLine());
+
+        Date date = null, date2 = null;
+        Time time = null;
+
+        System.out.print("Date (yyyy-MM-dd): ");
+        String dateInput = sc.next().trim();
+        System.out.print("Time (HH:mm): ");
+        String timeInput = sc.next().trim();
+
+        try{            
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            date = dateFormat.parse(dateInput);
             
-            System.out.print("Time (HH:mm): ");
-            Time time = Time.valueOf(sc.nextLine() + ":00");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            Date parsedTime = timeFormat.parse(timeInput);
+            time = new Time(parsedTime.getTime());
 
             boolean success = appointmentManager.addAppointment(userID, doctorID, date, time);
             
@@ -266,7 +277,8 @@ public class PatientUI {
                 System.out.println("Failed to schedule appointment. Please try another time slot.");
             }
         } catch (ParseException e) {
-            System.out.println("Invalid date or time format. Please try again.");
+            System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
+            requestNewAppointment();
         }
     }
 
@@ -276,12 +288,20 @@ public class PatientUI {
         int appointmentID = sc.nextInt();
         sc.nextLine(); // Consume newline
 
-        try {
-            System.out.print("Enter New Appointment Date (yyyy-MM-dd): ");
-            Date newDate = new SimpleDateFormat("yyyy-MM-dd").parse(sc.nextLine());
+        Date newDate = null;
+        Time newTime = null;
 
-            System.out.print("Enter New Appointment Time (HH:mm): ");
-            Time newTime = Time.valueOf(sc.nextLine() + ":00");
+        System.out.print("Enter New Appointment Date (yyyy-MM-dd): ");
+        String dateInput = sc.next();
+        System.out.print("Enter New Appointment Time (HH:mm): ");
+        String timeInput = sc.next();
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            newDate = dateFormat.parse(dateInput);
+            
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            Date parsedTime = timeFormat.parse(timeInput);
+            newTime = new Time(parsedTime.getTime());
 
             boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newTime);
             if (success) {
@@ -291,6 +311,7 @@ public class PatientUI {
             }
         } catch (ParseException e) {
             System.out.println("Invalid date or time format. Please try again.");
+            rescheduleAppointment();
         }
         System.out.println("End of appointment rescheduled .");
     }
@@ -319,7 +340,7 @@ public class PatientUI {
         }
         for (Appointment appointment : Appointment_Record) {
             System.out.println("Appointment ID: " + appointment.getAppointmentID());
-            System.out.println("Doctor: " + appointment.getDoctor().getName());
+            System.out.println("Doctor: " + appointment.getDoctor());
             System.out.println("Date: " + appointment.getStringDate());
             System.out.println("Time: " + appointment.getStringTime());
             System.out.println("Status: " + appointment.getAppointmentStatus());

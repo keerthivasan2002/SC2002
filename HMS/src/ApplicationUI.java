@@ -12,11 +12,12 @@ public class ApplicationUI {
             System.out.println("Please enter your Hospital ID and Password");
 
             System.out.print("Username: ");
-            String userName = sc.next();
-
+            // String userName = sc.next();
+            String userName = "P1001"; // speed up testing purpose
+            
             System.out.print("Password: ");
-            String password = sc.next();
-
+            // String password = sc.next();
+            String password = "password"; // speed up testing purpose
 
             LogInManager login = new LogInManager(userName, password);
             boolean accept = login.authoriseLogin();

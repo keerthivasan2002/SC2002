@@ -45,16 +45,14 @@ public class Appointment {
 
     // Formatted getDate to string method
     public String getStringDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(date);
     }
 
     public Date getDate() {
+        // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        // Date date = dateFormat.format(this.date);
         return date;
-    }
-
-    public Time getTime(){
-        return time;
     }
 
     // Formatted getTime to string method
@@ -65,6 +63,13 @@ public class Appointment {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Time getTime() {
+        // SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        // Time time = timeFormat.format(this.time);
+        return time;
+
     }
 
     public void setTime(Time time) {
