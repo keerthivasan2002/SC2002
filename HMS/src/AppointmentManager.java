@@ -1,9 +1,9 @@
 
 
-/*This class manage multiple appointment instances. it acts as a centralized controller 
+/*This class manage multiple appointment instances. it acts as a centralized controller
  * that handles the scheduling, approval, cancellation, and tracking of appointments.
  * This class typically includes:
- * 1. Adding new appointments 
+ * 1. Adding new appointments
  * 2. Removing existing appointments
  * 3. Check available time slots
  * 4. Allowing doctor to review and approve or reject appointment requests
@@ -11,8 +11,8 @@
  * 6. Providing a list of appointments for a specific date, doctor, or patient
  * 7. Record the outcome of an appointment
  * 8. view a list of upcoming appointments for doctors and patients
- * 9. 
- * 
+ * 9.
+ *
  */
 
 import java.io.File;
@@ -28,7 +28,7 @@ public class AppointmentManager {
     private ArrayList<Appointment> appointments;
     private Schedule schedule;
     private String appointment_File = "Appointment_List.csv";
-    
+
 
     public AppointmentManager(Schedule schedule) {
         this.appointments = new ArrayList<>();
@@ -70,7 +70,7 @@ public class AppointmentManager {
                 }
                 AppointmentStatus status = AppointmentStatus.valueOf(row[5].toUpperCase()); // Assuming status is in the fifth column
                 String outcome = row[6]; // Assuming outcome is in the sixth column
-          
+
                 Appointment appointment = new Appointment(patientID, doctorID, date, time);
                 appointment.setAppointmentStatus(status);
                 appointment.setOutcome(outcome);
@@ -124,7 +124,7 @@ public class AppointmentManager {
         if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELED) {
             Date oldDate = appointment.getDate();
             Time oldTime = appointment.getTime();
-            
+
             // Check availability for the new time slot
             if (schedule.isTimeSlotAvailable(newDate, newTime)) {
                 // Update appointment and free the old slot
@@ -134,7 +134,7 @@ public class AppointmentManager {
                 schedule.bookTimeSlot(newDate, newTime);
                 System.out.println("Appointment ID " + appointmentID + " rescheduled.");
                 saveAppointments();
-                return true;    
+                return true;
             } else {
                 System.out.println("New time slot is not available.");
                 return false;
@@ -150,7 +150,7 @@ public class AppointmentManager {
         Appointment appointment = findAppointmentByID(appointmentID);
         if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELED) {
             appointment.setAppointmentStatus(AppointmentStatus.CANCELED);
-            schedule.freeTimeSlot(appointment.getDate(), appointment.getTime());
+            schedule.freeTimeSlot(appointment.getDate(),appointment.getTime());
             System.out.println("Appointment ID " + appointmentID + " has been canceled.");
             saveAppointments();
             return true;
@@ -181,7 +181,7 @@ public class AppointmentManager {
             }
         }
         return null;
-    }   
+    }
 
     // Check available time slots
     public List<Time> getAvailableTimeSlots(Date date) {

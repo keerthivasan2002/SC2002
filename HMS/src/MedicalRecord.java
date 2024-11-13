@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MedicalRecord {
@@ -17,9 +18,10 @@ public class MedicalRecord {
     }
 
     public String[] toArray(){
+        String formattedDate = getDateOfDiagnosis();
         return new String[]{
                 patientID,
-                dateOfDiagnosis.toString(),
+                formattedDate,
                 diagnosis,
                 prescription,
                 String.valueOf(prescriptionStatus)
@@ -27,8 +29,9 @@ public class MedicalRecord {
     }
 
     //getter functions
-    public Date getDateOfDiagnosis() {
-        return dateOfDiagnosis;
+    public String getDateOfDiagnosis() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(dateOfDiagnosis);
     }
 
     public String getDiagnosis(){

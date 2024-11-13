@@ -1,12 +1,6 @@
-import javax.print.Doc;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-
-/*This class represents a single appointment. 
- * It stores about an individual appointment.
- * This class typically includes fields for appointment's data and possibly some methods 
- * for manipulating that data at the inidividual appointment level.
- */
 
 public class Appointment {
     private static int idCounter = 1;
@@ -19,14 +13,13 @@ public class Appointment {
     private MedicalRecord appointmentRecord;
     private String outcome;
 
-    //constructor class
     public Appointment(String patientID, String userID, Date date, Time time) {
         this.appointmentID = idCounter++;
         this.patient = new Patient(patientID); // Assuming Patient class has this constructor
         this.doctor = new Staff(userID); // Assuming Staff class has this constructor
         this.date = date;
         this.time = time;
-        this.appointmentStatus = AppointmentStatus.SCHEDULED; // Set the default status to 'SCHEDULED'
+        this.appointmentStatus = AppointmentStatus.SCHEDULED; // Default status
         this.appointmentRecord = new MedicalRecord(patientID, date, patientID, userID, false);
     }
 
@@ -50,16 +43,28 @@ public class Appointment {
         this.appointmentStatus = appointmentStatus;
     }
 
+    // Formatted getDate to string method
+    public String getStringDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(date);
+    }
+
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public Time getTime(){
+        return time;
     }
 
-    public Time getTime() {
-        return time;
+    // Formatted getTime to string method
+    public String getStringTime() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        return timeFormat.format(time);
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public void setTime(Time time) {
@@ -74,24 +79,27 @@ public class Appointment {
         this.appointmentRecord = appointmentRecord;
     }
 
-    public String getOutcome(){
+    public String getOutcome() {
         return outcome;
     }
 
-    public void setOutcome(String outcome){
+    public void setOutcome(String outcome) {
         this.outcome = outcome;
-    }       
-    
+    }
+
     public String[] toArray() {
+        // Use formatted getDate and getTime methods
+        String formattedDate = getStringDate();
+        String formattedTime = getStringTime();
+
         return new String[]{
-            String.valueOf(appointmentID),
-            patient.getUserID(),
-            doctor.getUserID(),
-            date.toString(),
-            time.toString(),
-            appointmentStatus.toString(),
-            outcome != null ? outcome : "", // Check for null outcome
+                String.valueOf(appointmentID),
+                patient.getUserID(),
+                doctor.getUserID(),
+                formattedDate,
+                formattedTime,
+                appointmentStatus.toString(),
+                outcome != null ? outcome : "" // Check for null outcome
         };
     }
-    
 }

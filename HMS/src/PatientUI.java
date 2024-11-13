@@ -320,8 +320,8 @@ public class PatientUI {
         for (Appointment appointment : Appointment_Record) {
             System.out.println("Appointment ID: " + appointment.getAppointmentID());
             System.out.println("Doctor: " + appointment.getDoctor().getName());
-            System.out.println("Date: " + appointment.getDate());
-            System.out.println("Time: " + appointment.getTime());
+            System.out.println("Date: " + appointment.getStringDate());
+            System.out.println("Time: " + appointment.getStringTime());
             System.out.println("Status: " + appointment.getAppointmentStatus());
             System.out.println("Outcome: " + appointment.getOutcome());
             System.out.println("-----------------------------------");
