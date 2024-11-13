@@ -103,6 +103,9 @@ public class PatientUI {
             choice = getOption();
             switch (choice){
                 case 1: //view medical record
+                    System.out.println("===============================");
+                    System.out.println("Viewing Medical Records");
+                    System.out.println("===============================");
                     viewMedicalRecords();
                     break;
                 case 2: //update Personal information
@@ -156,7 +159,7 @@ public class PatientUI {
 
     //create a function for the patient menu
     private void patientMenu(){
-        System.out.println("-----------------------------------");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("Patient Menu:");
         System.out.println("1. View Medical Record");
         System.out.println("2. Update Personal Information");
@@ -167,7 +170,7 @@ public class PatientUI {
         System.out.println("7. View Scheduled Prescription");
         System.out.println("8. View Past Appointments Outcome Records");
         System.out.println("9. Logout");
-        System.out.println("-----------------------------------");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.print("Enter your choice: ");
     }
 
@@ -247,7 +250,7 @@ public class PatientUI {
 
     //request new appointment
     private void requestNewAppointment() {
-        sc.nextLine(); // Clear the buffer
+        
         System.out.println("Add Appointment");
         System.out.println("Enter the following details to schedule an appointment:");
         System.out.print("Doctor ID: ");
@@ -278,8 +281,10 @@ public class PatientUI {
             }
         } catch (ParseException e) {
             System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
+            sc.nextLine(); // Clear the buffer
             requestNewAppointment();
         }
+        sc.nextLine(); // Clear the buffer
     }
 
     //reschedule appointment
@@ -311,9 +316,11 @@ public class PatientUI {
             }
         } catch (ParseException e) {
             System.out.println("Invalid date or time format. Please try again.");
+            sc.nextLine(); // Clear the buffer
             rescheduleAppointment();
         }
         System.out.println("End of appointment rescheduled .");
+        sc.nextLine(); // Clear the buffer
     }
 
     //cancel appointment
@@ -328,6 +335,7 @@ public class PatientUI {
         } else {
             System.out.println("Failed to cancel appointment. Appointment may not exist or is already canceled.");
         }
+        sc.nextLine(); // Clear the buffer
     }
 
     protected void viewAppointments() {
@@ -362,5 +370,7 @@ public class PatientUI {
         } else {
             System.out.println("Appointment not found or not authorized to view.");
         }
+
+        sc.nextLine(); // Clear the buffer
     }
 }

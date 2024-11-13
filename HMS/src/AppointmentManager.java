@@ -29,6 +29,11 @@ public class AppointmentManager {
     private Schedule schedule;
     private String appointment_File = "Appointment_List.csv";
 
+    public AppointmentManager() {
+        this.appointments = new ArrayList<>();
+        initializeAppointments();
+    }
+
 
     public AppointmentManager(Schedule schedule) {
         this.appointments = new ArrayList<>();
@@ -44,6 +49,8 @@ public class AppointmentManager {
             System.out.println("Failed to load appointment data.");
             return;
         }
+
+        SimpleDateFormat originalFormat = new SimpleDateFormat("d/M/yyyy");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Adjust the pattern as needed
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -61,11 +68,14 @@ public class AppointmentManager {
 
                 // Parse date and time from the CSV file
                 try {
-                    date = dateFormat.parse(row[3]); // Assuming date is in the third column
+                    String dateInput = row[3].trim(); // Assuming date is in the third column
+                    date = originalFormat.parse(dateInput); // Assuming date is in the third column
+                    String formattedDate = dateFormat.format(date); // Format the date to desired format
+                    row[3] = formattedDate; // Update the date in the record
                     Date parsedTime = timeFormat.parse(row[4]);
                     time = new Time(parsedTime.getTime()); // Convert Date to Time
                 } catch (ParseException e) {
-                    System.out.println("Error parsing time: " + e.getMessage());
+                    System.out.println("Error parsing time: hey hey " + e.getMessage());
                     // Handle the error appropriately
                 }
                 AppointmentStatus status = AppointmentStatus.valueOf(row[5].toUpperCase()); // Assuming status is in the fifth column

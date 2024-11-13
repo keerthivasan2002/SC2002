@@ -1,7 +1,10 @@
 import java.io.*;
 import java.nio.Buffer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 public class FileManager {
     private String file;
@@ -22,15 +25,43 @@ public class FileManager {
         // String file = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile(); //i think should work on everbody computer
         String file = System.getProperty("user.dir") + "/dependencies/" + getFile(); //i think should work on everbody computer
 
+        SimpleDateFormat originalFormat = new SimpleDateFormat("d/M/yyyy");
+        SimpleDateFormat desiredFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+
         BufferedReader reader = null;
         String line = "";
+        boolean isHeader = true; // Flag to skip the header row
         ArrayList<String[]> dataList = new ArrayList<>(); //temp store rows
 
         try{
             reader = new BufferedReader(new FileReader(file));
             while((line = reader.readLine()) != null){
                 String[] row = line.split(",");
+
+                if (isHeader) {
+                    dataList.add(row); // Add the header row to the list
+                    isHeader = false; // Set the flag to false after adding the header
+                    continue; // Skip the header row
+                }
+
+                if (row.length < 1) {
+                    continue; // Skip empty rows
+                }
+
+                try{
+                    String dateInput = row[3].trim();  // Assuming the date is in the second column
+                    Date date = originalFormat.parse(dateInput);  // Parse the original date
+                    String formattedDate = desiredFormat.format(date);  // Format the date to desired format
+                    row[3] = formattedDate;  // Update the date in the record
+                } catch (ParseException e) {
+                    System.out.println("Error parsing date for row: " + (dataList.size() +1 ) + " - Unparseable date:  \"" + dateInput + "\"");
+                    continue;  // Skip records with parse errors
+                }
+
                 dataList.add(row); //adding the data into the 2D array
+
+
             }
         }
         catch(Exception e){
@@ -38,7 +69,9 @@ public class FileManager {
         }
         finally {
             try{
-                reader.close();
+                if (reader != null){
+                    reader.close();
+                }
             }catch (IOException e){
                 e.printStackTrace();
             }

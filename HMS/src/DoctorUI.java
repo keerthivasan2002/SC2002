@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Date;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -11,6 +12,7 @@ public class DoctorUI {
     Patient patient;
     MedicalRecordManager mrm;
     ScheduleManager scheduleManager;
+    private AppointmentManager am;
 
     Scanner sc = new Scanner(System.in);
 
@@ -101,7 +103,9 @@ public class DoctorUI {
             // System.out.println("I am here " );
             switch (choice){
                 case 1: //view Patient Medical Record
+                    System.out.println("===============================");
                     System.out.println("View Patient Medical Record");
+                    System.out.println("===============================");
                     viewPatientMedicalRecord();
                     break;
                 case 2: //Update patient Medical Record
@@ -109,7 +113,7 @@ public class DoctorUI {
                     updatePatientMedicalRecord();
                     break;
                 case 3: //view Personal Schedule
-                    scheduleManager.viewTodaySchedule();
+                    // scheduleManager.viewTodaySchedule();
                     break;
                 case 4: //Set availability for appointment
                     break;
@@ -118,6 +122,7 @@ public class DoctorUI {
                 case 6: //View Upcoming Appointment
                     break;
                 case 7: //Record Appointment Outcome
+                    recordAppointmentOutcome();
                     break;
                 case 8: //Log out
                     System.out.println("Thank you! Hope to see you soon :)\n");
@@ -132,7 +137,7 @@ public class DoctorUI {
 
 
     private void doctorMenu(){
-        System.out.println("-----------------------------------");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("Doctor Menu:");
         System.out.println("1. View Patient Medical Record");
         System.out.println("2. Update Patient Medical Record");
@@ -142,7 +147,7 @@ public class DoctorUI {
         System.out.println("6. View Upcoming Appointment");
         System.out.println("7. Record Appointment Outcome");
         System.out.println("8. Logout");
-        System.out.println("-----------------------------------");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.print("Enter your choice: ");
     }
 
@@ -218,18 +223,85 @@ public class DoctorUI {
     }
     
     public void recordAppointmentOutcome(){
-        AppointmentManager am = new AppointmentManager();
-        System.out.println("Enter the appointment ID: ");
-        int appointmentID = sc.nextInt();
-        Appointment appointment = am.selectAppointment(appointmentID);
-        if(appointment == null){
-            System.out.println("Appointment not found.");
+        PatientManager pm = new PatientManager();
+
+        System.out.println("Enter the Patient ID: ");
+        String patientID = sc.next();
+        
+        Patient patient = pm.selectPatient(patientID);
+        if(patient == null){
+            System.out.println("Patient not found.");
             return;
+        }else{
+            ArrayList<Appointment> appointments = am.viewPatientAppointments(patientID);
+            if(appointments.size() == 0){
+                System.out.println("No appointments found for patient " + patientID);
+                return;
+            }
+            System.out.println("before the loop");
+            for (Appointment appointment : appointments){
+                System.out.println("Appointment ID: " + appointment.getAppointmentID());
+                System.out.println("Date: " + appointment.getDate());
+                System.out.println("Time: " + appointment.getTime());
+                System.out.println("Outcome: " + appointment.getOutcome());
+                System.out.println("-----------------------------------");
+            }
+
+            System.out.println("Enter the appointment ID: ");
+            int appointmentID = sc.nextInt();
+            Appointment appointment = am.findAppointmentByID(appointmentID);
+            try {
+                if(appointment == null){
+                    throw new Exception("Appointment not found.");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return;
+            }
+            System.out.println("Enter the outcome of the appointment: ");
+            String outcome = sc.next();
+            appointment.setOutcome(outcome);
+            am.saveAppointments();
+            System.out.println("Appointment outcome recorded successfully.");
+
+            System.out.println("Debug purpose what is updated");
+            for (Appointment app : appointments){
+                System.out.println("Appointment ID: " + appointment.getAppointmentID());
+                System.out.println("Date: " + appointment.getStringDate());
+                System.out.println("Time: " + appointment.getStringTime());
+                System.out.println("Outcome: " + appointment.getOutcome());
+                System.out.println("-----------------------------------");
+            }
+
+            sc.nextLine(); // Clear the buffer
         }
-        System.out.println("Enter the outcome of the appointment: ");
-        String outcome = sc.next();
-        appointment.setOutcome(outcome);
-        System.out.println("Appointment outcome recorded successfully.");
+
+        
+       
+
+
+        // System.out.println("Enter the appointment ID: ");
+        // int appointmentID = sc.nextInt();
+        // Appointment appointment = am.findAppointmentByID(appointmentID);
+        // if(appointment == null){
+        //     System.out.println("Appointment not found.");
+        //     return;
+        // }
+        // System.out.println("Enter the outcome of the appointment: ");
+        // String outcome = sc.next();
+        // appointment.setOutcome(outcome);
+        // System.out.println("Appointment outcome recorded successfully.");
+
+
+        // System.out.println("Debug purpose");
+        // for (Appointment appointment : appointments){
+        //     System.out.println("Appointment ID: " + appointment.getAppointmentID());
+        //     System.out.println("Date: " + appointment.getDate());
+        //     System.out.println("Time: " + appointment.getTime());
+        //     System.out.println("Outcome: " + appointment.getOutcome());
+        //     System.out.println("-----------------------------------");
+        // }
+        // sc.nextLine(); // Clear the buffer
     }
 
 }

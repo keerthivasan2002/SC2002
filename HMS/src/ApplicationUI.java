@@ -11,9 +11,10 @@ public class ApplicationUI {
             System.out.println("Welcome to the login page");
             System.out.println("Please enter your Hospital ID and Password");
 
+            System.out.println();
             System.out.print("Username: ");
             // String userName = sc.next();
-            String userName = "P1001"; // speed up testing purpose
+            String userName = "D001"; // speed up testing purpose
             
             System.out.print("Password: ");
             // String password = sc.next();
@@ -36,8 +37,9 @@ public class ApplicationUI {
 
     public static void userOption(String userName) {
         //initialise outside to avoid initialising multiple times
+        // Schedule schedule = new Schedule();
         ScheduleManager scheduleManager = new ScheduleManager();
-        AppointmentManager am = new AppointmentManager(scheduleManager);
+        AppointmentManager am = new AppointmentManager();
 
         if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){
             PatientManager pm = new PatientManager(); // Create new object from class
