@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class AdministratorUI {
         // Need DoctorID, Need patientID,
@@ -27,12 +28,11 @@ public class AdministratorUI {
     request is approved, the stock level will be updated automatically
     */
         private String userID; // Why is there error here
-        private Staff staff, admin;
+        private Staff staff, admin, doctor;
         private StaffManager sm;
         private PatientManager pm;
         private Patient patient;
         private AppointmentManager am;
-        // private InventoryManager im;
         
         Scanner sc = new Scanner(System.in);
 
@@ -42,10 +42,12 @@ public class AdministratorUI {
          AdminManager am;
          ..
           */
-        public AdministratorUI(String userID, StaffManager sm) {
+        public AdministratorUI(String userID, StaffManager sm, AppointmentManager am) {
             this.userID = userID;
             this.sm = sm;
             this.admin = sm.selectStaff(userID);
+            this.am = am;
+
 
             //Handling errors with the code
             if (this.admin == null) {
@@ -130,6 +132,7 @@ public class AdministratorUI {
                     break;
                 case 2:
                     //manageAppointment();
+                    viewPatientOrDoctorAppointment();
                     break;
                 case 3:
                     //manageInventory();
@@ -145,25 +148,127 @@ public class AdministratorUI {
     }
 
     private void adminMenu() {
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("Patient Menu:");
         System.out.println("1. View and Manage Staff Records");
         System.out.println("2. View if scheduled appointment is updated");
         System.out.println("3. View and manage inventory of medication ");
         System.out.println("4. Logout");
-        System.out.println("-----------------------------------");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.print("Enter your choice: ");
     }
 
     public void staffRecordMenu(){
-        System.out.println("-----------------------------------");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("Staff Record Menu");
         System.out.println("1. Add Staff Member");
         System.out.println("2. Update Staff Member");
         System.out.println("3. Remove Staff Member");
         System.out.println("4. Display Staff Members");
         System.out.println("5. Back to Main Menu");
-        System.out.println("-----------------------------------");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    }
 
+    public void displayAppointmentMenu(){
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("Filter appointments by:      ");
+        System.out.println("1. Patient ID");
+        System.out.println("2. Doctor ID");
+        System.out.println("3. Back to Main Menu");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    }
+
+    public void statusMenu(){
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("Filter appointments by:    ");
+        System.out.println("1. Confirmed");
+        System.out.println("2. Cancelled");
+        System.out.println("3. Completed");
+        System.out.println("4. Rejected");
+        System.out.println("5. Pending");
+        System.out.println("6. Approved");
+        System.out.println("7. Scheduled");
+        System.out.println("8. Back to Main Menu");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    }
+
+    public void viewPatientOrDoctorAppointment(){
+        int choice = -1;
+        while (choice != 3){
+            displayAppointmentMenu();
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            if (choice == 3) {
+                break; // Exit the main menu loop
+            }
+
+            ArrayList<Appointment> filteredAppointments = new ArrayList<>();
+
+            switch (choice){
+                case 1:
+                    System.out.print("Enter Patient ID: ");
+                    String patientID = sc.nextLine().trim();
+                    filteredAppointments = am.getAppointmentsByPatientID(patientID);
+                    break;
+                case 2:
+                    System.out.print("Enter Doctor ID: ");
+                    String doctorID = sc.nextLine().trim();
+                    filteredAppointments = am.getAppointmentsByDoctorID(doctorID);
+                    break;
+                case 3:
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+                    break;
+            }
+
+            if (filteredAppointments.isEmpty()) {
+                System.out.println("No appointments found for the given criteria.");
+                continue;
+            }
+            am.displayAppointment(filteredAppointments);
+
+            ArrayList<Appointment> filteredStatusAppointments = new ArrayList<>();
+            int statusChoice = -1;
+            while (statusChoice != 8){
+                statusMenu();
+                System.out.print("Enter your choice: ");
+                statusChoice = sc.nextInt();
+                sc.nextLine();
+                switch (statusChoice){
+                    case 1:
+
+                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.CONFIRMED);
+                        break;
+                    case 2:
+                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.CANCELLED);
+                        break;
+                    case 3:
+                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.COMPLETED);
+                        break;
+                    case 4:
+                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.REJECTED);
+                        break;
+                    case 5:
+                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.PENDING);
+                        break;
+                    case 6:
+                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.APPROVED);
+                        break;
+                    case 7:
+                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments,AppointmentStatus.SCHEDULED);
+                        break;
+                    case 8:
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please enter a valid option.");
+                        break;
+                }
+                am.displayAppointment(filteredStatusAppointments);
+            }
+        }
     }
 
      /*
@@ -208,10 +313,6 @@ public class AdministratorUI {
                     break;
             }
         }
-
-       
-
-
     }
 
 

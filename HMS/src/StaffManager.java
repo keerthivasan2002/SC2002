@@ -23,7 +23,7 @@ public class StaffManager {
 
         //checking for potential errors
         if(staffArray == null || staffArray.length == 0){
-            System.out.println("Failed to load patient data.");
+            System.out.println("Failed to load patient data.[StaffManager]");
             return;
         }
 
@@ -46,6 +46,10 @@ public class StaffManager {
                 System.out.println("Incomplete data in row, skipping: " + String.join(",", row)); //exception statement to show the data is loaded properly
             }
         }
+
+        //display initialisation file
+        System.out.println("Staff data loaded successfully.[StaffManager]");
+        // displayStaffMembers();
     }
 
     public Staff selectStaff(String staffID){
@@ -350,6 +354,15 @@ public class StaffManager {
         if (!removed) {
             System.out.println("Staff member with ID " + staffIDRecord + " was not found.");
         }
+    }
+
+    public static ArrayList<Staff> getStaffList(){
+        if (staffs == null || staffs.isEmpty()) {
+            System.out.println("No staff members found.");
+        }else{
+            System.out.println("Staff data loaded successfully.[StaffManager]");
+        }
+        return staffs;
     }
 
     

@@ -24,6 +24,7 @@ public class DoctorUI {
         this.mrm = mrm;
         this.am = am;
 
+        
         //Handling errors with the code
         if(this.doctor == null){
             System.out.println("No doctors found with the given ID:" + userID);

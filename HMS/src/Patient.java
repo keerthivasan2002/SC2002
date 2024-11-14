@@ -1,12 +1,12 @@
 public class Patient extends User {
-    private String dateOfbirth;
+    private String dateOfBirth;
     private BloodType bloodType;
     private String patientID;
     
     // Constructor with additional parameters
-    public Patient(String patientID, String password, String name, Gender gender, String emailAddress, int phoneNumber, String dateOfbirth, BloodType bloodType, HospitalRole role) {
+    public Patient(String patientID, String password, String name, Gender gender, String emailAddress, int phoneNumber, String dateOfBirth, BloodType bloodType, HospitalRole role) {
         super(patientID, password, name, gender, emailAddress, phoneNumber,role);
-        this.dateOfbirth = dateOfbirth;
+        this.dateOfBirth = dateOfBirth;
         this.bloodType = bloodType;
 
     }
@@ -22,7 +22,7 @@ public class Patient extends User {
                 userID,
                 password,
                 name,
-                dateOfbirth,
+                dateOfBirth,
                 gender.toString(),
                 bloodType.toString(),
                 emailAddress,
@@ -31,8 +31,8 @@ public class Patient extends User {
         };
     }
 
-    public String getDateOfbirth(){
-        return dateOfbirth;
+    public String getDateOfBirth(){
+        return dateOfBirth;
     }
 
     public BloodType getBloodType() {
