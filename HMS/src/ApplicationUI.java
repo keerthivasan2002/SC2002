@@ -43,8 +43,10 @@ public class ApplicationUI {
         String useString = userName.toUpperCase();
 
         if (useString.length() == 5){
-            //Patient
-            if (useString.startsWith("p") || useString.startsWith("P")){
+
+            //Patient 
+            if (useString.startsWith("p") || useString.startsWith("P")){ // [To Remove] Can remove
+
                 PatientManager pm = new PatientManager();
                 MedicalRecordManager mrm = new MedicalRecordManager();
                 PatientUI patientUI = new PatientUI(useString, pm, mrm, scheduleManager, am);
@@ -58,14 +60,15 @@ public class ApplicationUI {
             }
             //Admin
             else if (useString.startsWith("a") || useString.startsWith("A")){
-                StaffManager sm = new StaffManager();
+               StaffManager sm = new StaffManager();
                 AdministratorUI adminUI = new AdministratorUI(useString, sm, am);
             } 
+
             //Pharmacist
             else if (useString.startsWith("p") || useString.startsWith("P") || userName.startsWith("PH") || userName.startsWith("pH")){
-                // StaffManager sm = new StaffManager();
-                // PharmacistUI pharmacistUI = new PharmacistUI(userName, sm);
-            }
+                 StaffManager sm = new StaffManager();
+                 PharmacistUI pharmacistUI = new PharmacistUI(userName, sm);
+            } 
 
         }else {
                 System.out.println("Invalid user ID");

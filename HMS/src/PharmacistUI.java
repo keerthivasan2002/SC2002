@@ -5,6 +5,7 @@ public class PharmacistUI {
     Staff pharmacist;
     StaffManager sm;
     private MedicineInventory medicines;
+    private ReplenishmentRequest request;
 
     Scanner sc = new Scanner(System.in);
 
@@ -26,18 +27,30 @@ public class PharmacistUI {
         System.out.println("Hello" + pharmacist.getName() + ".");
         System.out.println("What would you like to do today?");
 
-        while(choice < 6){  //change accordingly
+        while(true){  //change accordingly
             pharmacistMenu();
             choice = sc.nextInt();
             switch (choice){
                 case 1: //view appointment outcome records
                     break;
                 case 2: //update prescription status
+                    System.out.println("Enter medicine name: ");
+                    String medicineName = sc.next();
+                    System.out.println("Enter quantity: ");
+                    int quantity = sc.nextInt();
+                    sc.nextLine();
+                    medicines.updateMedicalInventory(medicineName, quantity);
                     break;
                 case 3: //view medical inventory
                     medicines.viewMedicalInventory();
                     break;
                 case 4: //submit replenishment request
+                    System.out.println("Enter medicine name: ");
+                    medicineName = sc.next();
+                    System.out.println("Enter quantity: ");
+                    quantity = sc.nextInt();
+                    sc.nextLine();
+                    request.submitReplenishmentRequest(medicineName, quantity);
                     break;
                 case 5: //log out
                     System.out.println("Thank you! Hope to see you soon :)\n");

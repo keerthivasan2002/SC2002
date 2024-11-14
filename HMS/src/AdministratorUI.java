@@ -27,12 +27,16 @@ public class AdministratorUI {
     ○ Administrators can approve replenishment requests from pharmacists. Once the
     request is approved, the stock level will be updated automatically
     */
+
         private String userID; // Why is there error here
         private Staff staff, admin, doctor;
         private StaffManager sm;
         private PatientManager pm;
         private Patient patient;
         private AppointmentManager am;
+
+        private MedicineInventory mi = new MedicineInventory();
+       // private InventoryManager im;
         
         Scanner sc = new Scanner(System.in);
 
@@ -68,7 +72,7 @@ public class AdministratorUI {
                 option = sc.nextInt();
                 System.out.println("You entered: " + option);
                 if (option < 0){
-                    throw new IntNonNegativeException();
+                    throw new IntNonNegativeException(); //[ethan] what is throw
                 }else if (option == 0 || option > 4){
                     throw new InvalidPositiveOptionException();
                 }else {
@@ -135,7 +139,7 @@ public class AdministratorUI {
                     viewPatientOrDoctorAppointment();
                     break;
                 case 3:
-                    //manageInventory();
+                    manageMedicationInventory();
                     break;
                 case 4:
                     System.out.println("Thank you! Hope to see you soon :) \n");
@@ -286,6 +290,7 @@ public class AdministratorUI {
             sc.nextLine();
             switch (choice){
                 case 1:
+
                     sm.addStaffMember();
                     break;
                 case 2:
@@ -308,7 +313,7 @@ public class AdministratorUI {
                     sm.displayStaffMembers();
                     break;
                 case 5:
-                    break;
+                   // break;
                 default:
                     break;
             }
@@ -319,6 +324,58 @@ public class AdministratorUI {
 
     private void manageAppointment(){
         
+    }
+    public void MedicationInventoryMenu() {
+        System.out.println("-----------------------------------");
+        System.out.println("Medication Inventory Menu");
+        System.out.println("1. View Medication Inventory");
+        System.out.println("2. Add Medication Inventory");
+        System.out.println("3. Remove Medication Inventory");
+        System.out.println("4. Updating Medication Stock Level");
+        System.out.println("5. Back to Main Menu");
+        System.out.println("-----------------------------------");
+
+    }
+
+    public void viewMedicationInventory(){
+        mi.viewMedicalInventory();
+    } // Case 1
+
+    public void addMedicationInventory(){
+        mi.add();
+    }
+    public void removeMedicationInventory(){
+        mi.rm();
+    }
+    public void updatingMedicationStockLevel(){
+        mi.update();
+    }
+    private void manageMedicationInventory(){
+        int choice = -1;
+        while(choice != 5){
+            MedicationInventoryMenu();
+            choice = getOption();
+            switch (choice){
+                case 1:
+                    viewMedicationInventory();
+                    break;
+                case 2:
+                    addMedicationInventory();
+                    break;
+                case 3:
+                    removeMedicationInventory();
+                    break;
+                case 4:
+                    updatingMedicationStockLevel();
+                    break;
+                case 5:
+                    System.out.println("Thank you! Hope to see you soon :)\n");
+                    System.exit(0);
+                    return;
+                default:
+                    break;
+            }
+        }
     }
 
 }
