@@ -28,13 +28,15 @@ public class AdministratorUI {
     */
 
         private String userID; // Why is there error here
-        private Staff admin, doctor, pharmacist;
+        private Staff staff, admin;
         private StaffManager sm;
         private PatientManager pm;
         private Patient patient;
         private AppointmentManager am;
+
         private MedicineInventory mi = new MedicineInventory();
        // private InventoryManager im;
+
         
         Scanner sc = new Scanner(System.in);
 
@@ -176,21 +178,34 @@ public class AdministratorUI {
             // wait for Gui Shan to manage Staff Records...
     private void viewAndManageStaffRecords(){
         int choice = -1;
+        String staffIDString = "";
         while (choice != 5){
             staffRecordMenu();
-            choice = getOption();
+            choice = sc.nextInt();
+            sc.nextLine();
             switch (choice){
                 case 1:
-                    //addStaffMember();
-                    //break;
+
+                    sm.addStaffMember();
+                    break;
                 case 2:
-                   // updateStaffMember();
-                   // break;
+                    System.out.println("Update Staff Member: ");
+                    System.out.println("---------------------------------");
+                    System.out.println("Enter the ID of the staff member to Update: ");
+                    staffIDString = sc.nextLine();
+                    System.out.println("StaffID = " + staffIDString);
+                    sm.updateStaffMember(staffIDString);
+                    break;
                 case 3:
-                   // removeStaffMember();
-                   // break;
+                    System.out.println("Remove Staff Member: ");
+                    System.out.println("---------------------------------");
+                    System.out.println("Enter the ID of the staff member to remove: ");
+                    staffIDString = sc.nextLine();
+                    System.out.println("StaffID = " + staffIDString);
+                    sm.removeStaffMember(staffIDString);
+                    break;
                 case 4:
-                  //  displayStaffMembers();
+                    sm.displayStaffMembers();
                     break;
                 case 5:
                    // break;
@@ -204,8 +219,10 @@ public class AdministratorUI {
 
     }
 
-    private void manageAppointment(){
 
+
+    private void manageAppointment(){
+        
     }
     public void MedicationInventoryMenu() {
         System.out.println("-----------------------------------");

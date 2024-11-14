@@ -40,29 +40,66 @@ public abstract class User {
         return userID;
     }
 
+    public void setUserID(String userID){
+        this.userID = userID;
+    }
+
     public String getName(){
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmailAddress(){
         return emailAddress;
     }
 
+    public void setEmailAddress(String emailAddress){
+        this.emailAddress = emailAddress;
+    }
+
     public int getPhoneNumber(){
         return phoneNumber;
+    }
+
+    public void setPhoneNumber(int phoneNumber){
+        this.phoneNumber = phoneNumber;
     }
 
     public Gender getGender(){
         return gender;
     }
 
+    public void setGender(Gender gender){
+        this.gender = gender;
+    }
+
     public String getPassword(){
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public HospitalRole getrole(){
         return role;
     }
+
+    public void setRole(HospitalRole role) {
+        this.role = role;
+    }
+
+    public int getAge(){
+        return age;
+    }
+
+    public void setAge(int age){
+        this.age = age;
+    }
+
 
     //setter methods
     protected String updatePassword(String new_Password){
