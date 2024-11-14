@@ -15,7 +15,7 @@ public class ApplicationUI {
             System.out.print("Username: ");
             String userName = sc.next();
             // String userName = "D001"; // speed up testing purpose
-            
+
             System.out.print("Password: ");
             // String password = sc.next();
             String password = "password"; // speed up testing purpose
@@ -65,8 +65,8 @@ public class ApplicationUI {
             } 
             //Pharmacist
             else if (useString.startsWith("p") || useString.startsWith("P") || userName.startsWith("PH") || userName.startsWith("pH")){
-                // StaffManager sm = new StaffManager();
-                // PharmacistUI pharmacistUI = new PharmacistUI(userName, sm);
+                 StaffManager sm = new StaffManager();
+                 PharmacistUI pharmacistUI = new PharmacistUI(userName, sm);
             } 
             
         }else {
