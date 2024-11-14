@@ -44,7 +44,7 @@ public class ApplicationUI {
 
         if (useString.length() == 5){
             //Patient 
-            if (useString.startsWith("p") || useString.startsWith("P")){
+            if (useString.startsWith("p") || useString.startsWith("P")){ // [To Remove] Can remove
                 PatientManager pm = new PatientManager();
                 MedicalRecordManager mrm = new MedicalRecordManager();
                 PatientUI patientUI = new PatientUI(useString, pm, mrm, scheduleManager, am);
@@ -58,10 +58,10 @@ public class ApplicationUI {
             } 
             //Admin
             else if (useString.startsWith("a") || useString.startsWith("A")){
-                System.out.println("teehee");
-                // AdminManager adm = new AdminManager();
+ //               AdminManager adm = new AdminManager();
                 StaffManager sm = new StaffManager();
-                AdministratorUI adminUI = new AdministratorUI(useString, sm);
+                AdministratorUI adminUI = new AdministratorUI(userName, sm);
+
             } 
             //Pharmacist
             else if (useString.startsWith("p") || useString.startsWith("P") || userName.startsWith("PH") || userName.startsWith("pH")){
