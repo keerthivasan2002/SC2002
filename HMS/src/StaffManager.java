@@ -357,11 +357,11 @@ public class StaffManager {
     }
 
     public static ArrayList<Staff> getStaffList(){
-        if (staffs == null || staffs.isEmpty()) {
-            System.out.println("No staff members found.");
-        }else{
-            System.out.println("Staff data loaded successfully.[StaffManager]");
-        }
+        // if (staffs == null || staffs.isEmpty()) {
+        //     System.out.println("No staff members found.");
+        // }else{
+        //     System.out.println("Staff data loaded successfully.[StaffManager]");
+        // }
         return staffs;
     }
 

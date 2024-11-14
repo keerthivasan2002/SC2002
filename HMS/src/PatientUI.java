@@ -180,7 +180,7 @@ public class PatientUI {
         System.out.println("Account type: " + patient.getrole());
         System.out.println("User ID: " + patient.getUserID());
         System.out.println("Name: " + patient.getName());
-        System.out.println("Date of Birth: " + patient.getDateOfbirth());
+        System.out.println("Date of Birth: " + patient.getDateOfBirth());
         System.out.println("Gender: " + patient.getGender());
         System.out.println("Blood Type: " + patient.getBloodType());
         System.out.println("Email Address: " + patient.getEmailAddress());

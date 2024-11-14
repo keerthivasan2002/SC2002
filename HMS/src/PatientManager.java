@@ -41,7 +41,7 @@ public class PatientManager{
             }
         }
         
-        System.out.println("Patient data loaded successfully.[PatientManager]"); //exception statement to show the data is loaded properly
+        // System.out.println("Patient data loaded successfully.[PatientManager]"); //exception statement to show the data is loaded properly
         // displayPatient(); // Display all patients
     }
 
@@ -82,11 +82,11 @@ public class PatientManager{
     }
 
     public static ArrayList<Patient> getPatients(){
-        if (patients == null || patients.isEmpty()) {
-            System.out.println("No patient found.");
-        }else{
-            System.out.println("Patient data loaded successfully. [PatientManager]");
-        }
+        // if (patients == null || patients.isEmpty()) {
+        //     System.out.println("No patient found.");
+        // }else{
+        //     System.out.println("Patient data loaded successfully. [PatientManager]");
+        // }
         return patients;
     }
 

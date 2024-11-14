@@ -49,21 +49,23 @@ public class AppointmentManager {
         patients = PatientManager.getPatients();
         staffList = StaffManager.getStaffList();
 
-        if (patients == null) {
-            System.out.println("Failed to load patient data.[AppointmentManager]");
-        }else {
-            // PatientManager patientManager = new PatientManager();
-            // patientManager.displayPatient();
-            System.out.println("Patient data loaded successfully.[AppointmentManager]");
-        }
 
-        if (staffList == null) {
-            System.out.println("Failed to load staff data. [AppointmentManager]");
-        }else{
-            // StaffManager staffManager = new StaffManager();
-            // staffManager.displayStaffMembers();
-            System.out.println("Staff data loaded successfully. [AppointmentManager]");
-        }
+        //debug purpose
+        // if (patients == null) {
+        //     System.out.println("Failed to load patient data.[AppointmentManager]");
+        // }else {
+        //     // PatientManager patientManager = new PatientManager();
+        //     // patientManager.displayPatient();
+        //     System.out.println("Patient data loaded successfully.[AppointmentManager]");
+        // }
+
+        // if (staffList == null) {
+        //     System.out.println("Failed to load staff data. [AppointmentManager]");
+        // }else{
+        //     // StaffManager staffManager = new StaffManager();
+        //     // staffManager.displayStaffMembers();
+        //     System.out.println("Staff data loaded successfully. [AppointmentManager]");
+        // }
 
         if (appointmentArray == null || appointmentArray.length == 0) {
             System.out.println("Failed to load appointment data.[AppointmentManager]");

@@ -116,6 +116,7 @@ public class DoctorUI {
                     updatePatientMedicalRecord();
                     break;
                 case 3: //view Personal Schedule
+                    System.out.println("View Personal Schedule");
                     personalSchedule();
                     break;
                 case 4: //Set availability for appointment
