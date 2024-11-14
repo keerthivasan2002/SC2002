@@ -15,10 +15,10 @@ public class ApplicationUI {
             System.out.print("Username: ");
             String userName = sc.next();
             // String userName = "D001"; // speed up testing purpose
-            
+
             System.out.print("Password: ");
-            // String password = sc.next();
-            String password = "password"; // speed up testing purpose
+            String password = sc.next();
+            //String password = "password";
 
             LogInManager login = new LogInManager(userName, password);
             boolean accept = login.authoriseLogin();
@@ -43,56 +43,35 @@ public class ApplicationUI {
         String useString = userName.toUpperCase();
 
         if (useString.length() == 5){
-            //Patient 
+            //Patient
             if (useString.startsWith("p") || useString.startsWith("P")){
                 PatientManager pm = new PatientManager();
                 MedicalRecordManager mrm = new MedicalRecordManager();
                 PatientUI patientUI = new PatientUI(useString, pm, mrm, scheduleManager, am);
-            } 
+            }
         } else if(useString.length() == 4){
             //Doctor
             if (useString.startsWith("d") || useString.startsWith("D")){
                 MedicalRecordManager mrm = new MedicalRecordManager();
                 StaffManager sm = new StaffManager();
                 DoctorUI doctorUI = new DoctorUI(useString, sm, mrm, am, scheduleManager);
-            } 
+            }
             //Admin
             else if (useString.startsWith("a") || useString.startsWith("A")){
                 System.out.println("teehee");
                 // AdminManager adm = new AdminManager();
                 StaffManager sm = new StaffManager();
                 AdministratorUI adminUI = new AdministratorUI(useString, sm);
-            } 
+            }
             //Pharmacist
             else if (useString.startsWith("p") || useString.startsWith("P") || userName.startsWith("PH") || userName.startsWith("pH")){
                 // StaffManager sm = new StaffManager();
                 // PharmacistUI pharmacistUI = new PharmacistUI(userName, sm);
-            } 
-            
+            }
+
         }else {
                 System.out.println("Invalid user ID");
         }
-
-
-
-        // if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 5){
-        //     PatientManager pm = new PatientManager(); // Create new object from class
-        //     MedicalRecordManager mrm = new MedicalRecordManager(); // Create new object from class
-        //     PatientUI patientUI = new PatientUI(userName, pm, mrm, scheduleManager, am); //
-        // }else if((userName.charAt(0) == 'p' || userName.charAt(0) == 'P') && userName.length() == 4){
-        //     //pharmacist UI
-        //     StaffManager sm = new StaffManager();
-        //     PharmacistUI pharmacistUI = new PharmacistUI(userName, sm);
-        // }else if(userName.charAt(0) == 'd' || userName.charAt(0) == 'D'){
-        //     MedicalRecordManager mrm = new MedicalRecordManager();
-        //     StaffManager sm = new StaffManager();
-        //     DoctorUI doctorUI = new DoctorUI(userName, sm, mrm, am, scheduleManager);
-        //     //doctorUI
-        // }else if(userName.charAt(0) == 'a' || userName.charAt(0) == 'A'){
-        //     //adminUI
-        // }else{
-        //     System.out.println("Invalid user ID");
-        // }
     }
 }
 
