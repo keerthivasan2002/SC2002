@@ -11,7 +11,7 @@ public class Schedule {
 
 
     //constructor class for schedule
-    public Schedule(String userID, Date date, Time startTime, Time endTime, String Description){
+    public Schedule(String userID, Date date, Time startTime, Time endTime, String description){
         this.doctor = new Staff(userID);
         this.date = date;
         this.startTime = startTime;
@@ -34,7 +34,7 @@ public class Schedule {
     }
 
     public Time getStartTime() {
-        return getStartTime();
+        return startTime;
     }
 
     public Time getEndTime() {
@@ -72,7 +72,7 @@ public class Schedule {
         this.doctor = doctor;
     }
 
-    public void setStartTime(Time time) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 

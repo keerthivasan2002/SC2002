@@ -1,7 +1,8 @@
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Date;
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -24,6 +25,8 @@ public class DoctorUI {
         this.mrm = mrm;
         this.am = am;
 
+        
+        this.scheduleManager = scheduleManager;
         //Handling errors with the code
         if(this.doctor == null){
             System.out.println("No doctors found with the given ID:" + userID);
@@ -113,9 +116,10 @@ public class DoctorUI {
                     updatePatientMedicalRecord();
                     break;
                 case 3: //view Personal Schedule
-                    // scheduleManager.viewTodaySchedule();
+                    personalSchedule();
                     break;
                 case 4: //Set availability for appointment
+                    updateSchedule();
                     break;
                 case 5: //Accept or Decline Appointment Request
                     break;
@@ -135,14 +139,13 @@ public class DoctorUI {
     }
 
 
-
     private void doctorMenu(){
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("Doctor Menu:");
         System.out.println("1. View Patient Medical Record");
         System.out.println("2. Update Patient Medical Record");
         System.out.println("3. View Personal Schedule");
-        System.out.println("4. Set Availablility for Appointment");
+        System.out.println("4. Set Unavailability for Appointment");
         System.out.println("5. Accept or Decline Appointment Request");
         System.out.println("6. View Upcoming Appointment");
         System.out.println("7. Record Appointment Outcome");
@@ -274,17 +277,6 @@ public class DoctorUI {
             // sc.nextLine(); // Clear the buffer
         }
 
-        
-       
-
-
-        // System.out.println("Enter the appointment ID: ");
-        // int appointmentID = sc.nextInt();
-        // Appointment appointment = am.findAppointmentByID(appointmentID);
-        // if(appointment == null){
-        //     System.out.println("Appointment not found.");
-        //     return;
-        // }
         // System.out.println("Enter the outcome of the appointment: ");
         // String outcome = sc.next();
         // appointment.setOutcome(outcome);
@@ -302,4 +294,68 @@ public class DoctorUI {
         // sc.nextLine(); // Clear the buffer
     }
 
+    private void personalSchedule() {
+        System.out.println("How would you like to view your personal schedule?");
+        System.out.println("\t1. Calendar Format");
+        System.out.println("\t2. Today's events");
+        System.out.println("\t3. List out all upcoming events");
+
+        int choice = sc.nextInt();
+
+        if (choice == 1) {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            scheduleManager.printMonthlyCalendar(month, year, userID);
+        } else if (choice == 2) {
+            scheduleManager.viewTodaysEvents(userID);
+        }else{
+            scheduleManager.printSchedule(userID);
+        }
+    }
+
+    private void updateSchedule(){
+        System.out.println("Update your schedule:");
+
+        System.out.println("Date (yyyy-MM-dd):");
+        String dateInput = sc.next().trim();
+
+        System.out.print("Start Time (HH:mm): ");
+        String startTimeInput = sc.next().trim();
+
+        System.out.print("End Time (HH:mm): ");
+        String endTimeInput = sc.next().trim();
+        sc.nextLine(); // Clear the buffer
+
+        System.out.println("Description: ");
+        String comments = sc.nextLine();
+
+        // Set comments to null if the user didn't enter a description
+        if (comments.isEmpty()) {
+            comments = null;
+        }
+
+        try{
+            //placing in the date
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = dateFormat.parse(dateInput);
+
+            //placing in the start time
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            Date parsedTime = timeFormat.parse(startTimeInput);
+            Time startTime = new Time(parsedTime.getTime());
+
+            //placing in the end time
+            timeFormat = new SimpleDateFormat("HH:mm");
+            parsedTime = timeFormat.parse(endTimeInput);
+            Time endTime = new Time(parsedTime.getTime());
+
+            boolean success = scheduleManager.addSchedule(doctor, date, startTime, endTime, comments);
+
+        }catch (ParseException e){
+            System.out.println("Invalid date or time format. Please try again. \n");
+            sc.nextLine();
+            personalSchedule();
+        }
+    }
 }
