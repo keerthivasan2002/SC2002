@@ -33,7 +33,7 @@ public class AdministratorUI {
         private PatientManager pm;
         private Patient patient;
         private AppointmentManager am;
-        private MedicineInventory mi;
+        private MedicineInventory mi = new MedicineInventory();
        // private InventoryManager im;
         
         Scanner sc = new Scanner(System.in);
@@ -220,7 +220,7 @@ public class AdministratorUI {
     }
 
     public void viewMedicationInventory(){
-        mi.loadMedicalInventory();
+        mi.viewMedicalInventory();
     } // Case 1
 
     public void addMedicationInventory(){
@@ -251,8 +251,9 @@ public class AdministratorUI {
                     updatingMedicationStockLevel();
                     break;
                 case 5:
-                   // backtoMainMenu();
-                    break;
+                    System.out.println("Thank you! Hope to see you soon :)\n");
+                    System.exit(0);
+                    return;
                 default:
                     break;
             }
