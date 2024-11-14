@@ -256,7 +256,7 @@ public class PatientUI {
         System.out.print("Doctor ID: ");
         String doctorID = sc.nextLine();
 
-        Date date = null, date2 = null;
+        Date date = null;
         Time time = null;
 
         System.out.print("Date (yyyy-MM-dd): ");
