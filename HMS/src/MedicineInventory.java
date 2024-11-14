@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Iterator;
 
-
 public class MedicineInventory {
     public ArrayList<Medicines> medicines;
     private String medicine_File = "Medicine_List.csv";
@@ -59,8 +58,16 @@ public class MedicineInventory {
         System.out.print("Enter Low Stock Alert Limit");
         int lowStockAlert = Integer.parseInt(sc.nextLine());
         Medicines meds = new Medicines(name, stock, lowStockAlert);
+        // Should add avoid adding duplicates
+        for(Medicines Medicine : medicines){
+            if(Medicine.name.equals(name)) {
+                System.out.print("Cannot add duplicate!");
+                return;
+            }
+        }
         medicines.add(meds);
     }
+
     public void rm(){
         System.out.print("Enter name of Medicine to be removed: ");
         String toberemoved = sc.nextLine();
@@ -77,8 +84,32 @@ public class MedicineInventory {
         System.out.println("Medicine " + toberemoved + " not found.");
         // Indicate that no matching medicine was found
     }
-    public void update(){
-        // Do I only change the stock level (yes because
-    }
 
+    /**
+     JavaDocs Doesn't Work??
+
+     Gets the particular Medicine Object, sets new Stock level from input, sets it in medicines list
+     [QN] Do I need to set the medicines using medicine.set() or will changing Medicine.stock good enough
+     */
+    public void update() {
+        System.out.print("Enter name of Medicine to update Stock");
+        String name = sc.nextLine();
+        for (Medicines medicine : medicines) {
+            if (medicine.name.equals(name)) {
+                //int N = medicines.indexOf(medicine);
+                System.out.printf("%-15s %-10d %-15d\n", medicine.name, medicine.stock, medicine.lowStockAlert);
+                System.out.print("Enter new Stock Level to be updated");
+                // [GPT] Need to Error Check
+                try {
+                    medicine.stock = Integer.parseInt(sc.nextLine());
+                    //medicines.set(N, medicine);
+                    System.out.print("updated New Stock Level!");
+                }catch (NumberFormatException e){
+                    System.out.println("Invalid input. Please enter a numeric value");
+                }
+                return;
+            }
+        }
+        System.out.print("Stock not found!");
+    }
 }

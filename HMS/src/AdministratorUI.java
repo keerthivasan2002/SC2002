@@ -26,6 +26,7 @@ public class AdministratorUI {
     ○ Administrators can approve replenishment requests from pharmacists. Once the
     request is approved, the stock level will be updated automatically
     */
+
         private String userID; // Why is there error here
         private Staff admin, doctor, pharmacist;
         private StaffManager sm;
