@@ -1,15 +1,16 @@
-AppointmentID,PatientID,DoctorID,Date,Time,Appointment Status,Appointment Outcome
-1,P1003,D001,2024-11-07,05:00,CONFIRMED,null
-2,P1002,D002,2024-11-08,06:00,PENDING,You are advised to take rest
-3,P1001,D001,2024-11-09,07:00,CANCELLED,Consider lifestyle changes
-4,P1003,D001,2024-11-10,08:00,CANCELLED,Reviewed with no further action
-5,P1003,D001,2024-11-11,09:00,CONFIRMED,Follow-up scheduled
-6,P1003,D001,2024-11-12,10:00,CANCELLED,Medication adjustment required
-7,P1001,D002,2025-01-01,10:00,CANCELLED,Appointment rescheduled by patient
-8,P1001,D001,2023-12-13,14:00,CONFIRMED,Test results reviewed
-9,P1001,D001,2025-12-13,09:00,PENDING,Awaiting additional test results
-10,P1001,D001,2024-12-31,14:00,PENDING,Pending approval from the doctor
-11,P1001,D001,2024-12-13,14:00,PENDING,Under observation
-12,P1001,D001,2024-11-15,14:00,PENDING,Waiting for confirmation
-13,P1001,D001,2025-12-16,11:00,PENDING,Further consultation required
-14,P1001,D001,2024-11-16,14:00,CONFIRMED,Review completed successfully
+AppointmentID,PatientID,DoctorID,Date,Start Time,End Time,Appointment Status,Appointment Outcome
+1,P1003,D001,07-11-2024,05:00,05:30,CONFIRMED,null
+2,P1002,D002,08-11-2024,06:00,06:30,PENDING,You are advised to take rest
+3,P1001,D001,09-11-2024,07:00,07:30,CANCELLED,Consider lifestyle changes
+4,P1003,D001,10-11-2024,08:00,08:30,CANCELLED,Reviewed with no further action
+5,P1003,D001,11-11-2024,09:00,09:30,CONFIRMED,Follow-up scheduled
+6,P1003,D001,12-11-2024,10:00,10:30,CANCELLED,Medication adjustment required
+7,P1001,D002,01-01-2025,10:00,10:30,CANCELLED,Appointment rescheduled by patient
+8,P1001,D001,13-12-2023,14:00,14:30,CONFIRMED,Test results reviewed
+9,P1001,D001,13-12-2025,09:00,09:30,PENDING,Awaiting additional test results
+10,P1001,D001,31-12-2024,14:00,14:30,PENDING,Pending approval from the doctor
+11,P1001,D001,13-12-2024,14:00,14:30,PENDING,Under observation
+12,P1001,D001,15-11-2024,14:00,14:30,PENDING,Waiting for confirmation
+13,P1001,D001,16-12-2025,11:00,11:30,PENDING,Further consultation required
+14,P1001,D001,16-11-2024,14:00,14:30,CONFIRMED,Review completed successfully
+15,P1003,D001,30-12-2024,10:00,10:30,PENDING,NULL

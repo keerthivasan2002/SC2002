@@ -6,14 +6,12 @@ import java.util.*;
 public class ScheduleManager {
     private ArrayList<Schedule> schedules;
     private String scheduleFile = "Schedule.csv";
-    private Map<Date, Boolean> availabilityMap;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     public ScheduleManager() {
         this.schedules = new ArrayList<>();
-        this.availabilityMap = new HashMap<>();
         initialiseSchedule();
     }
 

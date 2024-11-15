@@ -1,20 +1,3 @@
-
-
-/*This class manage multiple appointment instances. it acts as a centralized controller
- * that handles the scheduling, approval, cancellation, and tracking of appointments.
- * This class typically includes:
- * 1. Adding new appointments
- * 2. Removing existing appointments
- * 3. Check available time slots
- * 4. Allowing doctor to review and approve or reject appointment requests
- * 5. Allowing patients to view, schedule, reschedule, or cancel appointments
- * 6. Providing a list of appointments for a specific date, doctor, or patient
- * 7. Record the outcome of an appointment
- * 8. view a list of upcoming appointments for doctors and patients
- * 9.
- *
- */
-
 import java.sql.Time;
 import java.util.Date;
 import java.time.LocalDate;
@@ -74,7 +57,7 @@ public class AppointmentManager {
             return;
         }
 
-        SimpleDateFormat originalFormat = new SimpleDateFormat("d/M/yyyy");
+        //SimpleDateFormat originalFormat = new SimpleDateFormat("d/M/yyyy");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Adjust the pattern as needed
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -106,8 +89,8 @@ public class AppointmentManager {
                     System.out.println("Error parsing time: " + e.getMessage());
                     // Handle the error appropriately
                 }
-                AppointmentStatus status = AppointmentStatus.valueOf(row[5].toUpperCase()); // Assuming status is in the fifth column
-                String outcome = row[6]; // Assuming outcome is in the sixth column
+                AppointmentStatus status = AppointmentStatus.valueOf(row[6].toUpperCase()); // Assuming status is in the fifth column
+                String outcome = row[7]; // Assuming outcome is in the sixth column
 
                 Appointment appointment = new Appointment(patientID, doctorID, date, startTime, endTime);
                 appointment.setAppointmentStatus(status);
@@ -197,7 +180,7 @@ public class AppointmentManager {
 
 
     public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newStartTime, Time newEndTime) {
-        Appointment appointment = findAppointmentByID(appointmentID);
+        Appointment appointment = findAppointmentByID(appointmentID); //finding the appointment for the relevant patient
 
         if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELLED) {
             String doctorID = appointment.getDoctor().getUserID();
@@ -564,36 +547,33 @@ public class AppointmentManager {
     }
 
     // Display a list of appointments in a tabular format
-public void displayAppointment(ArrayList<Appointment> filteredAppointments) {
-    // System.out.println("-----------------------------------");
-    // System.out.println("Appointments: ");
-    // System.out.println("-----------------------------------");
+    public void displayAppointment(ArrayList<Appointment> filteredAppointments) {
+        if (filteredAppointments.isEmpty()) {
+            System.out.println("No appointments found.");
+            return;
+        } else {
+            // Print header
+            System.out.printf("Appointments for Patient ID: %s%n", filteredAppointments.get(0).getPatient().getPatientID());
+            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-40s%n",
+                    "Appointment ID", "Patient ID", "Doctor ID", "Date", "Start Time", "End Time", "Status", "Outcome");
+            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
-    if (filteredAppointments.isEmpty()) {
-        System.out.println("No appointments found.");
-        return;
-    } else {
-        // Print table headers
-        System.out.println("------------------------------------------------------------------------------------------------------");
-        System.out.printf("%-15s %-15s %-15s %-15s %-10s %-15s %-15s%n",
-                "Appointment ID", "Patient ID", "Doctor ID", "Date", "Time", "Status", "Outcome");
-        System.out.println("------------------------------------------------------------------------------------------------------");
-
-        // Print each appointment's details in a formatted manner
-        for (Appointment appointment : filteredAppointments) {
-            System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
-                    appointment.getAppointmentID(),
-                    appointment.getPatient().getPatientID(),
-                    appointment.getDoctor().getUserID(),
-                    appointment.getStringDate(),
-                    appointment.getStringStartTime(),
-                    appointment.getStringEndTime(),
-                    appointment.getAppointmentStatus(),
-                    appointment.getOutcome() != null ? appointment.getOutcome() : "N/A");
+            // Display each appointment
+            for (Appointment appointment : filteredAppointments) {
+                String patientID = (appointment.getPatient() != null) ? appointment.getPatient().getPatientID() : "N/A";
+                String outcome = (appointment.getOutcome() != null) ? appointment.getOutcome() : "N/A";
+                System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-40s%n",
+                        appointment.getAppointmentID(),
+                        patientID,
+                        appointment.getDoctor().getUserID(),
+                        appointment.getStringDate(),
+                        appointment.getStringStartTime(),
+                        appointment.getStringEndTime(),
+                        appointment.getAppointmentStatus(),
+                        outcome);
+            }
+            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         }
     }
-}
-
-
-
 }

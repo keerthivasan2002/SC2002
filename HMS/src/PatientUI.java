@@ -1,5 +1,6 @@
 import java.lang.reflect.Array;
 import java.sql.Time;
+import java.util.Calendar;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,7 +56,7 @@ public class PatientUI {
                     updatePatientInfo();
                     break;
                 case 3: //View Available appointment Slots
-                    // viewAvailableAppointmentSlots();
+                    //viewAvailableAppointmentSlots();
                     break;
                 case 4: //Schedule an Appointment
                     requestNewAppointment();
@@ -215,9 +216,11 @@ public class PatientUI {
             Date parsedTime = timeFormat.parse(timeInput);
             startTime = new Time(parsedTime.getTime());
 
-            timeFormat = new SimpleDateFormat("HH:mm");
-            parsedTime = timeFormat.parse(timeInput);
-            endTime = new Time(parsedTime.getTime());
+            // Calculate endTime by adding 30 minutes to startTime
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(parsedTime);
+            calendar.add(Calendar.MINUTE, 30);
+            endTime = new Time(calendar.getTimeInMillis());
 
             boolean success = appointmentManager.addAppointment(userID, doctorID, date, startTime, endTime);
             
@@ -234,7 +237,6 @@ public class PatientUI {
         sc.nextLine(); // Clear the buffer
     }
 
-    //reschedule appointment
     private void rescheduleAppointment() {
         ArrayList<Appointment> appointment = appointmentManager.viewPatientAppointments(userID);
         appointmentManager.displayAppointment(appointment);
@@ -252,16 +254,16 @@ public class PatientUI {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             newDate = dateFormat.parse(dateInput);
-            
+
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             Date parsedTime = timeFormat.parse(timeInput);
             newStartTime = new Time(parsedTime.getTime());
 
-            timeFormat = new SimpleDateFormat("HH:mm");
-            parsedTime = timeFormat.parse(timeInput);
-            newEndTime = new Time(parsedTime.getTime());
-
-
+            // Calculate newEndTime by adding 30 minutes to newStartTime
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(parsedTime);
+            calendar.add(Calendar.MINUTE, 30);
+            newEndTime = new Time(calendar.getTimeInMillis());
 
             boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newStartTime, newEndTime);
             if (success) {
@@ -274,7 +276,7 @@ public class PatientUI {
             sc.nextLine(); // Clear the buffer
             rescheduleAppointment();
         }
-        System.out.println("End of appointment rescheduled .");
+        System.out.println("End of appointment reschedule.");
         sc.nextLine(); // Clear the buffer
     }
 
