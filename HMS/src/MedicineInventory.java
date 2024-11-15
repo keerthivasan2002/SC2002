@@ -6,6 +6,7 @@ public class MedicineInventory {
     public ArrayList<Medicines> medicines;
     private String medicine_File = "Medicine_List.csv";
     Scanner sc = new Scanner(System.in);
+    FileManager medicinesFileManager = new FileManager(medicine_File);
 
     public MedicineInventory(){
         medicines = new ArrayList<Medicines>();
@@ -13,9 +14,7 @@ public class MedicineInventory {
     }
 
     public void loadMedicalInventory(){
-        FileManager medicinesFileManager = new FileManager(medicine_File);
         String [][] medicinesArray = medicinesFileManager.readFile();
-
         if (medicinesArray == null || medicinesArray.length == 0){
             System.out.println("Failed to load medicine data.");
             return;
@@ -101,6 +100,9 @@ public class MedicineInventory {
             }
         }
         medicines.add(meds);
+        String[] appointment = new String[]{name, String.valueOf(stock), String.valueOf(lowStockAlert)};
+        FileManager appointmentFM = new FileManager(medicine_File);
+        appointmentFM.addNewRow(appointment);
     }
     
 
