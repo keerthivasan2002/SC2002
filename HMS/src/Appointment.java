@@ -1,91 +1,47 @@
 import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Appointment {
+public class Appointment extends Events {
     private static int idCounter = 1;
-    protected int appointmentID;
-    private Patient patient;
-    private Staff doctor;
+    private int appointmentID;
     private AppointmentStatus appointmentStatus;
-    private Date date;
-    private Time time;
     private MedicalRecord appointmentRecord;
     private String outcome;
-    private String patientID;
-    private String userID;
+    private Patient patient;
 
-    public Appointment(String patientID, String userID, Date date, Time time) {
+    public Appointment(String patientID, String userID, Date date, Time startTime, Time endTime, String description) {
+        super(userID, date, startTime, endTime, description);
         this.appointmentID = idCounter++;
-        this.patient = new Patient(patientID); // Assuming Patient class has this constructor
-        this.doctor = new Staff(userID); // Assuming Staff class has this constructor
-        this.patientID = patientID;
-        this.userID = userID;
-        this.date = date;
-        this.time = time;
+        description = "Appointment";
+        this.patient = new Patient(patientID);
         this.appointmentStatus = AppointmentStatus.SCHEDULED; // Default status
         this.appointmentRecord = new MedicalRecord(patientID, date, patientID, userID, false);
     }
 
-    public String getPatientID() {
-        return patientID;
+    // Constructor without description (using default "Appointment" description)
+    public Appointment(String patientID, String doctorID, Date date, Time startTime, Time endTime) {
+        super(doctorID, date, startTime, endTime, "Appointment");
+        this.appointmentID = idCounter++;
+        this.patient = new Patient(patientID);
+        this.appointmentStatus = AppointmentStatus.SCHEDULED; // Default status
+        this.appointmentRecord = new MedicalRecord(patientID, date, patientID, doctorID, false);
     }
 
-    public String getUserID() {
-        return userID;
+    // Appointment-specific getters and setters
+    public Patient getPatient() {
+        return patient;
     }
 
     public int getAppointmentID() {
         return appointmentID;
     }
 
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public Staff getDoctor() {
-        return doctor;
-    }
-
     public AppointmentStatus getAppointmentStatus() {
-        return this.appointmentStatus;
+        return appointmentStatus;
     }
 
     public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
         this.appointmentStatus = appointmentStatus;
-    }
-
-    // Formatted getDate to string method
-    public String getStringDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.format(date);
-    }
-
-    public Date getDate() {
-        // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // Date date = dateFormat.format(this.date);
-        return date;
-    }
-
-    // Formatted getTime to string method
-    public String getStringTime() {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        return timeFormat.format(time);
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Time getTime() {
-        // SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        // Time time = timeFormat.format(this.time);
-        return time;
-
-    }
-
-    public void setTime(Time time) {
-        this.time = time;
     }
 
     public MedicalRecord getAppointmentRecord() {
@@ -104,17 +60,15 @@ public class Appointment {
         this.outcome = outcome;
     }
 
+    // Convert to array for table or CSV representations
     public String[] toArray() {
-        // Use formatted getDate and getTime methods
-        String formattedDate = getStringDate();
-        String formattedTime = getStringTime();
-
         return new String[]{
                 String.valueOf(appointmentID),
-                patient.getUserID(),
-                doctor.getUserID(),
-                formattedDate,
-                formattedTime,
+                getPatient().getPatientID(),
+                getDoctor().getUserID(),
+                getStringDate(),
+                getStringStartTime(),
+                getStringEndTime(),
                 appointmentStatus.toString(),
                 outcome != null ? outcome : "" // Check for null outcome
         };

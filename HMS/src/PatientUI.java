@@ -11,7 +11,7 @@ public class PatientUI {
     private Patient patient;
     private PatientManager pm; //keep reference to a PatientManager
     private MedicalRecordManager mrm;
-    private ScheduleManager scheduleManager;
+    //private ScheduleManager scheduleManager;
     private AppointmentManager appointmentManager;
     private ArrayList<Appointment> Appointment_Record;
 
@@ -23,7 +23,7 @@ public class PatientUI {
         this.pm = pm;
         this.mrm = mrm;
         this.patient = pm.selectPatient(userID);
-        this.scheduleManager = scheduleManager;
+        //this.scheduleManager = scheduleManager;
         
         this.appointmentManager = am;
 
@@ -199,7 +199,8 @@ public class PatientUI {
         String doctorID = sc.nextLine().toUpperCase();
 
         Date date = null;
-        Time time = null;
+        Time startTime = null;
+        Time endTime = null;
 
         System.out.print("Date (yyyy-MM-dd): ");
         String dateInput = sc.next().trim();
@@ -212,9 +213,13 @@ public class PatientUI {
             
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             Date parsedTime = timeFormat.parse(timeInput);
-            time = new Time(parsedTime.getTime());
+            startTime = new Time(parsedTime.getTime());
 
-            boolean success = appointmentManager.addAppointment(userID, doctorID, date, time);
+            timeFormat = new SimpleDateFormat("HH:mm");
+            parsedTime = timeFormat.parse(timeInput);
+            endTime = new Time(parsedTime.getTime());
+
+            boolean success = appointmentManager.addAppointment(userID, doctorID, date, startTime, endTime);
             
             if (success) {
                 System.out.println("Appointment scheduled successfully.");
@@ -237,7 +242,8 @@ public class PatientUI {
         int appointmentID = appointmentManager.getValidAppointmentID(appointment);
 
         Date newDate = null;
-        Time newTime = null;
+        Time newStartTime = null;
+        Time newEndTime = null;
 
         System.out.print("Enter New Appointment Date (yyyy-MM-dd): ");
         String dateInput = sc.next();
@@ -249,9 +255,15 @@ public class PatientUI {
             
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             Date parsedTime = timeFormat.parse(timeInput);
-            newTime = new Time(parsedTime.getTime());
+            newStartTime = new Time(parsedTime.getTime());
 
-            boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newTime);
+            timeFormat = new SimpleDateFormat("HH:mm");
+            parsedTime = timeFormat.parse(timeInput);
+            newEndTime = new Time(parsedTime.getTime());
+
+
+
+            boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newStartTime, newEndTime);
             if (success) {
                 System.out.println("Appointment rescheduled successfully.");
             } else {

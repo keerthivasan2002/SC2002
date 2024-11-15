@@ -252,7 +252,8 @@ public class DoctorUI {
             for (Appointment appointment : appointments){
                 System.out.println("Appointment ID: " + appointment.getAppointmentID());
                 System.out.println("Date: " + appointment.getStringDate());
-                System.out.println("Time: " + appointment.getStringTime());
+                System.out.println("Start Time: " + appointment.getStringStartTime());
+                System.out.println("End Time: " + appointment.getStringEndTime());
                 System.out.println("Outcome: " + appointment.getOutcome());
                 System.out.println("-----------------------------------");
             }
