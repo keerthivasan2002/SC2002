@@ -127,4 +127,28 @@ public class MedicalRecordManager {
     public ArrayList<MedicalRecord> getMedicalRecords(){
         return MedicalRecords;
     }
+
+    // Display a list of appointments in a tabular format
+    public void displayMedicalRecords(ArrayList<MedicalRecord> medicalRecords) {
+        if (medicalRecords.isEmpty()) {
+            System.out.println("No medical records found.");
+            return;
+        } else {
+            // Print table headers
+            System.out.println("-----------------------------------------------------------------------------------------------");
+            System.out.printf("%-20s %-30s %-20s %-20s%n",
+                    "Diagnosis Date", "Diagnosis", "Prescription", "Prescription Status");
+            System.out.println("-----------------------------------------------------------------------------------------------");
+    
+            // Print each medical record's details in a formatted manner
+            for (MedicalRecord medicalRecord : medicalRecords) {
+                System.out.printf("%-20s %-30s %-20s %-20s%n",
+                        medicalRecord.getStringDateOfDiagnosis(),
+                        medicalRecord.getDiagnosis(),
+                        medicalRecord.getPrescription(),
+                        medicalRecord.isPrescriptionStatus() ? "Approved" : "Not Approved");
+            }
+        }
+    }
+    
 }

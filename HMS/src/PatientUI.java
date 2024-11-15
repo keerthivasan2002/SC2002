@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.lang.IllegalArgumentException;
+
 
 public class PatientUI {
     private String userID;
@@ -115,7 +117,6 @@ public class PatientUI {
         System.out.println("8. View Past Appointments Outcome Records");
         System.out.println("9. Logout");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.print("Enter your choice: ");
     }
 
     //method for testing purposes
@@ -131,31 +132,33 @@ public class PatientUI {
         System.out.println("Phone Number: " + patient.getPhoneNumber());
     }
 
-    private void updatePatientInfo(){
-        int changeChoice;
+    public void updatePatientMenu(){
+        System.out.println("----------------------------------------------");
         System.out.println("Which information would you like to change?");
         System.out.println("1. Change Email Address");
         System.out.println("2. Change Phone Number");
         System.out.println("3. Change Password");
         System.out.println("4. Back to Main Menu.");
+        System.out.println("----------------------------------------------");
+    }
 
-        changeChoice = oh.getOption(1,4 );
-        // sc.nextLine(); // Clear the buffer
-
-        while (changeChoice > 0 && changeChoice < 4) {
+    private void updatePatientInfo(){
+        int changeChoice = -1;
+        while (changeChoice != 4) {
+            updatePatientMenu();
+            changeChoice = oh.getOption(1,4);
             switch (changeChoice) {
                 case 1:
                     System.out.print("Please enter your new email: ");
-                    String newEmail = sc.nextLine();
-                    patient.updateEmailAddress(newEmail);
+                    String newEmail = pm.setPatientEmail();
+                    patient.setEmailAddress(newEmail);
                     System.out.println("Updated Email: " + patient.getEmailAddress());
                     break;
 
                 case 2:
                     System.out.print("Please enter your new phone number: ");
-                    int newPhoneNumber = sc.nextInt();
-                    sc.nextLine();
-                    patient.updatePhoneNumber(newPhoneNumber);
+                    int newPhoneNumber = pm.setPatientPhoneNumber();
+                    patient.setPhoneNumber(newPhoneNumber);
                     System.out.println("Updated Phone Number: " + patient.getPhoneNumber());
                     break;
 
@@ -171,7 +174,8 @@ public class PatientUI {
                         System.out.println("Incorrect password. Please try again.");
                     }
                     break;
-
+                case 4:
+                    break;
                 default:
                     System.out.println("Invalid choice. Returning to the main menu.");
                     break;
@@ -180,15 +184,7 @@ public class PatientUI {
             // Save the updated patient list to the file
             pm.savePatients();
             System.out.println("Information updated and saved successfully.");
-
-            // Ask if they want to continue updating
-            System.out.println("\nWould you like to update more information?");
-            System.out.println("1. Change Email Address");
-            System.out.println("2. Change Phone Number");
-            System.out.println("3. Change Password");
-            System.out.println("Press any other number to exit.");
-            changeChoice = sc.nextInt();
-            sc.nextLine(); // Clear the buffer
+            // sc.nextLine(); // Clear the buffer
         }
     }
 
@@ -200,85 +196,119 @@ public class PatientUI {
         System.out.print("Doctor ID: ");
         String doctorID = sc.nextLine().toUpperCase();
 
+        Calendar cal = Calendar.getInstance();
         Date date = null;
         Time startTime = null;
         Time endTime = null;
+        while (true){
+            try{            
+                System.out.print("Date (yyyy-MM-dd): ");
+                String dateInput = sc.next().trim();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                date = dateFormat.parse(dateInput);
+                if (date.before(cal.getTime()) && !date.equals(cal.getTime())) {
+                    throw new IllegalArgumentException("Date cannot be in the past.");
+                }
+                
+                System.out.print("Time (HH:mm): ");
+                String timeInput = sc.next().trim();
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                Date parsedTime = timeFormat.parse(timeInput);
+                startTime = new Time(parsedTime.getTime());
+                if (date.equals(cal.getTime()) && !parsedTime.before(cal.getTime())) {
+                    throw new IllegalArgumentException("Time cannot be in the past.");
+                }
 
-        System.out.print("Date (yyyy-MM-dd): ");
-        String dateInput = sc.next().trim();
-        System.out.print("Time (HH:mm): ");
-        String timeInput = sc.next().trim();
+                // Calculate endTime by adding 30 minutes to startTime
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(parsedTime);
+                calendar.add(Calendar.MINUTE, 30);
+                endTime = new Time(calendar.getTimeInMillis());
 
-        try{            
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            date = dateFormat.parse(dateInput);
-            
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            Date parsedTime = timeFormat.parse(timeInput);
-            startTime = new Time(parsedTime.getTime());
-
-            // Calculate endTime by adding 30 minutes to startTime
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(parsedTime);
-            calendar.add(Calendar.MINUTE, 30);
-            endTime = new Time(calendar.getTimeInMillis());
-
-            boolean success = appointmentManager.addAppointment(userID, doctorID, date, startTime, endTime);
-            
-            if (success) {
-                System.out.println("Appointment scheduled successfully.");
-            } else {
-                System.out.println("Failed to schedule appointment. Please try another time slot.");
+                boolean success = appointmentManager.addAppointment(userID, doctorID, date, startTime, endTime);
+                
+                if (success) {
+                    System.out.println("Appointment scheduled successfully.");
+                } else {
+                    System.out.println("Failed to schedule appointment. Please try another time slot.");
+                }
+                break;
+            }catch (IllegalArgumentException e){
+                System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
+            }catch (ParseException e) {
+                System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
+            }finally{
+                System.out.println("End of appointment scheduling.");
+                sc.nextLine(); // Clear the buffer
             }
-        } catch (ParseException e) {
-            System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
-            sc.nextLine(); // Clear the buffer
-            requestNewAppointment();
         }
-        sc.nextLine(); // Clear the buffer
     }
 
     private void rescheduleAppointment() {
-        ArrayList<Appointment> appointment = appointmentManager.viewPatientAppointments(userID);
+        ArrayList<Appointment> appointment = appointmentManager.viewPatientAppointments(userID, false);
         appointmentManager.displayAppointment(appointment);
         System.out.print("Enter Appointment ID to Reschedule: ");
-        int appointmentID = appointmentManager.getValidAppointmentID(appointment);
-
+        int appointmentID = -1;
+        while (true) {
+            appointmentID = appointmentManager.getValidAppointmentID(appointment);
+        
+            if (appointmentID == -1) {
+                System.out.println("No appointments found for patient. " + userID);
+            } else if (appointmentManager.appointmentAlreadyCompletedOrCancelled(appointmentID)) {
+                System.out.println("Appointment has already been completed or canceled or rejected. Please select another appointment.");
+            } else {
+                break;
+            }
+        }
+        
+        Calendar cal = Calendar.getInstance();
         Date newDate = null;
         Time newStartTime = null;
         Time newEndTime = null;
 
-        System.out.print("Enter New Appointment Date (yyyy-MM-dd): ");
-        String dateInput = sc.next();
-        System.out.print("Enter New Appointment Time (HH:mm): ");
-        String timeInput = sc.next();
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            newDate = dateFormat.parse(dateInput);
+        
+        while(true){
+            try {
+                System.out.print("Enter New Appointment Date (yyyy-MM-dd): ");
+                String dateInput = sc.next();   
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                newDate = dateFormat.parse(dateInput);
+                if (newDate.before(cal.getTime()) && !newDate.equals(cal.getTime())) {
+                    throw new IllegalArgumentException("Date cannot be in the past.");
+                }
 
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            Date parsedTime = timeFormat.parse(timeInput);
-            newStartTime = new Time(parsedTime.getTime());
+                System.out.print("Enter New Appointment Time (HH:mm): ");
+                String timeInput = sc.next();
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                Date parsedTime = timeFormat.parse(timeInput);
+                newStartTime = new Time(parsedTime.getTime());
+                if (newDate.equals(cal.getTime()) && !parsedTime.before(cal.getTime())) {
+                    throw new IllegalArgumentException("Time cannot be in the past.");
+                }
 
-            // Calculate newEndTime by adding 30 minutes to newStartTime
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(parsedTime);
-            calendar.add(Calendar.MINUTE, 30);
-            newEndTime = new Time(calendar.getTimeInMillis());
+                // Calculate newEndTime by adding 30 minutes to newStartTime
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(parsedTime);
+                calendar.add(Calendar.MINUTE, 30);
+                newEndTime = new Time(calendar.getTimeInMillis());
 
-            boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newStartTime, newEndTime);
-            if (success) {
-                System.out.println("Appointment rescheduled successfully.");
-            } else {
-                System.out.println("Failed to reschedule appointment. New time slot may not be available.");
+                boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newStartTime, newEndTime);
+                if (success) {
+                    System.out.println("Appointment rescheduled successfully.");
+                } else {
+                    System.out.println("Failed to reschedule appointment. New time slot may not be available.");
+                }
+                break;
+            }catch (IllegalArgumentException e){
+                System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
+            } catch (ParseException e) {
+                System.out.println("Invalid date or time format. Please try again.");
+            }finally{
+                System.out.println("End of appointment reschedule.");
+                sc.nextLine(); // Clear the buffer
             }
-        } catch (ParseException e) {
-            System.out.println("Invalid date or time format. Please try again.");
-            sc.nextLine(); // Clear the buffer
-            rescheduleAppointment();
+
         }
-        System.out.println("End of appointment reschedule.");
-        sc.nextLine(); // Clear the buffer
     }
 
     //cancel appointment
@@ -298,7 +328,13 @@ public class PatientUI {
 
     protected void viewAppointments() {
         System.out.println("Viewing Appointments");
-        ArrayList appointment_record = appointmentManager.viewPatientAppointments(userID);
+        ArrayList appointment_record = appointmentManager.viewPatientAppointments(userID, false);
+        if (appointment_record.isEmpty()) {
+            System.out.println("No appointments found for patient. " + userID);
+            return;
+        }else {
+            System.out.println("Appointments found for patient. " + userID);
+        }
         appointmentManager.displayAppointment(appointment_record);
         // ArrayList<Appointment> Appointment_Record =  appointmentManager.viewPatientAppointments(userID);
         // if (Appointment_Record.size() == 0) {
@@ -318,18 +354,31 @@ public class PatientUI {
     }
 
     protected void viewAppointmentOutcome() {
-        System.out.print("Enter Appointment ID to view outcome: ");
-        int appointmentID = sc.nextInt();
-        sc.nextLine(); // Consume newline
-    
-        Appointment appointment = appointmentManager.findAppointmentByID(appointmentID);
-        if (appointment != null && appointment.getPatient().getPatientID().equals(userID)) {
-            String outcome = appointment.getOutcome();
-            System.out.println("Appointment Outcome: " + (outcome.isEmpty() ? "No outcome recorded" : outcome));
-        } else {
-            System.out.println("Appointment not found or not authorized to view.");
+        System.out.println("Viewing Past Appointments Outcome Records");
+        ArrayList appointment_record = appointmentManager.viewPatientAppointments(userID, true);
+        if (appointment_record.isEmpty()) {
+            System.out.println("No past appointments found for patient. " + userID);
+            return;
+        }else {
+            System.out.println("Appointments found for patient. " + userID);
         }
+        appointmentManager.displayAppointment(appointment_record);
+        System.out.println("End of Appointments");
 
-        sc.nextLine(); // Clear the buffer
+        // System.out.print("Enter Appointment ID to view outcome: ");
+        // int appointmentID = sc.nextInt();
+        // sc.nextLine(); // Consume newline
+    
+        // Appointment appointment = appointmentManager.findAppointmentByID(appointmentID);
+        // if (appointment != null && appointment.getPatient().getPatientID().equals(userID)) {
+        //     String outcome = appointment.getOutcome();
+        //     System.out.println("Appointment Outcome: " + (outcome.isEmpty() ? "No outcome recorded" : outcome));
+        // } else {
+        //     System.out.println("Appointment not found or not authorized to view.");
+        // }
+
+        // sc.nextLine(); // Clear the buffer
     }
+
+
 }

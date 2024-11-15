@@ -8,6 +8,7 @@ public class PharmacistUI {
     private ReplenishmentRequest request;
 
     Scanner sc = new Scanner(System.in);
+    OptionHandling oh = new OptionHandling();
 
     public PharmacistUI(String userID, StaffManager sm){
         this.userID = userID;
@@ -29,7 +30,7 @@ public class PharmacistUI {
 
         while(true){  //change accordingly
             pharmacistMenu();
-            choice = sc.nextInt();
+            choice = oh.getOption(1, 5);
             switch (choice){
                 case 1: //view appointment outcome records
                     break;
@@ -38,7 +39,6 @@ public class PharmacistUI {
                     String medicineName = sc.next();
                     System.out.println("Enter quantity: ");
                     int quantity = sc.nextInt();
-                    sc.nextLine();
                     medicines.updateMedicalInventory(medicineName, quantity);
                     break;
                 case 3: //view medical inventory
@@ -49,7 +49,6 @@ public class PharmacistUI {
                     medicineName = sc.next();
                     System.out.println("Enter quantity: ");
                     quantity = sc.nextInt();
-                    sc.nextLine();
                     request.submitReplenishmentRequest(medicineName, quantity);
                     break;
                 case 5: //log out
@@ -58,7 +57,10 @@ public class PharmacistUI {
                     return;
             }
             System.out.println("What else would you like to do today?");
+            sc.nextLine();
         }
+        
+
     }
 
     private void pharmacistMenu(){
@@ -70,7 +72,6 @@ public class PharmacistUI {
         System.out.println("4. Submit Replenishment Request");
         System.out.println("5. Logout");
         System.out.println("-----------------------------------");
-        System.out.print("Enter your choice: ");
     }
 
 }

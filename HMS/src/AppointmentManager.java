@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Scanner;
 
 public class AppointmentManager {
     private ArrayList<Appointment> appointments;
@@ -124,7 +125,7 @@ public class AppointmentManager {
             // }
 
         }
-        displayAppointment(appointments);
+        // displayAppointment(appointments);
 
     }
 
@@ -214,47 +215,55 @@ public class AppointmentManager {
         }
     }
 
+public boolean appointmentAlreadyCompletedOrCancelled(int appointmentID) {
+    Appointment appointment = findAppointmentByID(appointmentID);
+    if (appointment != null && (appointment.getAppointmentStatus() == AppointmentStatus.CONFIRMED || appointment.getAppointmentStatus() == AppointmentStatus.REJECTED || appointment.getAppointmentStatus() == AppointmentStatus.CANCELLED)) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
+public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newStartTime, Time newEndTime) {
+    Scanner scanner = new Scanner(System.in);
+    Appointment appointment = findAppointmentByID(appointmentID);
+    if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELLED) {
+        String doctorID = appointment.getDoctor().getUserID();
 
-    public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newStartTime, Time newEndTime) {
-        Appointment appointment = findAppointmentByID(appointmentID); //finding the appointment for the relevant patient
-
-        if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELLED) {
-            String doctorID = appointment.getDoctor().getUserID();
-
-            // Check if the doctor or patient has an existing appointment at the new time slot
-            if (doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
-                    patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
-                System.out.println("Appointment slot is already occupied.");
-                return false;
-            }
-
-            // Check for any existing conflicting appointment for the doctor or patient at the new time slot
-            if (doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
-                    patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime) ||
-                    isDuplicateInCSV(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
-                System.out.println("Appointment slot is already occupied by you.");
-                return false;
-            }
-
-            // Update appointment details
-            appointment.setDate(newDate);
-            appointment.setStartTime(newStartTime);
-            appointment.setEndTime(newEndTime);
-            appointment.setAppointmentStatus(AppointmentStatus.PENDING);
-
-            displayAppointment(appointments);
-
-            System.out.println("Appointment ID " + appointmentID + " rescheduled.");
-            System.out.println("New Date: " + newDate + ", New Start Time: " + newStartTime + ", New End Time: " + newEndTime);
-            saveAppointments();
-
-            return true;
-        } else {
-            System.out.println("Appointment not found or already canceled.");
+        // Check if the doctor or patient has an existing appointment at the new time slot
+        if (doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
+                patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
+            System.out.println("Appointment slot is already occupied.");
             return false;
         }
+
+        // Check for any existing conflicting appointment for the doctor or patient at the new time slot
+        if (doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
+                patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime) ||
+                isDuplicateInCSV(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
+            System.out.println("Appointment slot is already occupied by you.");
+            return false;
+        }
+
+        // Update appointment details
+        appointment.setDate(newDate);
+        appointment.setStartTime(newStartTime);
+        appointment.setEndTime(newEndTime);
+        appointment.setAppointmentStatus(AppointmentStatus.PENDING);
+
+        // displayAppointment(appointments);
+
+        // System.out.println("Appointment ID " + appointmentID + " rescheduled.");
+        // System.out.println("New Date: " + newDate + ", New Start Time: " + newStartTime + ", New End Time: " + newEndTime);
+        saveAppointments();
+
+        return true;
+    } else {
+        System.out.println("Appointment not found or already canceled.");
+        return false;
     }
+}
+
 
 
     //change the existing appointemnt's status to cancelled
@@ -320,7 +329,7 @@ public class AppointmentManager {
     /* ---------------------------------------- Start Appointment Request Function ------------------------------------------ */
 
     public void appointmentRequest(Staff doctor){
-        ArrayList appointmentByDoctorID = new ArrayList();
+        ArrayList<Appointment> appointmentByDoctorID = new ArrayList();
         // System.out.println("i am here first ");
         for (Appointment appointment : appointments){
             if (appointment.getDoctor().getUserID().equalsIgnoreCase(doctor.getUserID())){
@@ -339,6 +348,7 @@ public class AppointmentManager {
 
         while(true){
             System.out.println("Enter the appointment ID you want to approve or reject: ");
+            System.out.println("Enter 0 to go back to the main menu.");
             int selectedAppID = getValidAppointmentID(appointmentByDoctorID);
             if (selectedAppID == -1) {
                 break; // Exit the loop if user wants to go back to the main menu
@@ -444,7 +454,7 @@ public class AppointmentManager {
         String currentTime = "12:00";
         // System.out.println("Current Time: " + currentTime);
 
-        ArrayList upcomingAppointments = new ArrayList<>();
+        ArrayList<Appointment> upcomingAppointments = new ArrayList<>();
 
         for (Appointment appointment : appointments) {
             System.out.println("Doctor ID: " + doctor.getUserID());
@@ -484,7 +494,7 @@ public class AppointmentManager {
         // displayAppointment(upcomingAppointments);
 
         // Filter out the appointments that are not confirmed
-        ArrayList confirmedAppointments = getAppointmentsByStatus(upcomingAppointments, AppointmentStatus.CONFIRMED);
+        ArrayList<Appointment> confirmedAppointments = getAppointmentsByStatus(upcomingAppointments, AppointmentStatus.CONFIRMED);
         // System.out.println("Display after filter out the status of the appointment");
 
 
@@ -506,23 +516,32 @@ public class AppointmentManager {
     }
     /* ---------------------------------------- End Saving Upcoming Appointments Function ------------------------------------------ */
 
-    //save all the upcoming appointments for a patient
-    public List<Appointment> getUpcomingAppointmentsForPatient(Patient patient) {
-        List<Appointment> upcomingAppointments = new ArrayList<>();
-        Date currentDate = new Date();
+
+
+    //display all the appointments based on the selected patientID
+    public ArrayList<Appointment> viewPatientAppointments(String patientID, boolean showPastAppointments) {
+        ArrayList<Appointment> patientAppointments = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+
+        // System.out.println("\nAppointments for Patient ID: " + patientID);
         for (Appointment appointment : appointments) {
-            if (appointment.getPatient().equals(patient) && appointment.getDate().after(currentDate)) {
-                upcomingAppointments.add(appointment);
+            if (appointment.getPatient().getUserID().equals(patientID)) {
+                if (!showPastAppointments && appointment.getDate().after(cal.getTime())) {
+                    patientAppointments.add(appointment);
+                }else if (showPastAppointments && appointment.getDate().before(cal.getTime())){
+                    patientAppointments.add(appointment);
+                }
             }
         }
-        return upcomingAppointments;
+        return patientAppointments;
     }
 
     //display all the appointments based on the selected patientID
     public ArrayList<Appointment> viewPatientAppointments(String patientID) {
         ArrayList<Appointment> patientAppointments = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
 
-        System.out.println("\nAppointments for Patient ID: " + patientID);
+        // System.out.println("\nAppointments for Patient ID: " + patientID);
         for (Appointment appointment : appointments) {
             if (appointment.getPatient().getUserID().equals(patientID)) {
                 patientAppointments.add(appointment);
@@ -659,6 +678,15 @@ public class AppointmentManager {
             }
         }
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+    }
+
+    public boolean appointmentAlreadyHasOutcome(int appointmentID) {
+        Appointment appointment = findAppointmentByID(appointmentID);
+        if (appointment.getOutcome() != "NULL" || appointment.getOutcome() != "N/A") {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }

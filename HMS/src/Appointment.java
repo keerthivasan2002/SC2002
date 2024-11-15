@@ -14,7 +14,7 @@ public class Appointment extends Events {
         this.appointmentID = idCounter++;
         description = "Appointment";
         this.patient = new Patient(patientID);
-        this.appointmentStatus = AppointmentStatus.SCHEDULED; // Default status
+        this.appointmentStatus = AppointmentStatus.PENDING; // Default status
         this.appointmentRecord = new MedicalRecord(patientID, date, patientID, userID, false);
     }
 
@@ -23,7 +23,7 @@ public class Appointment extends Events {
         super(doctorID, date, startTime, endTime, "Appointment");
         this.appointmentID = idCounter++;
         this.patient = new Patient(patientID);
-        this.appointmentStatus = AppointmentStatus.SCHEDULED; // Default status
+        this.appointmentStatus = AppointmentStatus.PENDING; // Default status
         this.appointmentRecord = new MedicalRecord(patientID, date, patientID, doctorID, false);
     }
 

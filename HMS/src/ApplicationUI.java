@@ -13,12 +13,12 @@ public class ApplicationUI {
 
             System.out.println();
             System.out.print("Username: ");
-            String userName = sc.next().toUpperCase();
-            // String userName = "D001"; // speed up testing purpose
+            // String userName = sc.next().toUpperCase();
+            String userName = "P1001"; // speed up testing purpose
 
             System.out.print("Password: ");
-            String password = sc.next();
-            // String password = "password";
+            // String password = sc.next();
+            String password = "password1001";
 
             LogInManager login = new LogInManager(userName, password);
             boolean accept = login.authoriseLogin();

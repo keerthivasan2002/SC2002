@@ -23,9 +23,9 @@ public class OptionHandling {
                 option = sc.nextInt();
                 // System.out.println("You entered: " + option);
                 if (option < 0){
-                    throw new IntNonNegativeException();
+                    throw new IntNonNegativeException("Invalid input. Please enter a positive number.");
                 }else if (option < min || option > max){
-                    throw new InvalidPositiveOptionException();
+                    throw new InvalidPositiveOptionException("Invalid input. Please enter a number between " + min + " and " + max + ".");
                 }else {
                     valid = true;
                     limit = 0;
