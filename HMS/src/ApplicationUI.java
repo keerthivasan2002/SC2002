@@ -17,8 +17,8 @@ public class ApplicationUI {
             // String userName = "D001"; // speed up testing purpose
 
             System.out.print("Password: ");
-            String password = sc.next();
-            // String password = "password";
+            //String password = sc.next();
+            String password = "Password";
 
             LogInManager login = new LogInManager(userName, password);
             boolean accept = login.authoriseLogin();
@@ -36,10 +36,21 @@ public class ApplicationUI {
     }
 
     public static void userOption(String userName) {
-        //initialise outside to avoid initialising multiple times
-        // Schedule schedule = new Schedule();
+        // Step 1: Create ScheduleManager and AppointmentManager without dependencies initially
         ScheduleManager scheduleManager = new ScheduleManager();
         AppointmentManager am = new AppointmentManager();
+
+        // Step 2: Set the references in each other
+        scheduleManager.setAppointmentManager(am);
+        am.setScheduleManager(scheduleManager);
+
+        // Step 3: Now initialize appointments and schedules as needed
+        am.initializeAppointments();        // Initialize appointments
+        scheduleManager.initialiseSchedule(); // Initialize schedule
+
+        am.initializeAppointments();
+
+
         String useString = userName.toUpperCase();
 
         if (useString.length() == 5){

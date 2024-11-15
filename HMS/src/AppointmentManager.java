@@ -10,21 +10,19 @@ import java.util.List;
 
 public class AppointmentManager {
     private ArrayList<Appointment> appointments;
-    private Schedule schedule;
+    private ScheduleManager scheduleManager;
     private String appointment_File = "Appointment_List.csv";
     private static ArrayList <Patient> patients = new ArrayList<>();
     private static ArrayList <Staff> staffList = new ArrayList<>();
 
+
+
     public AppointmentManager() {
         this.appointments = new ArrayList<>();
-        initializeAppointments();
     }
 
-
-    public AppointmentManager(Schedule schedule) {
-        this.appointments = new ArrayList<>();
-       this.schedule = schedule;
-        initializeAppointments();
+    public void setScheduleManager(ScheduleManager scheduleManager) {
+        this.scheduleManager = scheduleManager;
     }
 
     /* ------------------------------------------------- Start Initialization Function ------------------------------------------ */
@@ -124,7 +122,7 @@ public class AppointmentManager {
             // }
 
         }
-        displayAppointment(appointments);
+        //displayAppointment(appointments);
 
     }
 
@@ -623,6 +621,11 @@ public class AppointmentManager {
                         appointment.getOutcome() != null ? appointment.getOutcome() : "N/A");
             }
         }
+    }
+
+    // In AppointmentManager
+    public List<Appointment> getAppointments(){
+        return appointments;
     }
 
 

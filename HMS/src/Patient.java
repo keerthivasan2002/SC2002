@@ -14,7 +14,7 @@ public class Patient extends User {
 
     //constructor to use in the
     public Patient(String userID){
-        super(userID); //call it from the user class
+        super(userID);
         this.patientID = userID;
     }
 

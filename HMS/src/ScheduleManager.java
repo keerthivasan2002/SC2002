@@ -5,14 +5,21 @@ import java.util.*;
 
 public class ScheduleManager {
     private ArrayList<Schedule> schedules;
+    private ArrayList<Appointment> appointments;
     private String scheduleFile = "Schedule.csv";
+    private AppointmentManager am;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
+    // Setter to set AppointmentManager after initial creation
+    public void setAppointmentManager(AppointmentManager am) {
+        this.am = am;
+    }
+
     public ScheduleManager() {
         this.schedules = new ArrayList<>();
-        initialiseSchedule();
+        this.appointments = new ArrayList<>();
     }
 
     public void initialiseSchedule() {
@@ -124,12 +131,84 @@ public class ScheduleManager {
         }
     }
 
-    //function to view today event
-    public void viewTodaysEvents(String id) {
+    //function to view today's events(events = schedule + appointment)
+    public void viewTodaysEvent(String id){
+        Calendar calendar = Calendar.getInstance();
+        Date now = calendar.getTime();
+
+        System.out.println("Today's Events:");
+        System.out.println("================");
+
+        boolean hasEvents = false;
+        List<Events> todaysEvents = new ArrayList<>();//create an events list
+
+        //add appointments to the events list
+        if (am != null) {
+            for (Appointment appointment : am.getAppointments()) {
+                if (isSameDay(appointment.getDate(), now) && appointment.getDoctor().getUserID().equals(id)) {
+                    String userid = appointment.getDoctor().getUserID();
+                    Date dte = appointment.getDate();
+                    Time st = appointment.getStartTime();
+                    Time et = appointment.getEndTime();
+                    String desc = appointment.getDescription();
+
+                    Events event = new Events(userid, dte, st, et, desc);
+                    todaysEvents.add(event);
+                }
+            }
+        } else {
+            System.out.println("AppointmentManager not initialized.");
+        }
+
+        //add schedule to the events list
+        for(Schedule schedule: schedules){
+            if(isSameDay(schedule.getDate(), now) && schedule.getDoctor().getUserID().equals(id)){
+                todaysEvents.add(schedule);
+            }
+        }
+
+        for(Events events: todaysEvents) {
+            Date startTimewithDate = combineDateAndTime(events.getDate(), events.getStartTime()); //format start time for comparison
+            Date endTimewithDate = combineDateAndTime(events.getDate(), events.getEndTime()); //format end time for comparison
+
+            //logic to print out the progress for that day
+            String status = " ";
+
+            //logic to decide the status
+            if(startTimewithDate.after(now)){
+                status = "Upcoming";
+            } else if (startTimewithDate.before(now) && endTimewithDate.after(now)) {
+                status = "Ongoing";
+            }else{
+                status = "Done";
+            }
+
+            displayEvents(events);
+            System.out.println("Status: " + status);
+            System.out.println("-----------------------------------");
+            hasEvents = true;
+        }
+
+        if(!hasEvents){
+            System.out.println("No appointments or events scheduled for today.");
+        }
+
+    }
+
+    //helper function to displayevents
+    private void displayEvents(Events event){
+        System.out.println("User ID: " + event.getDoctor().getUserID());
+        System.out.println("Date: " + event.getStringDate());
+        System.out.println("Start Time: " + event.getStringStartTime());
+        System.out.println("End Time: " + event.getStringEndTime());
+        System.out.println("Description: " + event.getDescription());
+    }
+
+    //function to view today schedule events
+    public void viewTodaysSchedule(String id) {
         Calendar calendar = Calendar.getInstance();
         Date now = calendar.getTime(); // Current date and time
 
-        ///System.out.println("Today's Date and Time: " + now); // Tester output for the current date and time
 
         System.out.println("Today's Events:");
         System.out.println("================");
@@ -184,7 +263,7 @@ public class ScheduleManager {
 
 
 
-
+    //add the doctor's personal events
     public boolean addSchedule(Staff doctor, Date date, Time startTime, Time endTime, String description) {
         System.out.println("Adding period of unavailability for " + doctor.getName());
         System.out.println("User ID: " + doctor.getUserID());
