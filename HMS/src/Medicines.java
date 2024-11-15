@@ -15,4 +15,14 @@ public class Medicines {
         this.requestQuantity = requestQuantity;
         this.status1 = status1;
     }
+
+    public String[] toArray() {
+        return new String[]{
+            name,
+            String.valueOf(stock),
+            String.valueOf(lowStockAlert),
+            String.valueOf(status1),
+            String.valueOf(requestQuantity)
+        };
+    }
 }

@@ -125,7 +125,7 @@ public class MedicineInventory {
         medicines.add(meds);
         String[] appointment = new String[]{name, String.valueOf(stock), String.valueOf(lowStockAlert), String.valueOf(status1), String.valueOf(requestQuantity)};
         FileManager appointmentFM = new FileManager(medicine_File);
-        appointmentFM.addNewRow(appointment);
+        medicinesFileManager.addNewRow(appointment);
     }
     
 
@@ -164,13 +164,50 @@ public class MedicineInventory {
                 try {
                     medicine.stock = Integer.parseInt(sc.nextLine());
                     //medicines.set(N, medicine);
+                    if(medicine.stock <= medicine.lowStockAlert) medicine.status1 = Medicines.status.TOREQUEST;
+                    else medicine.status1 = Medicines.status.NIL;
                     System.out.print("updated New Stock Level!");
                 }catch (NumberFormatException e){
+                    System.out.println("Invalid input. Please enter a numeric value");
+                }
+
+                return;
+            }
+        }
+        System.out.print("Stock not found!");
+    }
+    public void updateLowStockAlert(){
+        System.out.print("Enter name of Medicine to change Low Stock Alert level");
+        String name = sc.nextLine();
+        for (Medicines medicine : medicines){
+            if(medicine.name.equals(name)){
+                System.out.printf("%-15s, %-10s, %-15s\n", medicine.name, medicine.stock, medicine.lowStockAlert);
+                System.out.print("Enter new Low Stock Alert Value to be updated");
+                try {
+                    medicine.lowStockAlert = Integer.parseInt(sc.nextLine());
+                    //medicines.set(N, medicine);
+                    if (medicine.stock <= medicine.lowStockAlert) medicine.status1 = Medicines.status.TOREQUEST;
+                    else medicine.status1 = Medicines.status.NIL;
+                    System.out.print("updated New Stock Level!");
+                } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please enter a numeric value");
                 }
                 return;
             }
         }
-        System.out.print("Stock not found!");
+    }
+
+    public void saveMedicines(){
+        FileManager patientFileManager = new FileManager(medicine_File);
+
+        // Convert each patient to a string array
+        String[][] medicineData = new String[medicines.size() + 1][];
+      medicineData[0] = new String[]{"MedicineName", "Initial Stock", "LowStockAlert", "requestStatus", "requestQuantity"}; // Header row
+
+        for (int i = 0; i < medicines.size(); i++) {
+            medicineData[i+1] = medicines.get(i).toArray();
+        }
+        // Write to file
+        patientFileManager.writeFile(medicineData, false);
     }
 }

@@ -35,7 +35,7 @@ public class AdministratorUI {
         private Patient patient;
         private AppointmentManager am;
 
-        private MedicineInventory mi = new MedicineInventory();
+        private MedicineInventory mi;
         
        // private InventoryManager im;
         
@@ -47,11 +47,12 @@ public class AdministratorUI {
          AdminManager am;
          ..
           */
-        public AdministratorUI(String userID, StaffManager sm, AppointmentManager am) {
+        public AdministratorUI(String userID, StaffManager sm, AppointmentManager am, MedicineInventory mi ) {
             this.userID = userID;
             this.sm = sm;
             this.admin = sm.selectStaff(userID);
             this.am = am;
+            this.mi = mi;
 
 
             //Handling errors with the code
@@ -270,15 +271,19 @@ public class AdministratorUI {
     public void MedicationInventoryMenu() {
         System.out.println("-----------------------------------");
         System.out.println("Medication Inventory Menu");
-        System.out.println("1. View Medication Inventory");
-        System.out.println("2. Add Medication Inventory");
-        System.out.println("3. Remove Medication Inventory");
-        System.out.println("4. Updating Medication Stock Level");
-        System.out.println("5. Back to Main Menu");
+        System.out.println("1. Approve Requests from Pharmacists");
+        System.out.println("2. View Medication Inventory");
+        System.out.println("3. Add Medication Inventory");
+        System.out.println("4. Remove Medication Inventory");
+        System.out.println("5. Updating Medication Stock Level");
+        System.out.println("6. Update value of Low Stock Alert");
+        System.out.println("7. Back to Main Menu");
         System.out.println("-----------------------------------");
 
     }
-
+    private void approvePharmacistRequest(){
+        ReplenishmentRequest.approveReplenishmentRequest();
+    }
     public void viewMedicationInventory(){
         mi.viewMedicalInventory();
     } // Case 1
@@ -289,31 +294,42 @@ public class AdministratorUI {
 
     public void removeMedicationInventory(){
         mi.rm();
+        mi.saveMedicines();
     }
 
     public void updatingMedicationStockLevel(){
         mi.update();
+        mi.saveMedicines();
+    }
+    public void updatelowStockAlertValue(){
+        mi.updateLowStockAlert();
     }
 
     private void manageMedicationInventory(){
         int choice = -1;
-        while(choice != 5){
+        while(choice != 6){
             MedicationInventoryMenu();
             choice = oh.getOption(1, 5);
             switch (choice){
                 case 1:
-                    viewMedicationInventory();
+                    approvePharmacistRequest();
                     break;
                 case 2:
-                    addMedicationInventory();
+                    viewMedicationInventory();
                     break;
                 case 3:
-                    removeMedicationInventory();
+                    addMedicationInventory();
                     break;
                 case 4:
-                    updatingMedicationStockLevel();
+                    removeMedicationInventory();
                     break;
                 case 5:
+                    updatingMedicationStockLevel();
+                    break;
+                case 6:
+                    updatelowStockAlertValue();
+                    break;
+                case 7:
                     System.out.println("Exiting Medication Inventory Menu");
                     break;
                 default:

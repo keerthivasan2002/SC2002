@@ -41,6 +41,8 @@ public class ApplicationUI {
         ScheduleManager scheduleManager = new ScheduleManager();
         AppointmentManager am = new AppointmentManager();
         String useString = userName.toUpperCase();
+        MedicineInventory mi = new MedicineInventory();
+
 
         if (useString.length() == 5){
 
@@ -61,7 +63,7 @@ public class ApplicationUI {
             //Admin
             else if (useString.startsWith("a") || useString.startsWith("A")){
                StaffManager sm = new StaffManager();
-                AdministratorUI adminUI = new AdministratorUI(useString, sm, am);
+               AdministratorUI adminUI = new AdministratorUI(useString, sm, am, mi); // mi
             } 
 
             //Pharmacist
