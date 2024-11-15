@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -6,7 +7,9 @@ import java.util.Iterator;
 
 public class StaffManager {
     private static ArrayList<Staff> staffs;
-    private  String staff_file = "Staff_List.csv";
+    private static ArrayList<Staff> users = new ArrayList<>();
+    private String staff_file = "Staff_List.csv";
+    private String user_file = "UserID.csv";
 
     Scanner sc = new Scanner(System.in);
 
@@ -19,6 +22,7 @@ public class StaffManager {
     //intialise the array based on the csv that is loaded in
     private void initializeStaffs(){
         FileManager staffFileManager = new FileManager(staff_file);
+        
         String[][] staffArray = staffFileManager.readFile();
 
         //checking for potential errors
@@ -26,6 +30,7 @@ public class StaffManager {
             System.out.println("Failed to load patient data.[StaffManager]");
             return;
         }
+        
 
         for(int i = 1; i < staffArray.length; i++){
             String[] row = staffArray[i];
@@ -63,9 +68,20 @@ public class StaffManager {
         return null;
     }
 
+    public void addStaffMember(String id, String password) {
+        boolean isDefaultPassword = true; // By default, the password is set to default
+        Staff newUser = new Staff(id, password, true); // Assuming default password is true
+        users.add(newUser);
+
+        FileManager staffFileManager = new FileManager(staff_file);
+        String[] row = {id, password, String.valueOf(isDefaultPassword)};
+        staffFileManager.addNewRow(row);
+    }
+
     public void addStaffMember(){
         String id = "", password = "password", name = "", role = "", gender = "", email = "";
         int age = 0, phone = 0;
+        boolean isDefaultPassword = true;
         try{
             System.out.println("Adding a new staff member");
             System.out.println("Enter staff's name: ");
@@ -83,12 +99,25 @@ public class StaffManager {
 
         HospitalRole roles = HospitalRole.valueOf(role.toUpperCase());
         Gender genders = Gender.valueOf(gender.toUpperCase());
+
+        //create a new staff object 
         String[] newStaffRecord = new String[] {id, password, name, role, gender, String.valueOf(age), email, String.valueOf(phone)};
         Staff newStaff = new Staff (id, password, name, roles, genders, age, email, phone);
         staffs.add(newStaff);
 
+        
+        String[] newUserRecord = new String[] {id, password, String.valueOf(isDefaultPassword)};
+        Staff newUser = new Staff(id, password, isDefaultPassword);
+        users.add(newUser);
+
+
+        //add new staff record to the staff.csv and user.csv file
         FileManager staffFileManager = new FileManager(staff_file);
         staffFileManager.addNewRow(newStaffRecord);
+
+        FileManager staffFileManager2 = new FileManager(user_file);
+        staffFileManager2.addNewRow(newUserRecord);
+
         sc.nextLine(); //clear buffer
     }
 
