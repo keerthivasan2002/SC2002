@@ -37,7 +37,6 @@ public class ApplicationUI {
 
     public static void userOption(String userName) {
         //initialise outside to avoid initialising multiple times
-        // Schedule schedule = new Schedule();
         ScheduleManager scheduleManager = new ScheduleManager();
         AppointmentManager am = new AppointmentManager();
 

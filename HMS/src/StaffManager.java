@@ -187,6 +187,7 @@ public class StaffManager {
         }
     }
 
+
     public int setStaffAge(){
         int age = 0;
         while (true) {
@@ -197,7 +198,7 @@ public class StaffManager {
                 if (age > 18) {
                     return age; // Valid age
                 } else if (age < 0){
-                    throw new IntNonNegativeException();
+                    throw new IntNonNegativeException("Wassup"); //remove the wassup
                 }else {
                     System.out.println("Invalid age. Age must be greater than 18.");
                 }
