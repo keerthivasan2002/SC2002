@@ -6,7 +6,6 @@ public class PatientManager{
 
     // Constructor for PatientManager
     public PatientManager() {
-        patients = new ArrayList<>();
         initializePatients(); // Load patient data from file
     }
 

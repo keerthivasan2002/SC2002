@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.sql.Time;
 import java.util.Date;
 import java.text.ParseException;
@@ -15,6 +16,7 @@ public class PatientUI {
     private ArrayList<Appointment> Appointment_Record;
 
     private Scanner sc = new Scanner(System.in);
+    OptionHandling oh = new OptionHandling();
 
     public PatientUI(String userID, PatientManager pm, MedicalRecordManager mrm, ScheduleManager scheduleManager, AppointmentManager am){
         this.userID = userID;
@@ -33,66 +35,6 @@ public class PatientUI {
         }
     }
 
-    // Function to get the option from the user
-    public int getOption(){
-        int option = 0;
-        boolean valid = false;
-        Scanner sc = new Scanner(System.in);
-        while (!valid){
-            try{
-                System.out.println("Enter your option from 1 to 9: ");
-                option = sc.nextInt();
-                System.out.println("You entered: " + option);
-                if (option < 0){
-                    throw new IntNonNegativeException();
-                }else if (option == 0 || option > 9){
-                    throw new InvalidPositiveOptionException();
-                }else {
-                    valid = true;
-                }
-            }catch (IntNonNegativeException e){
-                //Handle negative numbers
-                System.out.println(e.getMessage());
-                option = getOption();
-            }catch (InvalidPositiveOptionException e){
-                //Handle invalid positive numbers
-                System.out.println(e.getMessage());
-                option = getOption();
-            }catch (Exception e){
-                //handle non integer numebr
-                System.out.println("Invalid input. Please enter a valid number.");
-                // option = getOption();
-            }
-        }
-        return option;
-        
-    }
-
-    public int getOptionAgain(){
-        int option = 0;
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter your option: ");
-        option = sc.nextInt();
-
-        if (option < 0){
-            System.out.println("Error: your option MUST NOT be negative number!");
-            System.out.println("You are out! ");
-            System.out.println("Program Terminating! ");
-            System.exit(0);
-        }else if (option == 0 || option > 9){
-            System.out.println("Error: your option MUST be between 1 to 9!");
-            System.out.println("You are out! ");
-            System.out.println("Program Terminating! ");
-            System.exit(0);
-        }else{
-            System.out.println("Error: your are idiot!");
-            System.out.println("You are out! ");
-            System.out.println("Program Terminating! ");
-            System.exit(0);
-        }
-        return option;
-    }
-
     public void patientOption(){
         int choice = -1;
 
@@ -100,7 +42,7 @@ public class PatientUI {
         System.out.println("What would you like to do today?");
         while (true){
             patientMenu();
-            choice = getOption();
+            choice = oh.getOption(1, 9);
             switch (choice){
                 case 1: //view medical record
                     System.out.println("===============================");
@@ -193,10 +135,10 @@ public class PatientUI {
         System.out.println("1. Change Email Address");
         System.out.println("2. Change Phone Number");
         System.out.println("3. Change Password");
-        System.out.println("Press any other number to exit.");
+        System.out.println("4. Back to Main Menu.");
 
-        changeChoice = sc.nextInt();
-        sc.nextLine(); // Clear the buffer
+        changeChoice = oh.getOption(1,4 );
+        // sc.nextLine(); // Clear the buffer
 
         while (changeChoice > 0 && changeChoice < 4) {
             switch (changeChoice) {
@@ -254,7 +196,7 @@ public class PatientUI {
         System.out.println("Add Appointment");
         System.out.println("Enter the following details to schedule an appointment:");
         System.out.print("Doctor ID: ");
-        String doctorID = sc.nextLine();
+        String doctorID = sc.nextLine().toUpperCase();
 
         Date date = null;
         Time time = null;
@@ -289,9 +231,10 @@ public class PatientUI {
 
     //reschedule appointment
     private void rescheduleAppointment() {
+        ArrayList<Appointment> appointment = appointmentManager.viewPatientAppointments(userID);
+        appointmentManager.displayAppointment(appointment);
         System.out.print("Enter Appointment ID to Reschedule: ");
-        int appointmentID = sc.nextInt();
-        sc.nextLine(); // Consume newline
+        int appointmentID = appointmentManager.getValidAppointmentID(appointment);
 
         Date newDate = null;
         Time newTime = null;
@@ -325,9 +268,10 @@ public class PatientUI {
 
     //cancel appointment
     private void cancelAppointment() {
+        ArrayList<Appointment> appointment = appointmentManager.viewPatientAppointments(userID);
+        appointmentManager.displayAppointment(appointment);
         System.out.print("Enter Appointment ID to Cancel: ");
-        int appointmentID = sc.nextInt();
-        sc.nextLine(); // Consume newline
+        int appointmentID = appointmentManager.getValidAppointmentID(appointment);
 
         boolean success = appointmentManager.cancelAppointment(appointmentID);
         if (success) {
@@ -335,26 +279,26 @@ public class PatientUI {
         } else {
             System.out.println("Failed to cancel appointment. Appointment may not exist or is already canceled.");
         }
-        sc.nextLine(); // Clear the buffer
     }
 
     protected void viewAppointments() {
         System.out.println("Viewing Appointments");
-        
-        ArrayList<Appointment> Appointment_Record =  appointmentManager.viewPatientAppointments(userID);
-        if (Appointment_Record.size() == 0) {
-            System.out.println("No appointments found for patient. " + userID);
-            return;
-        }
-        for (Appointment appointment : Appointment_Record) {
-            System.out.println("Appointment ID: " + appointment.getAppointmentID());
-            System.out.println("Doctor: " + appointment.getDoctor());
-            System.out.println("Date: " + appointment.getStringDate());
-            System.out.println("Time: " + appointment.getStringTime());
-            System.out.println("Status: " + appointment.getAppointmentStatus());
-            System.out.println("Outcome: " + appointment.getOutcome());
-            System.out.println("-----------------------------------");
-        }
+        ArrayList appointment_record = appointmentManager.viewPatientAppointments(userID);
+        appointmentManager.displayAppointment(appointment_record);
+        // ArrayList<Appointment> Appointment_Record =  appointmentManager.viewPatientAppointments(userID);
+        // if (Appointment_Record.size() == 0) {
+        //     System.out.println("No appointments found for patient. " + userID);
+        //     return;
+        // }
+        // for (Appointment appointment : Appointment_Record) {
+        //     System.out.println("Appointment ID: " + appointment.getAppointmentID());
+        //     System.out.println("Doctor: " + appointment.getDoctor());
+        //     System.out.println("Date: " + appointment.getStringDate());
+        //     System.out.println("Time: " + appointment.getStringTime());
+        //     System.out.println("Status: " + appointment.getAppointmentStatus());
+        //     System.out.println("Outcome: " + appointment.getOutcome());
+        //     System.out.println("-----------------------------------");
+        // }
         System.out.println("End of Appointments");
     }
 

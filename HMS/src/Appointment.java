@@ -17,8 +17,8 @@ public class Appointment {
 
     public Appointment(String patientID, String userID, Date date, Time time) {
         this.appointmentID = idCounter++;
-        // this.patient = new Patient(patientID); // Assuming Patient class has this constructor
-        // this.doctor = new Staff(userID); // Assuming Staff class has this constructor
+        this.patient = new Patient(patientID); // Assuming Patient class has this constructor
+        this.doctor = new Staff(userID); // Assuming Staff class has this constructor
         this.patientID = patientID;
         this.userID = userID;
         this.date = date;

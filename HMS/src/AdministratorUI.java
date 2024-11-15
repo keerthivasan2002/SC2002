@@ -36,10 +36,11 @@ public class AdministratorUI {
         private AppointmentManager am;
 
         private MedicineInventory mi = new MedicineInventory();
+        
        // private InventoryManager im;
         
         Scanner sc = new Scanner(System.in);
-
+        OptionHandling oh = new OptionHandling();
         /*
          FOR FILE TRANSFER / RECEIVING
          Admin admin;
@@ -61,66 +62,6 @@ public class AdministratorUI {
             }
         }
 
-        // Function to get the option from the user
-    public int getOption(){
-        int option = 0;
-        boolean valid = false;
-        Scanner sc = new Scanner(System.in);
-        while (!valid){
-            try{
-                System.out.println("Enter your option from 1 to 4: ");
-                option = sc.nextInt();
-                System.out.println("You entered: " + option);
-                if (option < 0){
-                    throw new IntNonNegativeException(); //[ethan] what is throw
-                }else if (option == 0 || option > 4){
-                    throw new InvalidPositiveOptionException();
-                }else {
-                    valid = true;
-                }
-            }catch (IntNonNegativeException e){
-                //Handle negative numbers
-                System.out.println(e.getMessage());
-                option = getOption();
-            }catch (InvalidPositiveOptionException e){
-                //Handle invalid positive numbers
-                System.out.println(e.getMessage());
-                option = getOption();
-            }catch (Exception e){
-                //handle non integer numebr
-                System.out.println("Invalid input. Please enter a valid number.");
-                // option = getOption();
-            }
-        }
-        return option;
-        
-    }
-
-    public int getOptionAgain(){
-        int option = 0;
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter your option: ");
-        option = sc.nextInt();
-
-        if (option < 0){
-            System.out.println("Error: your option MUST NOT be negative number!");
-            System.out.println("You are out! ");
-            System.out.println("Program Terminating! ");
-            System.exit(0);
-        }else if (option == 0 || option > 4){
-            System.out.println("Error: your option MUST be between 1 to 9!");
-            System.out.println("You are out! ");
-            System.out.println("Program Terminating! ");
-            System.exit(0);
-        }else{
-            System.out.println("Error: your are idiot!");
-            System.out.println("You are out! ");
-            System.out.println("Program Terminating! ");
-            System.exit(0);
-        }
-        return option;
-    }
-
     public void adminOption() {
         int choice = -1;
 
@@ -129,7 +70,8 @@ public class AdministratorUI {
 
         while (true){
             adminMenu();
-            choice = getOption();
+            choice = oh.getOption(1, 4);
+
             switch (choice) {
                 case 1: // Manage Staff Records
                     viewAndManageStaffRecords();
@@ -201,8 +143,8 @@ public class AdministratorUI {
         while (choice != 3){
             displayAppointmentMenu();
             System.out.print("Enter your choice: ");
-            choice = sc.nextInt();
-            sc.nextLine();
+            choice = oh.getOption(1, 3);
+            // sc.nextLine();
 
             if (choice == 3) {
                 break; // Exit the main menu loop
@@ -239,8 +181,8 @@ public class AdministratorUI {
             while (statusChoice != 8){
                 statusMenu();
                 System.out.print("Enter your choice: ");
-                statusChoice = sc.nextInt();
-                sc.nextLine();
+                statusChoice = oh.getOption(1, 8);
+                // sc.nextLine();
                 switch (statusChoice){
                     case 1:
 
@@ -286,8 +228,8 @@ public class AdministratorUI {
         String staffIDString = "";
         while (choice != 5){
             staffRecordMenu();
-            choice = sc.nextInt();
-            sc.nextLine();
+            choice = oh.getOption(1, 5);
+            // sc.nextLine();
             switch (choice){
                 case 1:
 
@@ -344,17 +286,20 @@ public class AdministratorUI {
     public void addMedicationInventory(){
         mi.add();
     }
+
     public void removeMedicationInventory(){
         mi.rm();
     }
+
     public void updatingMedicationStockLevel(){
         mi.update();
     }
+
     private void manageMedicationInventory(){
         int choice = -1;
         while(choice != 5){
             MedicationInventoryMenu();
-            choice = getOption();
+            choice = oh.getOption(1, 5);
             switch (choice){
                 case 1:
                     viewMedicationInventory();
@@ -369,9 +314,8 @@ public class AdministratorUI {
                     updatingMedicationStockLevel();
                     break;
                 case 5:
-                    System.out.println("Thank you! Hope to see you soon :)\n");
-                    System.exit(0);
-                    return;
+                    System.out.println("Exiting Medication Inventory Menu");
+                    break;
                 default:
                     break;
             }

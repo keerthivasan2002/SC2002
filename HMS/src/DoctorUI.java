@@ -7,12 +7,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class DoctorUI {
-    private String userID;
-    Staff doctor;
-    StaffManager sm;
-    Patient patient;
-    MedicalRecordManager mrm;
-    ScheduleManager scheduleManager;
+    protected String userID;
+    protected Staff doctor;
+    protected StaffManager sm;
+    protected Patient patient;
+    protected MedicalRecordManager mrm;
+    protected ScheduleManager scheduleManager;
     private AppointmentManager am;
 
     Scanner sc = new Scanner(System.in);
@@ -123,8 +123,13 @@ public class DoctorUI {
                     updateSchedule();
                     break;
                 case 5: //Accept or Decline Appointment Request
+                    System.out.println("Accept or Decline Appointment Request");
+                    
+                    am.appointmentRequest(doctor);
+
                     break;
                 case 6: //View Upcoming Appointment
+                    am.getUpcomingAppointmentsForDoctor(doctor);
                     break;
                 case 7: //Record Appointment Outcome
                     recordAppointmentOutcome();
@@ -182,7 +187,8 @@ public class DoctorUI {
 
     public void updatePatientMedicalRecord() {
         PatientManager pm = new PatientManager();
-    
+
+        
         // System.out.println("Enter the patient ID: ");
         // String patientID = sc.next();
         // Patient patient = pm.selectPatient(patientID);
@@ -230,7 +236,7 @@ public class DoctorUI {
         PatientManager pm = new PatientManager();
 
         System.out.println("Enter the Patient ID: ");
-        String patientID = sc.next();
+        String patientID = sc.next().toUpperCase();
         
         Patient patient = pm.selectPatient(patientID);
         if(patient == null){
@@ -358,5 +364,10 @@ public class DoctorUI {
             sc.nextLine();
             personalSchedule();
         }
+    }
+
+    public void viewUpcomingRecord(){
+        am.getUpcomingAppointmentsForDoctor(doctor);
+  
     }
 }

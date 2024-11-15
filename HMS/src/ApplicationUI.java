@@ -17,8 +17,8 @@ public class ApplicationUI {
             // String userName = "D001"; // speed up testing purpose
 
             System.out.print("Password: ");
-            String password = sc.next();
-            //String password = "password";
+            // String password = sc.next();
+            String password = "password";
 
             LogInManager login = new LogInManager(userName, password);
             boolean accept = login.authoriseLogin();
