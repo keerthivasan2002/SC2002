@@ -60,7 +60,7 @@ public class DoctorUI {
                 System.out.println(e.getMessage());
                 option = getOption();
             }catch (Exception e){
-                //handle non integer numebr
+                //handle non integer number
                 System.out.println("Invalid input. Please enter a valid number.");
                 option = getOption();
             }

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ReplenishmentRequest {
     private String medicineName;
@@ -16,10 +17,17 @@ public class ReplenishmentRequest {
     }
 
     // Method to submit a replenishment request
-    public static void submitReplenishmentRequest(String medicineName, int requestedQuantity) {         // for pharmacist
-        ReplenishmentRequest request = new ReplenishmentRequest(medicineName, requestedQuantity);
+    public static void submitReplenishmentRequest() {         // for pharmacist
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter medicine name: ");
+        String medicineName = sc.next();
+        System.out.println("Enter quantity: ");
+        int quantity = sc.nextInt();
+        sc.nextLine();
+
+        ReplenishmentRequest request = new ReplenishmentRequest(medicineName, quantity);
         requests.add(request);
-        System.out.println("Replenishment request submitted for " + requestedQuantity + " units of " + medicineName + ".");
+        System.out.println("Replenishment request submitted for " + quantity + " units of " + medicineName + ".");
     }
 
     // Method to approve a replenishment request
@@ -27,7 +35,7 @@ public class ReplenishmentRequest {
         for (ReplenishmentRequest request : requests) {
             if (request.medicineName.equalsIgnoreCase(medicineName) && request.status.equals("Pending")) {
                 request.status = "Approved";
-                inventory.updateMedicalInventory(medicineName, request.requestedQuantity);
+                inventory.updateMedicalInventory();
                 System.out.println("Replenishment request approved for " + request.requestedQuantity + " units of " + medicineName + ".");
                 return;
             }

@@ -22,6 +22,36 @@ public class PharmacistUI {
         }
     }
 
+    public int getOption(){
+        int option = 0;
+        boolean valid = false;
+        Scanner sc = new Scanner(System.in);
+        while (!valid){
+            try{
+                System.out.println("Enter your option from 1 to 5: ");
+                option = sc.nextInt();
+                System.out.println("You entered: " + option);
+                if (option < 0){
+                    throw new IntNonNegativeException();
+                }else if (option == 0 || option > 9){
+                    throw new InvalidPositiveOptionException();
+                }else {
+                    valid = true;
+                }
+            } catch (IntNonNegativeException e){
+                System.out.println(e.getMessage());
+                option = getOption();
+            } catch (InvalidPositiveOptionException e){
+                System.out.println(e.getMessage());
+                option = getOption();
+            }catch (Exception e){
+                System.out.println("Invalid input. Please enter a valid number. ");
+                option = getOption();
+            }
+        }
+        return option;
+    }
+
     public void pharmacistOption(){
         int choice = 0;
         System.out.println("Hello" + pharmacist.getName() + ".");
@@ -34,23 +64,13 @@ public class PharmacistUI {
                 case 1: //view appointment outcome records
                     break;
                 case 2: //update prescription status
-                    System.out.println("Enter medicine name: ");
-                    String medicineName = sc.next();
-                    System.out.println("Enter quantity: ");
-                    int quantity = sc.nextInt();
-                    sc.nextLine();
-                    medicines.updateMedicalInventory(medicineName, quantity);
+                    medicines.updateMedicalInventory();
                     break;
                 case 3: //view medical inventory
                     medicines.viewMedicalInventory();
                     break;
                 case 4: //submit replenishment request
-                    System.out.println("Enter medicine name: ");
-                    medicineName = sc.next();
-                    System.out.println("Enter quantity: ");
-                    quantity = sc.nextInt();
-                    sc.nextLine();
-                    request.submitReplenishmentRequest(medicineName, quantity);
+                    request.submitReplenishmentRequest();
                     break;
                 case 5: //log out
                     System.out.println("Thank you! Hope to see you soon :)\n");

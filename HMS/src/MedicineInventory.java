@@ -57,7 +57,31 @@ public class MedicineInventory {
         System.out.print("Enter name: ");
         String name = sc.nextLine();
 
-    public boolean updateMedicalInventory(String medicineName, int quantity) {
+        // Prompt and accept input for password
+        System.out.print("Enter stock: ");
+        int stock = Integer.parseInt(sc.nextLine());
+
+        // Prompt and accept input for name
+        System.out.print("Enter Low Stock Alert Limit");
+        int lowStockAlert = Integer.parseInt(sc.nextLine());
+        Medicines meds = new Medicines(name, stock, lowStockAlert);
+        // Should add avoid adding duplicates
+        for(Medicines Medicine : medicines){
+            if(Medicine.name.equals(name)) {
+                System.out.print("Cannot add duplicate!");
+                return;
+            }
+        }
+        medicines.add(meds);
+    }
+
+    public boolean updateMedicalInventory() {
+        System.out.println("Enter medicine name: ");
+        String medicineName = sc.next();
+        System.out.println("Enter quantity: ");
+        int quantity = sc.nextInt();
+        sc.nextLine();
+
         for (Medicines med : medicines) {
             if (med.name.equalsIgnoreCase(medicineName)) {
                 if (med.stock >= quantity) {
@@ -77,25 +101,6 @@ public class MedicineInventory {
         }
         System.out.println("Error: Medicine " + medicineName + " not found in inventory.");
         return false;  // Medicine not found
-    }
-
-
-        // Prompt and accept input for password
-        System.out.print("Enter stock: ");
-        int stock = Integer.parseInt(sc.nextLine());
-
-        // Prompt and accept input for name
-        System.out.print("Enter Low Stock Alert Limit");
-        int lowStockAlert = Integer.parseInt(sc.nextLine());
-        Medicines meds = new Medicines(name, stock, lowStockAlert);
-        // Should add avoid adding duplicates
-        for(Medicines Medicine : medicines){
-            if(Medicine.name.equals(name)) {
-                System.out.print("Cannot add duplicate!");
-                return;
-            }
-        }
-        medicines.add(meds);
     }
 
     public void rm(){
