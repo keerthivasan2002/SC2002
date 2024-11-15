@@ -67,7 +67,7 @@ public class AppointmentManager {
             if (row.length >= 7) {
                 String appointmentID = row[0];
                 String patientID = row[1];
-                // System.out.println("I am here: " + patientID);
+                //System.out.println("I am here: " + patientID);
                 String doctorID = row[2];
 
                 Date date = null;
@@ -82,9 +82,11 @@ public class AppointmentManager {
                     // String formattedDate = dateFormat.format(dateInput); // Format the date to desired format
                     // row[3] = formattedDate; // Update the date in the record
                     date = dateFormat.parse(row[3]); // Convert String to Date
-                    Date parsedTime = timeFormat.parse(row[4]);
-                    startTime = new Time(parsedTime.getTime());
-                    endTime = new Time (parsedTime.getTime());
+                    Date parsedStartTime = timeFormat.parse(row[4]);
+                    Date parsedEndTime = timeFormat.parse(row[5]);
+
+                    startTime = new Time(parsedStartTime.getTime());
+                    endTime = new Time (parsedEndTime.getTime());
                 } catch (ParseException e) {
                     System.out.println("Error parsing time: " + e.getMessage());
                     // Handle the error appropriately
@@ -92,12 +94,14 @@ public class AppointmentManager {
                 AppointmentStatus status = AppointmentStatus.valueOf(row[6].toUpperCase()); // Assuming status is in the fifth column
                 String outcome = row[7]; // Assuming outcome is in the sixth column
 
+                displayAppointment(appointments);
                 Appointment appointment = new Appointment(patientID, doctorID, date, startTime, endTime);
                 appointment.setAppointmentStatus(status);
                 appointment.setOutcome(outcome);
                 appointments.add(appointment);
+
             } else {
-                System.out.println("Incomplete data in row, skipping: " + String.join(",", row));
+                System.out.println("Incomplete data in row, skipping: lol " + String.join(",", row));
             }
             // For debug purposes [ensure file from appointment is read properly]
             // for (Appointment appointment : appointments) {
@@ -135,48 +139,68 @@ public class AppointmentManager {
         return false;
     }
 
-    // Add a new appointment
-    public boolean addAppointment(String patientID, String doctorID, Date date, Time startTime, Time endTime) {
-        System.out.println("Scheduling appointment for Patient ID: " + patientID + ", Doctor ID: " + doctorID + ", Date: " + date + ", Time: " + startTime);
+    // Check if a similar appointment already exists in the CSV file
+    public boolean isDuplicateInCSV(String patientID, String doctorID, Date date, Time startTime, Time endTime) {
+        FileManager appointmentFileManager = new FileManager(appointment_File);
+        String[][] appointmentArray = appointmentFileManager.readFile();
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        int appointmentID = appointments.size() + 1;
 
-        if (patientIsMatch(patientID, doctorID, date, startTime, endTime) == true || doctorAndTimeMatch(doctorID, date, startTime, endTime) == true) {
+        String dateStr = dateFormat.format(date);
+        String startTimeStr = timeFormat.format(startTime);
+        String endTimeStr = timeFormat.format(endTime);
+
+        if (appointmentArray == null || appointmentArray.length == 0) {
+            return false; // No records in the CSV
+        }
+
+        for (int i = 1; i < appointmentArray.length; i++) {
+            String[] row = appointmentArray[i];
+
+            // Check if all relevant fields match
+            if (row[1].equals(patientID) && row[2].equals(doctorID) &&
+                    row[3].equals(dateStr) && row[4].equals(startTimeStr) && row[5].equals(endTimeStr)) {
+                return true; // Duplicate found
+            }
+        }
+        return false; // No duplicate found
+    }
+
+
+    // Add a new appointment
+    public boolean addAppointment(String patientID, String doctorID, Date date, Time startTime, Time endTime) {
+        System.out.println("Scheduling appointment for Patient ID: " + patientID + ", Doctor ID: " + doctorID + ", Date: " + date + ", Start Time: " + startTime + ", End Time:" + endTime);
+
+        if (patientIsMatch(patientID, doctorID, date, startTime, endTime) ||
+                doctorAndTimeMatch(doctorID, date, startTime, endTime) ||
+                isDuplicateInCSV(patientID, doctorID, date, startTime, endTime)) { // Check CSV for duplicates
             System.out.println("Appointment already exists.");
             return false;
-        }else {
+        } else {
+            int appointmentID = appointments.size() + 1;
             Appointment newAppointment = new Appointment(patientID, doctorID, date, startTime, endTime);
             appointments.add(newAppointment);
             System.out.println("Appointment scheduled with ID: " + newAppointment.getAppointmentID());
 
-             // Save the new appointment to the file
-             String[] appointment = new String[]{String.valueOf(appointmentID), patientID, doctorID, dateFormat.format(date), timeFormat.format(startTime), "PENDING", "NULL"};
-             FileManager appointmentFM = new FileManager(appointment_File);
-             appointmentFM.addNewRow(appointment);
+            // Save the new appointment to the file
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            String[] appointment = new String[]{
+                    String.valueOf(appointmentID),
+                    patientID, doctorID,
+                    dateFormat.format(date),
+                    timeFormat.format(startTime),
+                    timeFormat.format(endTime),
+                    "PENDING", "NULL"
+            };
 
+            FileManager appointmentFM = new FileManager(appointment_File);
+            appointmentFM.addNewRow(appointment);
             return true;
         }
-
-        // if (schedule.isTimeSlotAvailable(date, time)) {
-        //     Appointment newAppointment = new Appointment(patientID, doctorID, date, time);
-        //     appointments.add(newAppointment);
-        //     schedule.bookTimeSlot(date, time); // Mark the slot as booked
-        //     System.out.println("Appointment scheduled with ID: " + newAppointment.getAppointmentID());
-
-        //     // Save the new appointment to the file
-        //     String[] appointment = new String[]{String.valueOf(appointmentID), patientID, doctorID, dateFormat.format(date), timeFormat.format(time), "PENDING", "NULL"};
-        //     FileManager appointmentFM = new FileManager(appointment_File);
-        //     appointmentFM.addNewRow(appointment);
-
-        //     return true;
-        // } else {
-        //     System.out.println("Selected time slot is not available.");
-        //     return false;
-        // }
-
-
     }
+
 
 
     public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newStartTime, Time newEndTime) {
@@ -189,6 +213,14 @@ public class AppointmentManager {
             if (doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
                     patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
                 System.out.println("Appointment slot is already occupied.");
+                return false;
+            }
+
+            // Check for any existing conflicting appointment for the doctor or patient at the new time slot
+            if (doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
+                    patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime) ||
+                    isDuplicateInCSV(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
+                System.out.println("Appointment slot is already occupied by you.");
                 return false;
             }
 
@@ -548,32 +580,69 @@ public class AppointmentManager {
 
     // Display a list of appointments in a tabular format
     public void displayAppointment(ArrayList<Appointment> filteredAppointments) {
+        // System.out.println("-----------------------------------");
+        // System.out.println("Appointments: ");
+        // System.out.println("-----------------------------------");
+
         if (filteredAppointments.isEmpty()) {
             System.out.println("No appointments found.");
             return;
         } else {
-            // Print header
-            System.out.printf("Appointments for Patient ID: %s%n", filteredAppointments.get(0).getPatient().getPatientID());
-            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-40s%n",
-                    "Appointment ID", "Patient ID", "Doctor ID", "Date", "Start Time", "End Time", "Status", "Outcome");
-            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            // Print table headers
+            System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
+                    "Appointment ID", "Patient ID", "Doctor ID", "Date", "Time", "End time","Status", "Outcome");
+            System.out.println("--------------------------------------------------------------------------------------------------------------------------");
 
-            // Display each appointment
+            // Print each appointment's details in a formatted manner
             for (Appointment appointment : filteredAppointments) {
-                String patientID = (appointment.getPatient() != null) ? appointment.getPatient().getPatientID() : "N/A";
-                String outcome = (appointment.getOutcome() != null) ? appointment.getOutcome() : "N/A";
-                System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-40s%n",
+                System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
                         appointment.getAppointmentID(),
-                        patientID,
+                        appointment.getPatient().getPatientID(),
                         appointment.getDoctor().getUserID(),
                         appointment.getStringDate(),
                         appointment.getStringStartTime(),
                         appointment.getStringEndTime(),
                         appointment.getAppointmentStatus(),
-                        outcome);
+                        appointment.getOutcome() != null ? appointment.getOutcome() : "N/A");
             }
-            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         }
     }
+
+
+    //tester function
+    public void printAllAppointmentsFromCSV() {
+        FileManager appointmentFileManager = new FileManager(appointment_File);
+        String[][] appointmentArray = appointmentFileManager.readFile();
+
+        if (appointmentArray == null || appointmentArray.length == 0) {
+            System.out.println("No appointments found in the CSV file."); //check if there are appointments
+            return;
+        }
+
+        // Print the header row (assuming the first row contains headers)
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-40s%n",
+                "Appointment ID", "Patient ID", "Doctor ID", "Date", "Start Time", "End Time", "Status", "Outcome");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        // Loop through each row and print appointment details
+        for (int i = 1; i < appointmentArray.length; i++) {  // Start from 1 if the first row is a header
+            String[] row = appointmentArray[i];
+            if (row.length >= 8) {  // Adjust based on expected columns
+                System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-40s%n",
+                        row[0], // Appointment ID
+                        row[1], // Patient ID
+                        row[2], // Doctor ID
+                        row[3], // Date
+                        row[4], // Start Time
+                        row[5], // End Time
+                        row[6], // Status
+                        row[7] != null ? row[7] : "N/A" // Outcome, handle null values
+                );
+            }
+        }
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+    }
+
 }

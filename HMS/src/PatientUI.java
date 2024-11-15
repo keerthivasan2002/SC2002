@@ -32,6 +32,7 @@ public class PatientUI {
         if(this.patient == null){
             System.out.println("No patient found with the given ID:" + userID);
         }else{
+            am.printAllAppointmentsFromCSV();
             patientOption();
         }
     }
