@@ -53,24 +53,6 @@ public class MedicineInventory {
         }
     }
 
-        // Prompt and accept input for password
-        System.out.print("Enter stock: ");
-        int stock = Integer.parseInt(sc.nextLine());
-
-        // Prompt and accept input for name
-        System.out.print("Enter Low Stock Alert Limit");
-        int lowStockAlert = Integer.parseInt(sc.nextLine());
-        Medicines meds = new Medicines(name, stock, lowStockAlert);
-        // Should add avoid adding duplicates
-        for(Medicines Medicine : medicines){
-            if(Medicine.name.equals(name)) {
-                System.out.print("Cannot add duplicate!");
-                return;
-            }
-        }
-        medicines.add(meds);
-    }
-
     public boolean updateMedicalInventory() {
         System.out.println("Enter medicine name: ");
         String medicineName = sc.next();
@@ -103,7 +85,23 @@ public class MedicineInventory {
         // Prompt and accept input for userID
         System.out.print("Enter name: ");
         String name = sc.nextLine();
-    
+        // Prompt and accept input for password
+        System.out.print("Enter stock: ");
+        int stock = Integer.parseInt(sc.nextLine());
+
+        // Prompt and accept input for name
+        System.out.print("Enter Low Stock Alert Limit");
+        int lowStockAlert = Integer.parseInt(sc.nextLine());
+        Medicines meds = new Medicines(name, stock, lowStockAlert);
+        // Should add avoid adding duplicates
+        for(Medicines Medicine : medicines){
+            if(Medicine.name.equals(name)) {
+                System.out.print("Cannot add duplicate!");
+                return;
+            }
+        }
+        medicines.add(meds);
+    }
     
 
     public void rm(){
