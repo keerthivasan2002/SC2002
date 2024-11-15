@@ -1,9 +1,11 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class PatientManager{
     private static ArrayList<Patient> patients = new ArrayList<>(); // List of all patients
     private String patient_File = "Patient_List.csv";
-
+    
+    private Scanner sc = new Scanner(System.in);
     // Constructor for PatientManager
     public PatientManager() {
         initializePatients(); // Load patient data from file
@@ -108,6 +110,34 @@ public class PatientManager{
         }
     }
 
+    public String setPatientEmail(){
+        String email = "";
+        while (true) {
+            System.out.println("Enter the staff member's email (must end with @hotmail.com, @gmail.com, @outlook.com, or @yahoo.com): ");
+            email = sc.nextLine();
+            if (email.matches(".+@(hotmail|gmail|outlook|yahoo)\\.com")) {
+                return email;
+            }else{
+                System.out.println("Invalid email. Please enter a valid email address ending with @hotmail.com, @gmail.com, @outlook.com, or @yahoo.com.");
+            }
+        }
+    }
 
+    public int setPatientPhoneNumber(){
+        String phone = "";
+        while (true) {
+            System.out.println("Enter the staff member's phone number (must be 8 digits and start with 8 or 9): ");
+            phone = sc.nextLine();
+            if (phone.matches("[89]\\d{7}")) {
+                try {
+                    // Convert phone number from String to Integer
+                    return Integer.valueOf(phone);
+                } catch (NumberFormatException e) {
+                    System.out.println("Error: Phone number is not valid for integer conversion.");
+                    return 0; // Return null if the conversion fails
+                }
+            }
+        }
+    }
 
 }

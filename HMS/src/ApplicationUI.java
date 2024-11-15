@@ -17,8 +17,8 @@ public class ApplicationUI {
             // String userName = "D001"; // speed up testing purpose
 
             System.out.print("Password: ");
-            //String password = sc.next();
-            String password = "Password";
+            String password = sc.next();
+            // String password = "password";
 
             LogInManager login = new LogInManager(userName, password);
             boolean accept = login.authoriseLogin();
@@ -36,7 +36,8 @@ public class ApplicationUI {
     }
 
     public static void userOption(String userName) {
-        // Step 1: Create ScheduleManager and AppointmentManager without dependencies initially
+        //initialise outside to avoid initialising multiple times
+        // Schedule schedule = new Schedule();
         ScheduleManager scheduleManager = new ScheduleManager();
         AppointmentManager am = new AppointmentManager();
 

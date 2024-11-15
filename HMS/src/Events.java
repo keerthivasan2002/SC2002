@@ -10,7 +10,7 @@ public class Events {
     private String description;
 
     // Shared date and time formatters
-    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
 
     public Events(String doctorID, Date date, Time startTime, Time endTime, String description) {

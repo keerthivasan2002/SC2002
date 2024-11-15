@@ -181,7 +181,7 @@ public class AdministratorUI {
             while (statusChoice != 8){
                 statusMenu();
                 System.out.print("Enter your choice: ");
-                statusChoice = oh.getOption(1, 8);
+                statusChoice = oh.getOption(1, 6);
                 // sc.nextLine();
                 switch (statusChoice){
                     case 1:
@@ -201,12 +201,6 @@ public class AdministratorUI {
                         filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.PENDING);
                         break;
                     case 6:
-                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.APPROVED);
-                        break;
-                    case 7:
-                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments,AppointmentStatus.SCHEDULED);
-                        break;
-                    case 8:
                         break;
                     default:
                         System.out.println("Invalid choice. Please enter a valid option.");
