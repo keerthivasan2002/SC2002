@@ -110,7 +110,7 @@ public class AppointmentManager {
                 }
                 AppointmentStatus status = AppointmentStatus.valueOf(row[5].toUpperCase()); // Assuming status is in the fifth column
                 String outcome = row[6]; // Assuming outcome is in the sixth column
-
+                
                 Appointment appointment = new Appointment(patientID, doctorID, date, time);
                 appointment.setAppointmentStatus(status);
                 appointment.setOutcome(outcome);
@@ -130,6 +130,7 @@ public class AppointmentManager {
             //     System.out.println("-----------------------------------");
             // }
         }
+        displayAppointment(appointments);
     }
 
     /* ------------------------------------------------- Start Scheduling Function ------------------------------------------ */
