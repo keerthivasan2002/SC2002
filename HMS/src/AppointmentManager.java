@@ -11,14 +11,14 @@ import java.util.Scanner;
 
 public class AppointmentManager {
     private ArrayList<Appointment> appointments;
-    private ScheduleManager scheduleManager;
+    private ArrayList<Schedule> schedules;
     private String appointment_File = "Appointment_List.csv";
     private static ArrayList <Patient> patients = new ArrayList<>();
     private static ArrayList <Staff> staffList = new ArrayList<>();
+    private ScheduleManager scheduleManager;
 
     public AppointmentManager() {
         this.appointments = new ArrayList<>();
-        initializeAppointments();
     }
 
     public void setScheduleManager(ScheduleManager scheduleManager) {
@@ -27,6 +27,7 @@ public class AppointmentManager {
 
     public AppointmentManager(Schedule schedule) {
         this.appointments = new ArrayList<>();
+        this.schedules = new ArrayList<>();
     }
 
     /* ------------------------------------------------- Start Initialization Function ------------------------------------------ */

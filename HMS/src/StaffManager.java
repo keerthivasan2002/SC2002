@@ -198,7 +198,7 @@ public class StaffManager {
                 if (age > 18) {
                     return age; // Valid age
                 } else if (age < 0){
-                    throw new IntNonNegativeException("Wassup"); //remove the wassup
+                    throw new IntNonNegativeException();
                 }else {
                     System.out.println("Invalid age. Age must be greater than 18.");
                 }

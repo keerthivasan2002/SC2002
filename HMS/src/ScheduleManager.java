@@ -145,7 +145,7 @@ public class ScheduleManager {
         //add appointments to the events list
         if (am != null) {
             for (Appointment appointment : am.getAppointments()) {
-                if (isSameDay(appointment.getDate(), now) && appointment.getDoctor().getUserID().equals(id)) {
+                if (isSameDay(appointment.getDate(), now) && appointment.getDoctor().getUserID().equals(id) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
                     String userid = appointment.getDoctor().getUserID();
                     Date dte = appointment.getDate();
                     Time st = appointment.getStartTime();
@@ -288,6 +288,12 @@ public class ScheduleManager {
             }
         }
 
+        //check conflict with existing appointments
+        for(Appointment appointment: appointments){
+            if(appointment.getDoctor().userID.equals(doctor.getUserID()) && isSameDay(appointment.getDate(), date)){
+            }
+        }
+
         // If no conflict, add the schedule
         Schedule newSchedule = new Schedule(doctor.getUserID(), date, startTime, endTime, description);
         schedules.add(newSchedule);
@@ -297,6 +303,10 @@ public class ScheduleManager {
         FileManager appointmentFM = new FileManager(scheduleFile);
         appointmentFM.addNewRow(schedule);
         return true;
+    }
+
+    public List<Schedule> getSchedules(){
+        return schedules;
     }
 
 }
