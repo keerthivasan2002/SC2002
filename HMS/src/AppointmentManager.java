@@ -93,13 +93,24 @@ public class AppointmentManager {
                 }
                 AppointmentStatus status = AppointmentStatus.valueOf(row[6].toUpperCase()); // Assuming status is in the fifth column
                 String outcome = row[7]; // Assuming outcome is in the sixth column
+               
+                // Debugging purposes
+                System.out.println("Before add to memory");
+                System.out.println("Appointment ID: " + appointmentID);
+                System.out.println("Patient ID: " + patientID);
+                System.out.println("Doctor ID: " + doctorID);
+                System.out.println("Date: " + date);
+                System.out.println("Start Time: " + startTime);
+                System.out.println("End Time: " + endTime);
+                System.out.println("Status: " + status);
+                System.out.println("Outcome: " + outcome);
+                System.out.println("-----------------------------------");
 
-                displayAppointment(appointments);
                 Appointment appointment = new Appointment(patientID, doctorID, date, startTime, endTime);
                 appointment.setAppointmentStatus(status);
                 appointment.setOutcome(outcome);
                 appointments.add(appointment);
-
+                displayAppointment(appointments);
             } else {
                 System.out.println("Incomplete data in row, skipping: lol " + String.join(",", row));
             }
@@ -188,11 +199,13 @@ public class AppointmentManager {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             String[] appointment = new String[]{
                     String.valueOf(appointmentID),
-                    patientID, doctorID,
+                    patientID, 
+                    doctorID,
                     dateFormat.format(date),
                     timeFormat.format(startTime),
                     timeFormat.format(endTime),
-                    "PENDING", "NULL"
+                    "PENDING", 
+                    "NULL"
             };
 
             FileManager appointmentFM = new FileManager(appointment_File);
@@ -228,6 +241,9 @@ public class AppointmentManager {
             appointment.setDate(newDate);
             appointment.setStartTime(newStartTime);
             appointment.setEndTime(newEndTime);
+            appointment.setAppointmentStatus(AppointmentStatus.PENDING);
+
+            displayAppointment(appointments);
 
             System.out.println("Appointment ID " + appointmentID + " rescheduled.");
             System.out.println("New Date: " + newDate + ", New Start Time: " + newStartTime + ", New End Time: " + newEndTime);
