@@ -52,10 +52,6 @@ public class MedicineInventory {
             System.out.printf("%-15s %-10d\n", med.name, med.stock);
         }
     }
-    public void add() {
-        // Prompt and accept input for userID
-        System.out.print("Enter name: ");
-        String name = sc.nextLine();
 
         // Prompt and accept input for password
         System.out.print("Enter stock: ");
@@ -102,6 +98,13 @@ public class MedicineInventory {
         System.out.println("Error: Medicine " + medicineName + " not found in inventory.");
         return false;  // Medicine not found
     }
+    
+    public void add() {
+        // Prompt and accept input for userID
+        System.out.print("Enter name: ");
+        String name = sc.nextLine();
+    
+    
 
     public void rm(){
         System.out.print("Enter name of Medicine to be removed: ");

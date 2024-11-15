@@ -12,15 +12,27 @@ public class Appointment {
     private Time time;
     private MedicalRecord appointmentRecord;
     private String outcome;
+    private String patientID;
+    private String userID;
 
     public Appointment(String patientID, String userID, Date date, Time time) {
         this.appointmentID = idCounter++;
         this.patient = new Patient(patientID); // Assuming Patient class has this constructor
         this.doctor = new Staff(userID); // Assuming Staff class has this constructor
+        this.patientID = patientID;
+        this.userID = userID;
         this.date = date;
         this.time = time;
         this.appointmentStatus = AppointmentStatus.SCHEDULED; // Default status
         this.appointmentRecord = new MedicalRecord(patientID, date, patientID, userID, false);
+    }
+
+    public String getPatientID() {
+        return patientID;
+    }
+
+    public String getUserID() {
+        return userID;
     }
 
     public int getAppointmentID() {

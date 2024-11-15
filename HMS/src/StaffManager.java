@@ -23,7 +23,7 @@ public class StaffManager {
 
         //checking for potential errors
         if(staffArray == null || staffArray.length == 0){
-            System.out.println("Failed to load patient data.");
+            System.out.println("Failed to load patient data.[StaffManager]");
             return;
         }
 
@@ -46,6 +46,10 @@ public class StaffManager {
                 System.out.println("Incomplete data in row, skipping: " + String.join(",", row)); //exception statement to show the data is loaded properly
             }
         }
+
+        //display initialisation file
+        System.out.println("Staff data loaded successfully.[StaffManager]");
+        // displayStaffMembers();
     }
 
     public Staff selectStaff(String staffID){
@@ -120,7 +124,7 @@ public class StaffManager {
             System.out.println("Enter the staff member's role : ");
             System.out.println("1. Doctor");
             System.out.println("2. Pharmacist");
-            System.out.println("3. Adminstrator");
+            System.out.println("3. Administrator");
             System.out.println("Enter your choise");
             choice = sc.nextInt();
 
@@ -129,7 +133,7 @@ public class StaffManager {
             }else if (choice == 2){
                 return "Pharmacist";
             }else if (choice == 3){
-                return "Adminstrator";
+                return "Administrator";
             }else {
                 System.out.println("Invalid role. The role must start with an uppercase letter.");
 
@@ -264,8 +268,9 @@ public class StaffManager {
                 case 3:
                     System.out.print("Enter new gender: ");
                     String newGender = setStaffGender();   
+                    System.out.println("new Gender: " + newGender);
                     try {
-                        Gender gender = Gender.valueOf(newGender);
+                        Gender gender = Gender.valueOf(newGender.toUpperCase());
                         staffToUpdate.setGender(gender);
                         System.out.println("Gender updated successfully.");
                     } catch (IllegalArgumentException e) {
@@ -275,24 +280,28 @@ public class StaffManager {
                     break;
                 case 4:
                     System.out.print("Enter new role: ");
-                    String newRole = setStaffRole();
+                    String newRole = setStaffRole().toUpperCase();
+
                     try {
                         HospitalRole role = HospitalRole.valueOf(newRole);
                         staffToUpdate.setRole(role);
+                        // System.out.println("Role = "    + role);
+                        String newUserID = setStaffID(newRole);
+                        staffToUpdate.setUserID(newUserID);
                         System.out.println("Role updated successfully.");
                     } catch (IllegalArgumentException e) {
                         System.out.println("Invalid role. ");
                     }
-                    System.out.println("Role updated successfully.");
+                    // System.out.println("Role updated successfully.");
                     break;
                 case 5:
-                    System.out.print("Enter new age: ");
+                    // System.out.print("Enter new age: ");
                     int newAge = setStaffAge();
                     staffToUpdate.setAge(newAge);
                     System.out.println("Age updated successfully.");
                     break;
                 case 6:
-                    System.out.print("Enter new email address: ");
+                    // System.out.print("Enter new email address: ");
                     String newEmail = setStaffEmail();
                     staffToUpdate.setEmailAddress(newEmail);
                     System.out.println("Email updated successfully.");
@@ -313,21 +322,27 @@ public class StaffManager {
         saveStaff();
     }   
 
-    public void displayStaffMembers(){
+    public void displayStaffMembers() {
         System.out.println("Displaying all staff members");
         if (staffs.isEmpty()) {
             System.out.println("No staff members to display.");
         } else {
+            // Print table headers
+            System.out.printf("%-10s %-10s %-15s %-15s %-10s %-5s %-25s %-15s%n",
+                    "ID", "Password", "Name", "Role", "Gender", "Age", "Email", "Phone");
+            System.out.println("--------------------------------------------------------------------------------------------------------");
+    
+            // Print each staff member's details in a formatted manner
             for (Staff staff : staffs) {
-                System.out.println("ID: " + staff.getUserID());
-                System.out.println("Password: " + staff.getPassword());
-                System.out.println("Name: " + staff.getName());
-                System.out.println("Role: " + staff.getrole());
-                System.out.println("Gender: " + staff.getGender());
-                System.out.println("Age: " + staff.getAge());
-                System.out.println("Email: " + staff.getEmailAddress());
-                System.out.println("Phone: " + staff.getPhoneNumber());
-                System.out.println("-----------------------------");
+                System.out.printf("%-10s %-10s %-15s %-15s %-10s %-5d %-25s %-15s%n",
+                        staff.getUserID(),
+                        staff.getPassword(),
+                        staff.getName(),
+                        staff.getrole(),
+                        staff.getGender(),
+                        staff.getAge(),
+                        staff.getEmailAddress(),
+                        staff.getPhoneNumber());
             }
         }
     }
@@ -350,6 +365,15 @@ public class StaffManager {
         if (!removed) {
             System.out.println("Staff member with ID " + staffIDRecord + " was not found.");
         }
+    }
+
+    public static ArrayList<Staff> getStaffList(){
+        // if (staffs == null || staffs.isEmpty()) {
+        //     System.out.println("No staff members found.");
+        // }else{
+        //     System.out.println("Staff data loaded successfully.[StaffManager]");
+        // }
+        return staffs;
     }
 
     

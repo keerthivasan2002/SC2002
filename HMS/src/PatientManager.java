@@ -1,12 +1,11 @@
 import java.util.ArrayList;
 
 public class PatientManager{
-    private ArrayList<Patient> patients;
+    private static ArrayList<Patient> patients = new ArrayList<>(); // List of all patients
     private String patient_File = "Patient_List.csv";
 
     // Constructor for PatientManager
     public PatientManager() {
-        patients = new ArrayList<>();
         initializePatients(); // Load patient data from file
     }
 
@@ -16,7 +15,7 @@ public class PatientManager{
         String[][] patientArray = patientFileManager.readFile();
 
         if (patientArray == null || patientArray.length == 0) {
-            System.out.println("Failed to load patient data.");
+            System.out.println("Failed to load patient data.[PatientManager]"); //exception statement to show the data is loaded properly
             return;
         }
 
@@ -40,6 +39,9 @@ public class PatientManager{
                 System.out.println("Incomplete data in row, skipping: " + String.join(",", row)); //exception statement to show the data is loaded properly
             }
         }
+        
+        // System.out.println("Patient data loaded successfully.[PatientManager]"); //exception statement to show the data is loaded properly
+        // displayPatient(); // Display all patients
     }
 
     //selecting the specific patient that we want to look at
@@ -77,5 +79,35 @@ public class PatientManager{
             System.out.println(patient); // Print each patient's details
         }
     }
+
+    public static ArrayList<Patient> getPatients(){
+        // if (patients == null || patients.isEmpty()) {
+        //     System.out.println("No patient found.");
+        // }else{
+        //     System.out.println("Patient data loaded successfully. [PatientManager]");
+        // }
+        return patients;
+    }
+
+    public void displayPatient(){
+        System.out.println("Displaying all Patient");
+        if (patients.isEmpty()) {
+            System.out.println("No patient to display.");
+        } else {
+            for (Patient patient : patients) {
+                System.out.println("ID: " + patient.getPatientID());
+                System.out.println("Password: " + patient.getPassword());
+                System.out.println("Name: " + patient.getName());
+                System.out.println("Date of Birth: " + patient.getDateOfBirth());
+                System.out.println("Gender: " + patient.getGender());
+                System.out.println("Blood Type: " + patient.getBloodType());
+                System.out.println("Email: " + patient.getEmailAddress());
+                System.out.println("Phone: " + patient.getPhoneNumber());
+                System.out.println("-----------------------------");
+            }
+        }
+    }
+
+
 
 }
