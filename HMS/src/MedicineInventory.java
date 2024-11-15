@@ -22,12 +22,14 @@ public class MedicineInventory {
 
         for (int i=1; i < medicinesArray.length; i++){
             String[] row = medicinesArray[i];
-            if (row.length >= 3){
+            if (row.length >= 5){
                 String name = row[0];
                 int stock = Integer.parseInt(row[1]);
                 int lowStockAlert = Integer.parseInt(row[2]);
+                Medicines.status status = Medicines.status.valueOf(row[3].toUpperCase());
+                int requestQuantity = Integer.parseInt(row[4]);
 
-                Medicines meds = new Medicines(name, stock, lowStockAlert);
+                Medicines meds = new Medicines(name, stock, lowStockAlert, status, requestQuantity);
                 medicines.add(meds);
             } else{
                 System.out.println("Incomplete data in row, skipping: " + String.join(",", row));
@@ -45,11 +47,23 @@ public class MedicineInventory {
 //        }
 
         System.out.println("Medicine Inventory: ");
-        System.out.printf("%-15s %-10s\n", "Medicine", "Stock");
-        System.out.println("----------------------------------------");
+        System.out.printf("%-15s %-10s %-15s %-15s %-15s\n", "Medicine", "Stock", "LowStockAlert", "requestStatus", "requestQuantity" );
+        System.out.println("--------------------------------------------------------------------------------");
         for (Medicines med : medicines) {
-            System.out.printf("%-15s %-10d\n", med.name, med.stock);
+            // Check conditions and use conditional expressions for each column
+            String stockDisplay = med.stock == 0 ? "" : String.valueOf(med.stock);  // Print blank if stock is 0
+            String lowStockAlertDisplay = (med.stock > med.lowStockAlert) ? "" : String.valueOf(med.lowStockAlert);  // Print blank if lowStockAlert is 0
+            String statusDisplay = (med.status1 == null || med.status1 == Medicines.status.NIL) ? "" : med.status1.toString();  // Print blank if status is null or "NIL"
+            String requestQuantityDisplay = (med.status1 == Medicines.status.NIL || med.status1 == Medicines.status.TOREQUEST) ? "" : String.valueOf(med.requestQuantity);  // Print blank if requestQuantity is 0
+
+            System.out.printf("%-15s %-10s %-15s %-15s %-15s\n",
+                    med.name,
+                    stockDisplay,
+                    lowStockAlertDisplay,
+                    statusDisplay,
+                    requestQuantityDisplay);
         }
+        System.out.println("--------------------------------------------------------------------------------");
     }
 
     public boolean updateMedicalInventory() {
@@ -91,7 +105,16 @@ public class MedicineInventory {
         // Prompt and accept input for name
         System.out.print("Enter Low Stock Alert Limit");
         int lowStockAlert = Integer.parseInt(sc.nextLine());
-        Medicines meds = new Medicines(name, stock, lowStockAlert);
+
+        Medicines.status status1;
+        if (stock <= lowStockAlert) {
+            status1 = Medicines.status.TOREQUEST;
+        } else {
+            status1 = Medicines.status.NIL;
+        }
+
+        int requestQuantity = 0;
+        Medicines meds = new Medicines(name, stock, lowStockAlert, status1, requestQuantity);
         // Should add avoid adding duplicates
         for(Medicines Medicine : medicines){
             if(Medicine.name.equals(name)) {
@@ -100,7 +123,7 @@ public class MedicineInventory {
             }
         }
         medicines.add(meds);
-        String[] appointment = new String[]{name, String.valueOf(stock), String.valueOf(lowStockAlert)};
+        String[] appointment = new String[]{name, String.valueOf(stock), String.valueOf(lowStockAlert), String.valueOf(status1), String.valueOf(requestQuantity)};
         FileManager appointmentFM = new FileManager(medicine_File);
         appointmentFM.addNewRow(appointment);
     }

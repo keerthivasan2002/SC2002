@@ -1,5 +1,8 @@
 Medicine Name,Initial Stock,Low Stock Level Alert
-Paracetamol,100,20
-Ibuprofen,50,10
-Amoxicillin,75,15
-Balls,999999,100
+Paracetamol,100,20,NIL,0
+Ibuprofen,50,10,NIL,0
+Amoxicillin,75,15,NIL,0
+Balls,5,100,TOREQUEST,500
+YOOLOO,9,5,NIL,0
+POO,500,1000
+POO2,100,500,PENDING,0
