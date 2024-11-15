@@ -31,8 +31,6 @@ public class AppointmentManager {
     public void initializeAppointments() {
         FileManager appointmentFileManager = new FileManager(appointment_File);
         String[][] appointmentArray = appointmentFileManager.readFile();
-        patients = PatientManager.getPatients();
-        staffList = StaffManager.getStaffList();
 
 
         //debug purpose
@@ -64,7 +62,7 @@ public class AppointmentManager {
 
         for (int i = 1; i < appointmentArray.length; i++) {
             String[] row = appointmentArray[i];
-            if (row.length >= 7) {
+            if (row.length > 7) {
                 String appointmentID = row[0];
                 String patientID = row[1];
                 //System.out.println("I am here: " + patientID);
@@ -95,22 +93,21 @@ public class AppointmentManager {
                 String outcome = row[7]; // Assuming outcome is in the sixth column
                
                 // Debugging purposes
-                System.out.println("Before add to memory");
-                System.out.println("Appointment ID: " + appointmentID);
-                System.out.println("Patient ID: " + patientID);
-                System.out.println("Doctor ID: " + doctorID);
-                System.out.println("Date: " + date);
-                System.out.println("Start Time: " + startTime);
-                System.out.println("End Time: " + endTime);
-                System.out.println("Status: " + status);
-                System.out.println("Outcome: " + outcome);
-                System.out.println("-----------------------------------");
+                // System.out.println("Before add to memory");
+                // System.out.println("Appointment ID: " + appointmentID);
+                // System.out.println("Patient ID: " + patientID);
+                // System.out.println("Doctor ID: " + doctorID);
+                // System.out.println("Date: " + date);
+                // System.out.println("Start Time: " + startTime);
+                // System.out.println("End Time: " + endTime);
+                // System.out.println("Status: " + status);
+                // System.out.println("Outcome: " + outcome);
+                // System.out.println("-----------------------------------");
 
                 Appointment appointment = new Appointment(patientID, doctorID, date, startTime, endTime);
                 appointment.setAppointmentStatus(status);
                 appointment.setOutcome(outcome);
                 appointments.add(appointment);
-                displayAppointment(appointments);
             } else {
                 System.out.println("Incomplete data in row, skipping: lol " + String.join(",", row));
             }
@@ -125,7 +122,10 @@ public class AppointmentManager {
             //     System.out.println("Outcome: " + appointment.getOutcome());
             //     System.out.println("-----------------------------------");
             // }
+
         }
+        displayAppointment(appointments);
+
     }
 
     /* ------------------------------------------------- Start Scheduling Function ------------------------------------------ */

@@ -111,7 +111,7 @@ public class PatientUI {
         System.out.println("4. Schedule an Appointment");
         System.out.println("5. Reschedule an Appointment");
         System.out.println("6. Cancel an Appointment");
-        System.out.println("7. View Scheduled Prescription");
+        System.out.println("7. View Scheduled Appointments");
         System.out.println("8. View Past Appointments Outcome Records");
         System.out.println("9. Logout");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
