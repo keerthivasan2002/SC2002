@@ -11,21 +11,23 @@ import java.util.Scanner;
 
 public class AppointmentManager {
     private ArrayList<Appointment> appointments;
-    private Schedule schedule;
+    private ArrayList<Schedule> schedules;
     private String appointment_File = "Appointment_List.csv";
     private static ArrayList <Patient> patients = new ArrayList<>();
     private static ArrayList <Staff> staffList = new ArrayList<>();
+    private ScheduleManager scheduleManager;
 
     public AppointmentManager() {
         this.appointments = new ArrayList<>();
-        initializeAppointments();
     }
 
+    public void setScheduleManager(ScheduleManager scheduleManager) {
+        this.scheduleManager = scheduleManager; // Set scheduleManager after both objects are created
+    }
 
     public AppointmentManager(Schedule schedule) {
         this.appointments = new ArrayList<>();
-       this.schedule = schedule;
-        initializeAppointments();
+        this.schedules = new ArrayList<>();
     }
 
     /* ------------------------------------------------- Start Initialization Function ------------------------------------------ */
@@ -642,6 +644,11 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
                         appointment.getOutcome() != null ? appointment.getOutcome() : "N/A");
             }
         }
+    }
+
+    // In AppointmentManager
+    public List<Appointment> getAppointments(){
+        return appointments;
     }
 
 

@@ -187,6 +187,7 @@ public class StaffManager {
         }
     }
 
+
     public int setStaffAge(){
         int age = 0;
         while (true) {

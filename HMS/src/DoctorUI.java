@@ -248,7 +248,8 @@ public class DoctorUI {
             int month = calendar.get(Calendar.MONTH) + 1;
             scheduleManager.printMonthlyCalendar(month, year, userID);
         } else if (choice == 2) {
-            scheduleManager.viewTodaysEvents(userID);
+            //scheduleManager.viewTodaysSchedule(userID);
+            scheduleManager.viewTodaysEvent(userID);
         }else{
             scheduleManager.printSchedule(userID);
         }
