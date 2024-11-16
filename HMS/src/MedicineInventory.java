@@ -151,7 +151,7 @@ public class MedicineInventory {
      [QN] Do I need to set the medicines using medicine.set() or will changing Medicine.stock good enough
      */
     public void update() {
-        System.out.println("Enter name of Medicine to update Stock":);
+        System.out.println("Enter name of Medicine to update Stock:");
         String name = sc.nextLine(); // [TRY_EXCEPT]
         for (Medicines medicine : medicines) {
             if (medicine.name.equals(name)) {
@@ -215,7 +215,7 @@ public class MedicineInventory {
             return 0;
         }
         System.out.printf("Pending Requests: %1d\n", counter);
-        System.out.printf("%-15s %-15s %-15s\n", "Medicine", "requestStatus", "requestQuantity");
+        System.out.printf("%-15s %-15s %-15s\n", "Medicine", "RequestStatus", "RequestQuantity");
         System.out.println("-------------------------------------------------");
         for (Medicines medicine : medicines) {
             // Check conditions and use conditional expressions for each column
@@ -238,7 +238,7 @@ public class MedicineInventory {
         for (Medicines medicine : medicines) {
             if (medicine.name.equals(name)) {
                 if(medicine.stock + medicine.requestQuantity <= medicine.lowStockAlert){
-                    System.out.println("Not allowed to Approve, requested Quantity too low\n");
+                    System.out.println("Not allowed to Approve, requested quantity too low\n");
                     return;
                 }
                 medicine.status1 = Medicines.status.NIL;
