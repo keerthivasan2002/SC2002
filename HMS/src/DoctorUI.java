@@ -48,33 +48,32 @@ public class DoctorUI {
                     System.out.println("===============================");
                     System.out.println("View Patient Medical Record");
                     System.out.println("===============================");
-                    viewPatientMedicalRecord();
+                    viewPatientMedicalRecord(); //this works
                     break;
                 case 2: //Update patient Medical Record
                     System.out.println("Update Patient Medical Record");
-                    updatePatientMedicalRecord();
+                    updatePatientMedicalRecord(); //this should be record patient medical record
                     break;
                 case 3: //view Personal Schedule
-                    System.out.println("View Personal Schedule");
+                    System.out.println("View Personal Schedule"); //this is done
                     personalSchedule();
                     break;
                 case 4: //Set availability for appointment
-                    updateSchedule();
+                    updateSchedule(); //This is done
                     break;
                 case 5: //Accept or Decline Appointment Request
-                    System.out.println("Accept or Decline Appointment Request");
-                    
+                    System.out.println("Accept or Decline Appointment Request"); //This is done
                     am.appointmentRequest(doctor);
 
                     break;
                 case 6: //View Upcoming Appointment
-                    am.getUpcomingAppointmentsForDoctor(doctor);
+                    am.getUpcomingAppointmentsForDoctor(doctor); //this is not correct
                     break;
                 case 7: //Record Appointment Outcome
-                    recordAppointmentOutcome();
+                    recordAppointmentOutcome(); //this works and should be update
                     break;
                 case 8: //Log out
-                    System.out.println("Thank you! Hope to see you soon :)\n");
+                    System.out.println("Thank you! Hope to see you soon :)\n"); //This works
                     System.exit(0);
                     return;
                 default:
