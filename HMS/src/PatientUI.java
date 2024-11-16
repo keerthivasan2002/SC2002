@@ -14,7 +14,7 @@ public class PatientUI {
     private Patient patient;
     private PatientManager pm; //keep reference to a PatientManager
     private MedicalRecordManager mrm;
-    //private ScheduleManager scheduleManager;
+    private ScheduleManager scheduleManager;
     private AppointmentManager appointmentManager;
     private ArrayList<Appointment> Appointment_Record;
 
@@ -58,7 +58,7 @@ public class PatientUI {
                     updatePatientInfo();
                     break;
                 case 3: //View Available appointment Slots
-                    //viewAvailableAppointmentSlots();
+                    viewAvailableAppointmentSlots();
                     break;
                 case 4: //Schedule an Appointment
                     requestNewAppointment();
@@ -84,6 +84,48 @@ public class PatientUI {
             }
 
         }
+    }
+
+    private void viewAvailableAppointmentSlots() {
+        System.out.println("Each appointment booked is only limited to 30 minutes!");
+        System.out.println("Enter the date to view available appointment slots");
+
+        Calendar cal = Calendar.getInstance(); // Get today's date
+        Date choiceOfDate = null;
+        String doctorID = null;
+
+        // Step 1: Get and validate the date input
+        while(true){
+            try{
+                System.out.print("Date (yyyy-MM-dd): ");
+                String dateInput = sc.next().trim();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                dateFormat.setLenient(false); // Strict parsing
+                choiceOfDate = dateFormat.parse(dateInput);
+                Date today = cal.getTime();
+                if (choiceOfDate.before(today) && !choiceOfDate.equals(today)){
+                    throw new IllegalArgumentException("Date cannot be in the past.");
+                }
+                break; // Exit loop if date is valid
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: " + e.getMessage());
+            } catch (ParseException e) {
+                System.out.println("Invalid date format. Please try again.");
+            }
+        }
+
+        // Step 2: Get and validate the Doctor ID
+        while(true){
+            System.out.print("Enter Doctor ID to view available slots: ");
+            doctorID = sc.next();
+            Staff doctor = AppointmentManager.findStaffByID(doctorID);
+            if(doctor == null){
+                System.out.println("Doctor ID not found. Please try again.");
+            } else {
+                break; // Exit loop if doctor exists
+            }
+        }
+
     }
 
     // Function to view medical records

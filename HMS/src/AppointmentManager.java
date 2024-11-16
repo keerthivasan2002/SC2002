@@ -623,4 +623,20 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
         }
     }
 
+    //Function to see the available appointment
+    public void ViewAvailableTime(Date date){
+        boolean unavailableTimeSlot = false;
+        for(Schedule schedule: scheduleManager.getSchedules()){
+            if(schedule.getDate().equals(date)){
+
+            }
+        }
+
+        for(Appointment appointment: appointments){
+            if(appointment.getDate().equals(date)){
+                System.out.println("");
+            }
+        }
+    }
+
 }

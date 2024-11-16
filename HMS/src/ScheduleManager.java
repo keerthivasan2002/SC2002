@@ -45,7 +45,7 @@ public class ScheduleManager {
         }
     }
 
-    public void printMonthlyCalendar(int month, int year,String id) {
+    public void printMonthlyCalendar(int month, int year, String id) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month - 1, 1); // Set to the first day of the specified month
 
@@ -130,7 +130,7 @@ public class ScheduleManager {
     }
 
     //function to view today's events(events = schedule + appointment)
-    public void viewTodaysEvent(String id){
+    public void viewTodaysEvent(String id) {
         Calendar calendar = Calendar.getInstance();
         Date now = calendar.getTime();
 
@@ -159,13 +159,13 @@ public class ScheduleManager {
         }
 
         //add schedule to the events list
-        for(Schedule schedule: schedules){
-            if(isSameDay(schedule.getDate(), now) && schedule.getDoctor().getUserID().equals(id)){
+        for (Schedule schedule : schedules) {
+            if (isSameDay(schedule.getDate(), now) && schedule.getDoctor().getUserID().equals(id)) {
                 todaysEvents.add(schedule);
             }
         }
 
-        for(Events events: todaysEvents) {
+        for (Events events : todaysEvents) {
             Date startTimewithDate = combineDateAndTime(events.getDate(), events.getStartTime()); //format start time for comparison
             Date endTimewithDate = combineDateAndTime(events.getDate(), events.getEndTime()); //format end time for comparison
 
@@ -173,11 +173,11 @@ public class ScheduleManager {
             String status = " ";
 
             //logic to decide the status
-            if(startTimewithDate.after(now)){
+            if (startTimewithDate.after(now)) {
                 status = "Upcoming";
             } else if (startTimewithDate.before(now) && endTimewithDate.after(now)) {
                 status = "Ongoing";
-            }else{
+            } else {
                 status = "Done";
             }
 
@@ -187,14 +187,14 @@ public class ScheduleManager {
             hasEvents = true;
         }
 
-        if(!hasEvents){
+        if (!hasEvents) {
             System.out.println("No appointments or events scheduled for today.");
         }
 
     }
 
     //helper function to displayevents
-    private void displayEvents(Events event){
+    private void displayEvents(Events event) {
         System.out.println("User ID: " + event.getDoctor().getUserID());
         System.out.println("Date: " + event.getStringDate());
         System.out.println("Start Time: " + event.getStringStartTime());
@@ -245,13 +245,13 @@ public class ScheduleManager {
         }
 
         //check conflict with existing appointments
-        for(Appointment appointment: am.getAppointments()){
-            if(appointment.getDoctor().userID.equals(doctor.getUserID()) && isSameDay(appointment.getDate(), date) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)){
+        for (Appointment appointment : am.getAppointments()) {
+            if (appointment.getDoctor().userID.equals(doctor.getUserID()) && isSameDay(appointment.getDate(), date) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
                 Date existingStart = combineDateAndTime(appointment.getDate(), appointment.getStartTime());
                 Date existingEnd = combineDateAndTime(appointment.getDate(), appointment.getEndTime());
 
-                if(startDateTime.before(existingEnd) && endDateTime.after(existingStart) ||
-                startDateTime.equals(existingStart) || endDateTime.equals(existingEnd)){
+                if (startDateTime.before(existingEnd) && endDateTime.after(existingStart) ||
+                        startDateTime.equals(existingStart) || endDateTime.equals(existingEnd)) {
                     System.out.println("Conflict detected with existing schedule: "
                             + appointment.getStringStartTime() + "-" + appointment.getStringEndTime());
                     return false;
@@ -270,48 +270,8 @@ public class ScheduleManager {
         return true;
     }
 
-    public List<Schedule> getSchedules(){
+    public List<Schedule> getSchedules() {
         return schedules;
-    }
-
-
-    //Functions that can be removed
-    public void viewTodaysSchedule(String id) {
-        Calendar calendar = Calendar.getInstance();
-        Date now = calendar.getTime(); // Current date and time
-
-
-        System.out.println("Today's Events:");
-        System.out.println("================");
-
-        boolean hasEvents = false;
-        for (Schedule schedule : schedules) {
-            // Check if the event is today and belongs to the correct doctor
-            if (isSameDay(schedule.getDate(), now) && schedule.getDoctor().getUserID().equals(id)) {
-                // Combine the event date with the end time for accurate comparison
-                Date endTimeWithDate = combineDateAndTime(schedule.getDate(), schedule.getEndTime());
-
-                // Compare the combined date-time end time to the current time
-                String status = endTimeWithDate.before(now) ? "Done" : "Upcoming";
-                displaySchedule(schedule);
-                System.out.println("Status: " + status);
-                System.out.println("-----------------------------------");
-                hasEvents = true;
-            }
-        }
-
-        if (!hasEvents) {
-            System.out.println("No events scheduled for today.");
-        }
-    }
-
-    //Functions that can be removed
-    private void displaySchedule(Schedule schedule) {
-        System.out.println("Doctor ID: " + schedule.getDoctor().getUserID());
-        System.out.println("Date: " + schedule.getStringDate());
-        System.out.println("Start Time: " + schedule.getStringStartTime());
-        System.out.println("End Time: " + schedule.getStringEndTime());
-        System.out.println("Description: " + schedule.getDescription());
     }
 
 }
