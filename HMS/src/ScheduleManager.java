@@ -5,7 +5,6 @@ import java.util.*;
 
 public class ScheduleManager {
     private ArrayList<Schedule> schedules;
-    private ArrayList<Appointment> appointments;
     private String scheduleFile = "Schedule.csv";
     private AppointmentManager am;
 
@@ -19,7 +18,6 @@ public class ScheduleManager {
 
     public ScheduleManager() {
         this.schedules = new ArrayList<>();
-        this.appointments = new ArrayList<>();
     }
 
     public void initialiseSchedule() {
@@ -204,7 +202,80 @@ public class ScheduleManager {
         System.out.println("Description: " + event.getDescription());
     }
 
-    //function to view today schedule events
+    // Helper method to combine a date with a time
+    private Date combineDateAndTime(Date date, Time time) {
+        Calendar dateCal = Calendar.getInstance();
+        dateCal.setTime(date);
+
+        Calendar timeCal = Calendar.getInstance();
+        timeCal.setTime(time);
+
+        // Set hours, minutes, seconds from the time to the date
+        dateCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+        dateCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+        dateCal.set(Calendar.SECOND, timeCal.get(Calendar.SECOND));
+        dateCal.set(Calendar.MILLISECOND, 0); // Clear milliseconds
+
+        return dateCal.getTime(); // Return combined Date object
+    }
+
+    //add the doctor's personal events
+    public boolean addSchedule(Staff doctor, Date date, Time startTime, Time endTime, String description) {
+        System.out.println("Adding period of unavailability for " + doctor.getName());
+        System.out.println("User ID: " + doctor.getUserID());
+
+        // Combine date with start and end times to form full Date objects for comparison
+        Date startDateTime = combineDateAndTime(date, startTime);
+        Date endDateTime = combineDateAndTime(date, endTime);
+
+        // Check for conflicts with existing schedules
+        for (Schedule schedule : schedules) {
+            if (schedule.getDoctor().getUserID().equals(doctor.getUserID()) && isSameDay(schedule.getDate(), date)) {
+                Date existingStart = combineDateAndTime(schedule.getDate(), schedule.getStartTime());
+                Date existingEnd = combineDateAndTime(schedule.getDate(), schedule.getEndTime());
+
+                // Check if there is any overlap which will check for duplicates as well
+                if ((startDateTime.before(existingEnd) && endDateTime.after(existingStart)) ||
+                        startDateTime.equals(existingStart) || endDateTime.equals(existingEnd)) {
+                    System.out.println("Conflict detected with existing schedule: "
+                            + schedule.getStringStartTime() + "-" + schedule.getStringEndTime());
+                    return false;
+                }
+            }
+        }
+
+        //check conflict with existing appointments
+        for(Appointment appointment: am.getAppointments()){
+            if(appointment.getDoctor().userID.equals(doctor.getUserID()) && isSameDay(appointment.getDate(), date) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)){
+                Date existingStart = combineDateAndTime(appointment.getDate(), appointment.getStartTime());
+                Date existingEnd = combineDateAndTime(appointment.getDate(), appointment.getEndTime());
+
+                if(startDateTime.before(existingEnd) && endDateTime.after(existingStart) ||
+                startDateTime.equals(existingStart) || endDateTime.equals(existingEnd)){
+                    System.out.println("Conflict detected with existing schedule: "
+                            + appointment.getStringStartTime() + "-" + appointment.getStringEndTime());
+                    return false;
+                }
+            }
+        }
+
+        // If no conflict, add the schedule
+        Schedule newSchedule = new Schedule(doctor.getUserID(), date, startTime, endTime, description);
+        schedules.add(newSchedule);
+        System.out.println("Schedule added successfully.");
+
+        String[] schedule = new String[]{doctor.userID, dateFormat.format(date), timeFormat.format(startTime), timeFormat.format(endTime), description};
+        FileManager appointmentFM = new FileManager(scheduleFile);
+        appointmentFM.addNewRow(schedule);
+        return true;
+    }
+
+    public List<Schedule> getSchedules(){
+        return schedules;
+    }
+
+
+    //Functions that can be removed
     public void viewTodaysSchedule(String id) {
         Calendar calendar = Calendar.getInstance();
         Date now = calendar.getTime(); // Current date and time
@@ -234,79 +305,13 @@ public class ScheduleManager {
         }
     }
 
-    // Helper method to combine a date with a time
-    private Date combineDateAndTime(Date date, Time time) {
-        Calendar dateCal = Calendar.getInstance();
-        dateCal.setTime(date);
-
-        Calendar timeCal = Calendar.getInstance();
-        timeCal.setTime(time);
-
-        // Set hours, minutes, seconds from the time to the date
-        dateCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
-        dateCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
-        dateCal.set(Calendar.SECOND, timeCal.get(Calendar.SECOND));
-        dateCal.set(Calendar.MILLISECOND, 0); // Clear milliseconds
-
-        return dateCal.getTime(); // Return combined Date object
-    }
-
-
-    //method to display schedule
+    //Functions that can be removed
     private void displaySchedule(Schedule schedule) {
         System.out.println("Doctor ID: " + schedule.getDoctor().getUserID());
         System.out.println("Date: " + schedule.getStringDate());
         System.out.println("Start Time: " + schedule.getStringStartTime());
         System.out.println("End Time: " + schedule.getStringEndTime());
         System.out.println("Description: " + schedule.getDescription());
-    }
-
-
-
-    //add the doctor's personal events
-    public boolean addSchedule(Staff doctor, Date date, Time startTime, Time endTime, String description) {
-        System.out.println("Adding period of unavailability for " + doctor.getName());
-        System.out.println("User ID: " + doctor.getUserID());
-
-        // Combine date with start and end times to form full Date objects for comparison
-        Date startDateTime = combineDateAndTime(date, startTime);
-        Date endDateTime = combineDateAndTime(date, endTime);
-
-        // Check for conflicts with existing schedules
-        for (Schedule schedule : schedules) {
-            if (schedule.getDoctor().getUserID().equals(doctor.getUserID()) && isSameDay(schedule.getDate(), date)) {
-                Date existingStart = combineDateAndTime(schedule.getDate(), schedule.getStartTime());
-                Date existingEnd = combineDateAndTime(schedule.getDate(), schedule.getEndTime());
-
-                // Check if there is any overlap which will check for duplicates as well
-                if ((startDateTime.before(existingEnd) && endDateTime.after(existingStart)) ||
-                        startDateTime.equals(existingStart) || endDateTime.equals(existingEnd)) {
-                    System.out.println("Conflict detected with existing schedule: "
-                            + schedule.getStringStartTime() + "-" + schedule.getStringEndTime());
-                    return false;
-                }
-            }
-        }
-
-        //check conflict with existing appointments
-        for(Appointment appointment: appointments){
-            if(appointment.getDoctor().userID.equals(doctor.getUserID()) && isSameDay(appointment.getDate(), date)){
-            }
-        }
-
-        // If no conflict, add the schedule
-        Schedule newSchedule = new Schedule(doctor.getUserID(), date, startTime, endTime, description);
-        schedules.add(newSchedule);
-        System.out.println("Schedule added successfully.");
-
-        String[] schedule = new String[]{doctor.userID, dateFormat.format(date), timeFormat.format(startTime), timeFormat.format(endTime), description};
-        FileManager appointmentFM = new FileManager(scheduleFile);
-        appointmentFM.addNewRow(schedule);
-        return true;
-    }
-
-    public List<Schedule> getSchedules(){
-        return schedules;
     }
 
 }

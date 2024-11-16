@@ -48,8 +48,6 @@ public class ApplicationUI {
         am.initializeAppointments();        // Initialize appointments
         scheduleManager.initialiseSchedule(); // Initialize schedule
 
-        am.initializeAppointments();
-
 
         String useString = userName.toUpperCase();
 
