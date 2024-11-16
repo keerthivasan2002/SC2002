@@ -1,4 +1,9 @@
-MedicineName, InitialStock, LowStockAlert, requestStatus, requestQuantity
-Ibuprofen,50,10,NIL,0
-Amoxicillin,75,15,NIL,0
-POO2,100,500,PENDING,0
+MedicineName,Initial Stock,LowStockAlert,requestStatus,requestQuantity
+Amoxicillin,0,10,PENDING,5
+Paracetamol,50000,50,NIL,0
+FROMPHARMACIST,20,50,PENDING,100
+FROMPHARMACIST2,0,1000,PENDING,0
+MEDICINE1,5000,10000,TOREQUEST,10000
+BALLS,2,1,NIL,0
+HOSPITALBOMB,10,1,NIL,0
+Balls,5,10,TOREQUEST,0

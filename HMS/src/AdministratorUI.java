@@ -102,7 +102,6 @@ public class AdministratorUI {
         System.out.println("3. View and manage inventory of medication ");
         System.out.println("4. Logout");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.print("Enter your choice: ");
     }
 
     public void staffRecordMenu(){
@@ -281,8 +280,36 @@ public class AdministratorUI {
         System.out.println("-----------------------------------");
 
     }
-    private void approvePharmacistRequest(){
-        ReplenishmentRequest.approveReplenishmentRequest();
+
+    public void requestMenuDisplay(){
+        System.out.println("-------------------------------------------------");
+        System.out.println("1. Approve Request");
+        System.out.println("2. Reject Request");
+        System.out.println("3. Back to Main Menu");
+        System.out.println("-------------------------------------------------");
+    }
+
+    private void requestMenu(){
+        int choice2 = -1;
+        while(choice2 != 3){
+            if(mi.viewRequestsAdmin() == 0){
+               System.out.println("Returning to Administrator menu...\n");
+               return;
+            }
+            requestMenuDisplay();
+            choice2 = oh.getOption(1,3);
+            switch(choice2){
+                case 1:
+                    mi.approveRequest();
+                    break;
+                case 2:
+                    mi.rejectRequest();
+                    break;
+                default:
+                    break;
+
+            }
+        }
     }
     public void viewMedicationInventory(){
         mi.viewMedicalInventory();
@@ -299,7 +326,6 @@ public class AdministratorUI {
 
     public void updatingMedicationStockLevel(){
         mi.update();
-        mi.saveMedicines();
     }
     public void updatelowStockAlertValue(){
         mi.updateLowStockAlert();
@@ -307,12 +333,12 @@ public class AdministratorUI {
 
     private void manageMedicationInventory(){
         int choice = -1;
-        while(choice != 6){
+        while(choice != 7){
             MedicationInventoryMenu();
-            choice = oh.getOption(1, 5);
+            choice = oh.getOption(1, 7);
             switch (choice){
                 case 1:
-                    approvePharmacistRequest();
+                    requestMenu();
                     break;
                 case 2:
                     viewMedicationInventory();
@@ -330,6 +356,7 @@ public class AdministratorUI {
                     updatelowStockAlertValue();
                     break;
                 case 7:
+                    mi.saveMedicines(); // I leave the save to csv part at the end leh
                     System.out.println("Exiting Medication Inventory Menu");
                     break;
                 default:

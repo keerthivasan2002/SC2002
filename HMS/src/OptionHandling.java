@@ -18,8 +18,7 @@ public class OptionHandling {
             }   
             
 
-            try{                
-                System.out.println("Enter your choice: ");
+            try{
                 option = sc.nextInt();
                 // System.out.println("You entered: " + option);
                 if (option < 0){

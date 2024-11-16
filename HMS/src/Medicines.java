@@ -4,7 +4,7 @@ public class Medicines {
     int lowStockAlert;
     int requestQuantity;
     enum status{
-        NIL, TOREQUEST, PENDING, REJECTED
+        NIL, TOREQUEST, PENDING
     }
     status status1;
 
