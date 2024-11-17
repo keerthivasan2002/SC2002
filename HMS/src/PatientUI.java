@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.lang.IllegalArgumentException;
 
 
-public class PatientUI {
+public class PatientUI implements UserUI{
     private String userID;
     private Patient patient;
     private PatientManager pm; //keep reference to a PatientManager
@@ -34,11 +34,11 @@ public class PatientUI {
         if(this.patient == null){
             System.out.println("No patient found with the given ID:" + userID);
         }else{
-            patientOption();
+            userOption();
         }
     }
 
-    public void patientOption(){
+    public void userOption(){
         int choice = -1;
 
         System.out.println("Hello " + patient.getName() + ".");

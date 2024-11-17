@@ -32,6 +32,15 @@ public class AppointmentManager {
         this.appointments = appointmentStorage.getAppointments(); //initialise the appointments
     }
 
+    //POSSIBLE NEW CONSTRUCTOR
+    public AppointmentManager(AppointmentStorage appointmentStorage, AppointmentScheduler appointmentScheduler, AppointmentValidator appointmentValidator, AppointmentFilter appointmentFilter, AppointmentLookup appointmentLookup){
+        this.appointmentStorage  = appointmentStorage;
+        this.appointmentScheduler = appointmentScheduler;
+        this.appointmentValidator = appointmentValidator;
+        this.appointmentFilter = appointmentFilter;
+        this.appointmentLookup = appointmentLookup;
+    }
+
     //using a schedule manager
     public void setScheduleManager(ScheduleManager scheduleManager) {
         this.scheduleManager = scheduleManager; // Set scheduleManager after both objects are created

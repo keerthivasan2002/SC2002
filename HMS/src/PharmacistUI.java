@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class PharmacistUI {
+public class PharmacistUI implements UserUI{
     private String userID;
     Staff pharmacist;
     StaffManager sm;
@@ -19,11 +19,11 @@ public class PharmacistUI {
         if(this.pharmacist == null){
             System.out.println("No pharmacists found with the given ID: " + userID);
         }else{
-            pharmacistOption();
+            userOption();
         }
     }
 
-    public void pharmacistOption(){
+    public void userOption(){
         int choice = 0;
         System.out.println("Hello" + pharmacist.getName() + ".");
         System.out.println("What would you like to do today?");

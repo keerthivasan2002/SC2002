@@ -6,7 +6,7 @@ import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class DoctorUI {
+public class DoctorUI implements UserUI{
     protected String userID;
     protected Staff doctor;
     protected StaffManager sm;
@@ -31,11 +31,11 @@ public class DoctorUI {
         if(this.doctor == null){
             System.out.println("No doctors found with the given ID:" + userID);
         }else{
-            doctorOption();
+             userOption();
         }
     }
 
-    public void doctorOption(){
+    public void userOption(){
         int choice;
         System.out.println("Hello " + doctor.getName() + ".");
         System.out.println("What would you like to do today?");
@@ -229,7 +229,7 @@ public class DoctorUI {
         }
     
         selectedAppointment.setOutcome(outcome);
-        am.saveAppointments();
+        am.appointmentStorage;
         System.out.println("Appointment outcome recorded successfully.");
     }
     

@@ -1,11 +1,12 @@
 import java.util.Scanner;
 
 
-public class ApplicationUI {
+public class ApplicationUI{
     public static void main(String[] args) {
-        System.out.println(System.getProperty("user.dir"));
+        //System.out.println(System.getProperty("user.dir"));
         Scanner sc = new Scanner(System.in);
         String exit = "0";
+
         while(!exit.equals("1")){
             try{
                 
@@ -25,7 +26,7 @@ public class ApplicationUI {
                     boolean accept = login.authoriseLogin();
                     if (accept) {
                         System.out.println("Welcome");
-                        userOption(userIDString);
+                        userOption(userIDString); // does this work??
                     } else {
                         System.out.println("Login failed.");
                         System.out.println("If you would like to exit. Press 1.");
@@ -41,19 +42,24 @@ public class ApplicationUI {
     }
 
     public static void userOption(String userIDString) {
-
-    
-
         //initialise outside to avoid initialising multiple times
         ScheduleManager scheduleManager = new ScheduleManager();
-        AppointmentManager am = new AppointmentManager();
+
+        //all the separate appointment classes
+        AppointmentValidator amv = new AppointmentValidator();
+        AppointmentStorage ams = new AppointmentStorage();
+        AppointmentFilter amf = new AppointmentFilter();
+        AppointmentScheduler amschedule = new AppointmentScheduler(amv);
+        AppointmentLookup aml = new AppointmentLookup();
+
+        AppointmentManager am = new AppointmentManager(ams, amschedule, amv, amf,aml);
 
         // Step 2: Set the references in each other
         scheduleManager.setAppointmentManager(am);
         am.setScheduleManager(scheduleManager);
 
         // Step 3: Now initialize appointments and schedules as needed
-        am.initializeAppointments();        // Initialize appointments
+        //am.initializeAppointments();        // Initialize appointments
         scheduleManager.initialiseSchedule(); // Initialize schedule
 
 

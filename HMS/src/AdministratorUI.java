@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 
-public class AdministratorUI {
+public class AdministratorUI implements UserUI{
         // Need DoctorID, Need patientID,
         // Staff management UI
     /*
@@ -56,11 +56,11 @@ public class AdministratorUI {
             if (this.admin == null) {
                 System.out.println("No doctors found with the given ID:" + userID);
             } else {
-                adminOption();
+                userOption();
             }
         }
 
-    public void adminOption() {
+    public void userOption() {
         int choice = -1;
 
         System.out.println("Hello " + admin.getName() + " (UserID: " + userID + ").");
