@@ -21,24 +21,35 @@ public class AppointmentManager {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
-    //constructor for appointmentManager
-    public AppointmentManager() {
-        this.appointmentStorage = new AppointmentStorage();
-        this.appointmentValidator = new AppointmentValidator();
-        this.appointmentScheduler = new AppointmentScheduler(appointmentValidator);
-        this.appointmentFilter = new AppointmentFilter(appointmentStorage);
-        this.appointmentLookup = new AppointmentLookup(appointmentStorage);
-        // displayAppointment(appointments);
-    }
+    // //constructor for appointmentManager
+    // public AppointmentManager() {
+    //     this.appointmentStorage = new AppointmentStorage();
+    //     this.appointmentValidator = new AppointmentValidator(appointmentStorage);
+    //     this.appointmentScheduler = new AppointmentScheduler(appointmentValidator,appointmentStorage);
+    //     this.appointmentFilter = new AppointmentFilter(appointmentStorage, appointmentValidator);
+    //     this.appointmentLookup = new AppointmentLookup(appointmentStorage);
+    //     // displayAppointment(appointments);
+    // }
 
-    public AppointmentManager(AppointmentStorage appointmentStorage){
+    public AppointmentManager(AppointmentStorage appointmentStorage, AppointmentValidator appointmentValidator){
+       if (appointmentStorage == null) {
+            throw new IllegalArgumentException("AppointmentStorage cannot be null");
+        }
+        if (appointmentValidator == null) {
+            throw new IllegalArgumentException("AppointmentValidator cannot be null");
+        }
         this.appointmentStorage  = appointmentStorage;
-        this.appointmentScheduler = new AppointmentScheduler(appointmentValidator);
-        this.appointmentValidator = new AppointmentValidator();
-        this.appointmentFilter = new AppointmentFilter(appointmentStorage);
+        this.appointmentValidator = appointmentValidator;
+        this.appointmentFilter = new AppointmentFilter(appointmentStorage,appointmentValidator);
         this.appointmentLookup = new AppointmentLookup(appointmentStorage);
+        this.appointmentScheduler = new AppointmentScheduler(appointmentValidator,appointmentStorage, appointmentLookup);
+        System.out.println("AppointmentManager received AppointmentStorage: [AppointmentManager]" + (appointmentStorage != null));
+        System.out.println("AppointmentManager received AppointmentValidator: [AppointmentManager]" + (appointmentValidator != null));
+        System.out.println("AppointmentFilter initialized with valid dependencies.");
+
     }
 
+   
 
 
 
@@ -62,18 +73,30 @@ public class AppointmentManager {
 
     /* ---------------------------------------- Start Scheduling Function ------------------------------------------ */
     public boolean addAppointment(Patient patient, Staff doctor, Date date, Time startTime, Time endTime) {
+        if (appointmentScheduler == null) {
+            throw new IllegalStateException("AppointmentScheduler is not initialized[AppointmentManager][addAppointment]");
+        }
         return appointmentScheduler.addAppointment(patient, doctor, date, startTime, endTime);
     }
 
     public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newStartTime, Time newEndTime) {
+        if (appointmentScheduler == null) {
+            throw new IllegalStateException("AppointmentScheduler is not initialized[AppointmentManager][rescheduleAppointment]");
+        }
         return appointmentScheduler.rescheduleAppointment(appointmentID, newDate, newStartTime, newEndTime);
     }
 
     public boolean cancelAppointment(int appointmentID) {
+        if (appointmentScheduler == null) {
+            throw new IllegalStateException("AppointmentScheduler is not initialized[AppointmentManager][cancelAppointment]");
+        }
         return appointmentScheduler.cancelAppointment(appointmentID);
     }
 
     public boolean updateAppointmentOutcome(int appointmentID, String outcome) {
+        if (appointmentScheduler == null) {
+            throw new IllegalStateException("AppointmentScheduler is not initialized[AppointmentManager][updateAppointmentOutcome]");
+        }
         return appointmentScheduler.updateAppointmentOutcome(appointmentID, outcome);
     }
 
@@ -81,43 +104,73 @@ public class AppointmentManager {
 
     /* ---------------------------------------- Start Look Up Function ------------------------------------------ */
     public Staff findStaffByID(String staffID) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][findStaffByID]");
+        }
         return appointmentLookup.findStaffByID(staffID);
     }
 
     public Patient findPatientByID(String patientID) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][findPatientByID]");
+        }
         return appointmentLookup.findPatientByID(patientID);
     }
 
     public Appointment findAppointmentByID(int id) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][findAppointmentByID]");
+        }
         return appointmentLookup.findAppointmentByID(id);
     }
 
     public int getFirstAppointmentID(ArrayList<Appointment> filteredAppointments) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][getFirstAppointmentID]");
+        }
         return appointmentLookup.getFirstAppointmentID(filteredAppointments);
     }
 
     public int getLastAppointmentID(ArrayList<Appointment> appointments) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][getLastAppointmentID]");
+        }
         return appointmentLookup.getLastAppointmentID(appointments);
     }
 
     public int getValidAppointmentID(ArrayList<Appointment> filteredAppointments) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][getValidAppointmentID]");
+        }
         return appointmentLookup.getValidAppointmentID(filteredAppointments);
     }
     /* ---------------------------------------- End Look Up Function ------------------------------------------ */
 
     /* ---------------------------------------- Start Filtering Function ------------------------------------------ */
     public ArrayList<Appointment> getPatientAppointments(Patient patient, int status) {
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient cannot be null[AppointmentManager][getPatientAppointments]");
+        }
         return appointmentFilter.getPatientAppointments(patient, status);
     }
     public ArrayList<Appointment> getDoctorAppointments(Staff doctor, int status) {
+        if (doctor == null) {
+            throw new IllegalArgumentException("Doctor cannot be null[AppointmentManager][getDoctorAppointments]");
+        }
         return appointmentFilter.getDoctorAppointments(doctor, status);
     }
 
     public ArrayList<Appointment> getAppointmentsByStatus(ArrayList<Appointment> appointments, AppointmentStatus status) {
+        if (appointments == null) {
+            throw new IllegalArgumentException("Appointments cannot be null[AppointmentManager][getAppointmentsByStatus]");
+        }
         return appointmentFilter.getAppointmentsByStatus(appointments, status);
     }
 
     public ArrayList<Appointment> getAppointmentByDate(ArrayList<Appointment> appointments, Calendar cal) {
+        if (appointments == null) {
+            throw new IllegalArgumentException("Appointments cannot be null[AppointmentManager][getAppointmentByDate]");
+        }
         return appointmentFilter.getAppointmentByDate(appointments, cal);
     }
 
@@ -125,24 +178,39 @@ public class AppointmentManager {
 
     /* ---------------------------------------- Start Validator Function ------------------------------------------ */
     public boolean checkAppointmentConflict(Patient patient, Staff doctor, Date date, Time startTime, Time endTime) {
+        if (patient == null || doctor == null) {
+            throw new IllegalArgumentException("Patient and Doctor cannot be null[AppointmentManager][checkAppointmentConflict]");
+        }
         return appointmentValidator.checkAppointmentConflict(patient, doctor, date, startTime, endTime);
     }
 
     public boolean appointmentAlreadyCompletedOrCancelled(int appointmentID) {
+        if (appointmentID <= 0) {
+            throw new IllegalArgumentException("Invalid appointment ID[AppointmentManager][appointmentAlreadyCompletedOrCancelled]");
+        }
         return appointmentValidator.appointmentAlreadyCompletedOrCancelled(appointmentID);
     }
 
     public boolean appointmentAlreadyHasOutcome(int appointmentID) {
+        if (appointmentID <= 0) {
+            throw new IllegalArgumentException("Invalid appointment ID[AppointmentManager][appointmentAlreadyHasOutcome]");
+        }
         return appointmentValidator.appointmentAlreadyHasOutcome(appointmentID);
     }
     /* ---------------------------------------- End Validator Function ------------------------------------------ */
 
     /* ---------------------------------------- Start Storage Function ------------------------------------------ */
     public void saveAppointments() {
+        if (appointmentStorage == null) {
+            throw new IllegalStateException("AppointmentStorage is not initialized[AppointmentManager][saveAppointments]");
+        }
         appointmentStorage.saveAppointments();
     }
 
     public void addAppointmentToCSV(String[] appointment) {
+        if (appointmentStorage == null) {
+            throw new IllegalStateException("AppointmentStorage is not initialized[AppointmentManager][addAppointmentToCSV]");
+        }
         appointmentStorage.addAppointmentToCSV(appointment);
     }
 
@@ -199,6 +267,9 @@ public class AppointmentManager {
 
     // Approve or reject an appointment request
     public void approveAppointmentRequest(Appointment appointment, boolean isApproved) {
+        if (appointment == null) {
+            throw new IllegalArgumentException("Appointment cannot be null[AppointmentManager][approveAppointmentRequest]");
+        }
         if (isApproved) {
             appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         } else {
@@ -212,6 +283,9 @@ public class AppointmentManager {
     //save all the upcoming appointments for a doctor
     public void getUpcomingAppointmentsForDoctor(Staff doctor) {
         //get the current time
+        if (doctor == null) {
+            throw new IllegalArgumentException("Doctor cannot be null[AppointmentManager][getUpcomingAppointmentsForDoctor]");
+        }
         Calendar cal = Calendar.getInstance();
         String currentTimeString = timeFormat.format(cal.getTime());
         String currentDateString = dateFormat.format(cal.getTime());
@@ -237,7 +311,7 @@ public class AppointmentManager {
         // System.out.println("-----------------------------------");
 
         if (filteredAppointments.isEmpty()) {
-            System.out.println("No appointments found.");
+            System.out.println("No appointments found.[AppointmentManager][displayAppointment]");
             return;
         } else {
             // Print table headers

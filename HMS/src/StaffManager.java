@@ -68,6 +68,18 @@ public class StaffManager {
         return null;
     }
 
+    public void setPassword(String newPassword, String staffID) {
+        for (Staff staff : staffs) {
+            if (staff.getUserID().equalsIgnoreCase(staffID)) {
+                staff.setPassword(newPassword);
+                System.out.println("Password updated successfully.");
+                saveStaff();
+                return;
+            }
+        }
+        System.out.println("Staff member with ID " + staffID + " was not found.");
+    }
+
     public void addStaffMember(String id, String password) {
         boolean isDefaultPassword = true; // By default, the password is set to default
         Staff newUser = new Staff(id, password, true); // Assuming default password is true

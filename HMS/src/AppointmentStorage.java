@@ -20,57 +20,64 @@ public class AppointmentStorage{
     }   
 
     public ArrayList<Appointment> getAppointments() {
-        return appointments;
+        if (appointments == null || appointments.isEmpty()) {
+            System.out.println("Appointments list is null or empty. Loading appointments from CSV. [AppointmentStorage]");
+            loadAppointments(); // Ensure data is loaded
+        }
+        return appointments != null ? appointments : new ArrayList<>();
+    }
+
+    public ArrayList<Staff> getDoctors() {
+        ArrayList<Staff> doctors = new ArrayList<>();
+        for (Appointment appointment : appointments) {
+            if (appointment.getDoctor() != null) {
+                doctors.add(appointment.getDoctor());
+            }
+        }
+        return doctors;
     }
 
     // Read from CSV file to memory
-    public ArrayList<Appointment> loadAppointments() {
+    public void loadAppointments() {
+        appointments = new ArrayList<>();
         appointments.clear(); // Clear existing appointments before loading new ones
         String[][] appointmentArray = appointmentFileManager.readFile();
-    
+        
         if (appointmentArray == null || appointmentArray.length == 0) {
             System.out.println("Failed to load appointment data.[AppointmentStorage]");
             // return appointments; // Return an empty list instead of null
         }
-    
+
         for (int i = 1; i < appointmentArray.length; i++) {
             String[] row = appointmentArray[i];
-            if (row.length > 7) {
-                int appointmentID = Integer.parseInt(row[0]);
-                // System.out.println("I am here: " + appointmentID);
-                String patientID = row[1];
-                String doctorID = row[2];
-    
-                Date date = null;
-                Time startTime = null;
-                Time endTime = null;
-    
-                // Parse date and time from the CSV file
-                try {
-                    date = dateFormat.parse(row[3]); // Convert String to Date
+            try {
+                if (row.length > 7) {
+                    int appointmentID = Integer.parseInt(row[0]);
+                    String patientID = row[1];
+                    String doctorID = row[2];
+                    Date date = dateFormat.parse(row[3]); // Convert String to Date
                     Date parsedStartTime = timeFormat.parse(row[4]);
                     Date parsedEndTime = timeFormat.parse(row[5]);
-    
-                    startTime = new Time(parsedStartTime.getTime());
-                    endTime = new Time(parsedEndTime.getTime());
-                } catch (ParseException e) {
-                    System.out.println("Error parsing time: [Appointment Strorage]" + e.getMessage());
-                    // Skip this row if there's an error in parsing
-                    continue;
+                    Time startTime = new Time(parsedStartTime.getTime());
+                    Time endTime = new Time(parsedEndTime.getTime());
+                    AppointmentStatus status = AppointmentStatus.valueOf(row[6].toUpperCase()); 
+                    String outcome = row[7];
+                    Appointment appointment = new Appointment(patientID, doctorID, date, startTime, endTime);
+                    appointment.setAppointmentStatus(status);
+                    appointment.setOutcome(outcome);
+                    appointments.add(appointment);
+                } else {
+                    System.out.println("Incomplete data in row, skipping: [AppointmentStorage] " + String.join(",", row));
                 }
-    
-                AppointmentStatus status = AppointmentStatus.valueOf(row[6].toUpperCase()); 
-                String outcome = row[7];
-    
-                Appointment appointment = new Appointment(patientID, doctorID, date, startTime, endTime);
-                appointment.setAppointmentStatus(status);
-                appointment.setOutcome(outcome);
-                appointments.add(appointment);
-            } else {
-                System.out.println("Incomplete data in row, skipping: [AppointmentStorage] " + String.join(",", row));
+            } catch (ParseException e) {
+                System.out.println("Error parsing time: [Appointment Strorage]" + e.getMessage());
+                continue;
+            } catch (Exception e) {
+                System.out.println("Error parsing appointment data: [AppointmentStorage]" + e.getMessage());
+                continue;
             }
         }        
-        return appointments;
+        // return appointments;
     }
     
 
@@ -119,6 +126,4 @@ public class AppointmentStorage{
             }
         }
     }
-
-    
 }

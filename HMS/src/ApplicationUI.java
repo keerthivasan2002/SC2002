@@ -15,12 +15,12 @@ public class ApplicationUI{
 
                     System.out.println();
                     System.out.print("UserID: ");
-                    // String userIDString = sc.next().toUpperCase();
-                    String userIDString = "P1001"; // speed up testing purpose
+                    String userIDString = sc.next().toUpperCase();
+                    // String userIDString = "P1001"; // speed up testing purpose
 
                     System.out.print("Password: ");
-                    // String password = sc.next();
-                    String password = "Password@1001";
+                    String password = sc.next();
+                    // String password = "Password@1001";
 
                     LogInManager login = new LogInManager(userIDString, password);
                     System.out.println("\nLogInManager initialized");
@@ -49,10 +49,19 @@ public class ApplicationUI{
 
     public static void userOption(String userIDString) {
         try {
-            AppointmentStorage appointmentStorage = new AppointmentStorage();
-            AppointmentManager am = new AppointmentManager(appointmentStorage);
-            ScheduleManager scheduleManager = new ScheduleManager();
+            AppointmentStorage as = new AppointmentStorage();
+            System.out.println("AppointmentStorage initialized: [ApplicationUI]" + (as != null));
 
+            AppointmentValidator av = new AppointmentValidator(as);
+            System.out.println("AppointmentValidator received AppointmentStorage: [ApplicationUI]" + (av != null));
+
+            // AppointmentFilter af = new AppointmentFilter(as, av);
+            // System.out.println("AppointmentFilter initialized with AppointmentStorage: [ApplicationUI]" + (as != null));
+
+            AppointmentManager am = new AppointmentManager(as,av);
+            System.out.println("AppointmentManager initialized with valid dependencies.[ApplicationUI]" + (am != null));
+
+            ScheduleManager scheduleManager = new ScheduleManager();
             scheduleManager.setAppointmentManager(am);
             am.setScheduleManager(scheduleManager);
 

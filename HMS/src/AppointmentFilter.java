@@ -5,27 +5,39 @@ public class AppointmentFilter {
     private ArrayList<Appointment> appointments;
 
     private AppointmentStorage as;
-    private AppointmentValidator av = new AppointmentValidator();
+    private AppointmentValidator av;;
 
     Calendar cal = Calendar.getInstance();
 
 
-    public AppointmentFilter(AppointmentStorage as) {
+    public AppointmentFilter(AppointmentStorage as, AppointmentValidator av) {
+        if (as == null) {
+            throw new IllegalArgumentException("AppointmentStorage cannot be null");
+        }
+        if (av == null) {
+            throw new IllegalArgumentException("AppointmentValidator cannot be null");
+        }
+    
         this.as = as;
+        this.av = av;
         this.appointments = as.getAppointments();
         if (this.appointments == null) {
+            System.out.println("AppointmentStorage returned null. Initializing an empty list.[AppointmentFilter]");
             this.appointments = new ArrayList<>();
         }
+        System.out.println("AppointmentFilter initialized with valid AppointmentStorage: [AppointmentFilter]" + (as != null));
+        System.out.println("AppointmentFilter initialized with valid AppointmentValidator:  [AppointmentFilter] " + (av != null));
+        System.out.println("AppointmentFilter initialized with " + this.appointments.size() + " appointments.");
 
     }
-
+    
     /* ---------------------------------------- Filter by PatientID ------------------------------------------ */
     public ArrayList<Appointment> getPatientAppointments(Patient patient, int  showTypeOfAppointments) {
         ArrayList<Appointment> patientAppointments = new ArrayList<>();
         
          // Ensure that appointments is not null
          if (appointments == null) {
-            System.out.println("Appointments list is null. Initializing to an empty list.");
+            System.out.println("Appointments list is null. Initializing to an empty list.[AppointmentFilter]");
             appointments = new ArrayList<>();
         }
         
@@ -61,7 +73,7 @@ public class AppointmentFilter {
         
         // Ensure that appointments is not null
         if (appointments == null) {
-            System.out.println("Appointments list is null. Initializing to an empty list.");
+            System.out.println("Appointments list is null. Initializing to an empty list.[AppointmentFilter]");
             appointments = new ArrayList<>();
         }
         
