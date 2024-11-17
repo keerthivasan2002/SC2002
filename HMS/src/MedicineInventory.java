@@ -103,11 +103,18 @@ public class MedicineInventory {
         // Prompt and accept input for userID
         System.out.println("Enter name: ");
         String name = sc.nextLine(); //Need to create another execption handling for string names, cannot be more than certain length
-        // Prompt and accept input for password
+        for (Medicines med : medicines){
+            if (med.name.equalsIgnoreCase(name)) {
+                System.out.println("Medicine is already in inventory.");
+                return;
+            }
+        }
+
+        // Prompt and accept input for stock
         System.out.println("Enter stock: ");
         int stock = oh.getOption(1,999999999);
 
-        // Prompt and accept input for name
+        // Prompt and accept input for low stock alert
         System.out.println("Enter Low Stock Alert Limit: ");
         int lowStockAlert = oh.getOption(1, 999999999);
 
@@ -165,7 +172,7 @@ public class MedicineInventory {
                 medicine.stock = oh.getOption(1, 99999999);
                 if(medicine.stock <= medicine.lowStockAlert) medicine.status1 = Medicines.status.TOREQUEST;
                 else medicine.status1 = Medicines.status.NIL;
-                System.out.print("updated New Stock Level!");
+                System.out.print("updated New Stock Level!\n");
                 return;
             }
         }

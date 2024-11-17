@@ -101,6 +101,7 @@ public class AdministratorUI {
         System.out.println("3. View and manage inventory of medication ");
         System.out.println("4. Logout");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.print("Enter your choice: ");
     }
 
     public void staffRecordMenu(){
@@ -277,7 +278,7 @@ public class AdministratorUI {
         System.out.println("6. Update value of Low Stock Alert");
         System.out.println("7. Back to Main Menu");
         System.out.println("-----------------------------------");
-
+        System.out.print("Enter your choice: ");
     }
 
     public void requestMenuDisplay(){
