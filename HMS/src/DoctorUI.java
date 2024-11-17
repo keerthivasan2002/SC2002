@@ -1,8 +1,5 @@
 import java.sql.Time;
-import java.util.Calendar;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -54,7 +51,8 @@ public class DoctorUI implements UserUI{
                     break;
                 case 2: //Update patient Medical Record
                     System.out.println("Update Patient Medical Record");
-                    recordAppointmentOutcome(); //tombalek
+                    //am.printAllAppointmentsFromCSV(); -> the data in the csv is correct
+                    recordAppointmentOutcome();
                     break;
                 case 3: //view Personal Schedule
                     System.out.println("View Personal Schedule");
@@ -124,7 +122,7 @@ public class DoctorUI implements UserUI{
         //     System.out.println("Patient not found.");
         //     return;
         // }
-    
+
         // ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(patientID);
         // if (records.isEmpty()) {
         //     System.out.println("No medical records found for patient " + patientID);
@@ -185,18 +183,19 @@ public class DoctorUI implements UserUI{
         System.out.println("Enter the Patient ID: ");
         String patientID = sc.next().toUpperCase();
         Patient patient = pm.selectPatient(patientID);
+
         if (patient == null) {
             System.out.println("Patient not found.");
             return;
         }
     
-        ArrayList<Appointment> appointments = am.getPatientAppointments(patient,0);
+        ArrayList<Appointment> appointments = am.getPatientAppointments(patient, 0);
         if (appointments == null || appointments.isEmpty()) {
             System.out.println("No appointments found for the patient.");
             return;
         }
-    
-        am.displayAppointment(appointments);
+
+        //am.displayAppointment(appointments);
     
         System.out.println("Enter the appointment ID: ");
         System.out.println("Enter 0 to go back.");

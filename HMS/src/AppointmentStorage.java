@@ -26,7 +26,7 @@ public class AppointmentStorage{
             String[] row = appointmentArray[i];
             if (row.length > 7) {
                 int appointmentID = Integer.valueOf(row[0]);
-                System.out.println("I am here: " + appointmentID);
+                //System.out.println("I am here: " + appointmentID);
                 String patientID = row[1];
                 //System.out.println("I am here: " + patientID);
                 String doctorID = row[2];
