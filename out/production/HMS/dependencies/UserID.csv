@@ -1,11 +1,11 @@
 UserID,Password,isDefaultPassword
-D001,Password,false
+D001,Password@001,false
 D002,passwords,false
 P001,password,true
 A001,password,true
 D003,password,true
 D004,password,true
 A002,password,true
-P1001,password1001,false
+P1001,Password@1001,false
 P1002,password,true
 P1003,Password@21,false

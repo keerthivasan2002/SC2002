@@ -45,32 +45,34 @@ public class DoctorUI implements UserUI{
             // System.out.println("I am here " );
             switch (choice){
                 case 1: //view Patient Medical Record
+                    System.out.println("\n");
                     System.out.println("===============================");
                     System.out.println("View Patient Medical Record");
                     System.out.println("===============================");
                     viewPatientMedicalRecord(); //this works
+                    System.out.println("\n");
                     break;
                 case 2: //Update patient Medical Record
                     System.out.println("Update Patient Medical Record");
-                    updatePatientMedicalRecord(); //this should be record patient medical record
+                    recordAppointmentOutcome(); //tombalek
                     break;
                 case 3: //view Personal Schedule
-                    System.out.println("View Personal Schedule"); //this is done
+                    System.out.println("View Personal Schedule");
                     personalSchedule();
                     break;
                 case 4: //Set availability for appointment
                     updateSchedule(); //This is done
                     break;
                 case 5: //Accept or Decline Appointment Request
-                    System.out.println("Accept or Decline Appointment Request"); //This is done
+                    System.out.println("Accept or Decline Appointment Request");
                     am.appointmentRequest(doctor);
 
                     break;
                 case 6: //View Upcoming Appointment
-                    am.getUpcomingAppointmentsForDoctor(doctor); //this is not correct
+                    am.getUpcomingAppointmentsForDoctor(doctor);
                     break;
                 case 7: //Record Appointment Outcome
-                    recordAppointmentOutcome(); //this works and should be update
+                    updatePatientMedicalRecord(); //tombalek
                     break;
                 case 8: //Log out
                     System.out.println("Thank you! Hope to see you soon :)\n"); //This works
