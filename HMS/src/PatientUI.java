@@ -286,7 +286,7 @@ public class PatientUI {
     }
 
     private void rescheduleAppointment() {
-        ArrayList<Appointment> appointment = appointmentManager.viewPatientAppointments(userID, false);
+        ArrayList<Appointment> appointment = appointmentManager.appointmentFilter.getPatientAppointments(userID,0);
         appointmentManager.displayAppointment(appointment);
         System.out.print("Enter Appointment ID to Reschedule: ");
         int appointmentID = -1;
@@ -396,7 +396,7 @@ public class PatientUI {
 
     protected void viewAppointmentOutcome() {
         System.out.println("Viewing Past Appointments Outcome Records");
-        ArrayList appointment_record = appointmentManager.viewPatientAppointments(userID, true);
+        ArrayList appointment_record = appointmentManager.getPatientAppointments(userID, -1);
         if (appointment_record.isEmpty()) {
             System.out.println("No past appointments found for patient. " + userID);
             return;

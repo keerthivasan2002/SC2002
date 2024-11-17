@@ -2,33 +2,50 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Scanner;
 
 public class AppointmentScheduler {
     private ArrayList<Appointment> appointments;
-    private ArrayList<Appointment> appointmentsByStatus;
     
-    private AppointmentValidator appointmentValidator;
+    private AppointmentValidator av;
+    private AppointmentStorage as;
+    // private AppointmentFilter af;
+    private AppointmentLookup al;
+    // private ScheduleManager s;
 
+    //initialize the date and time format
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     public AppointmentScheduler( AppointmentValidator appointmentValidator) {
-        this.appointmentValidator = appointmentValidator; ;
+        this.av = appointmentValidator; ;
+        this.as = new AppointmentStorage();
+        // this.af = new AppointmentFilter();
+        this.al = new AppointmentLookup();
+        // this.s = new ScheduleManager();
+
+        this.appointments = as.getAppointments();
     }
 
 
     
     // Add a new appointment
-    public boolean addAppointment(String patientID, String doctorID, Date date, Time startTime, Time endTime) {
-        System.out.println("Scheduling appointment for Patient ID: " + patientID + ", Doctor ID: " + doctorID + ", Date: " + date + ", Start Time: " + startTime + ", End Time:" + endTime);
+    public boolean addAppointment(Patient patient, Staff doctor, Date date, Time startTime, Time endTime) {
+        System.out.println("Scheduling appointment for Patient ID: " + patient.getPatientID() + ", Doctor ID: " + doctor.getUserID() + ", Date: " + date + ", Start Time: " + startTime + ", End Time:" + endTime);
 
-        if (patientIsMatch(patientID, doctorID, date, startTime, endTime) ||
-                doctorAndTimeMatch(doctorID, date, startTime, endTime) ||
-                isDuplicateInCSV(patientID, doctorID, date, startTime, endTime)) { // Check CSV for duplicates
-            System.out.println("Appointment already exists.");
+        // if (av.patientIsMatch(patientID, doctorID, date, startTime, endTime) ||
+        //         av.doctorAndTimeMatch(doctorID, date, startTime, endTime) ||
+        //         av.isDuplicateInCSV(patientID, doctorID, date, startTime, endTime)) { // Check CSV for duplicates
+        //     System.out.println("Appointment already exists.");
+        //     return false;
+        // } 
+        
+        if (av.checkAppointmentConflict(patient, doctor, date, startTime, endTime)) {
+            System.out.println("Appointment slot is already occupied.");
             return false;
-        } else {
+        }        
+        else {
             int appointmentID = appointments.size() + 1;
-            Appointment newAppointment = new Appointment(patientID, doctorID, date, startTime, endTime);
+            Appointment newAppointment = new Appointment(patient.getPatientID(), doctor.getUserID(), date, startTime, endTime);
             appointments.add(newAppointment);
             System.out.println("Appointment scheduled with ID: " + newAppointment.getAppointmentID());
 
@@ -37,8 +54,8 @@ public class AppointmentScheduler {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             String[] appointment = new String[]{
                     String.valueOf(appointmentID),
-                    patientID, 
-                    doctorID,
+                    patient.getPatientID(), 
+                    doctor.getUserID(),   
                     dateFormat.format(date),
                     timeFormat.format(startTime),
                     timeFormat.format(endTime),
@@ -46,41 +63,39 @@ public class AppointmentScheduler {
                     "NULL"
             };
 
-            FileManager appointmentFM = new FileManager(appointment_File);
-            appointmentFM.addNewRow(appointment);
+            as.addAppointmentToCSV(appointment);
             return true;
         }
     }
 
-public boolean appointmentAlreadyCompletedOrCancelled(int appointmentID) {
-    Appointment appointment = findAppointmentByID(appointmentID);
-    if (appointment != null && (appointment.getAppointmentStatus() == AppointmentStatus.CONFIRMED || appointment.getAppointmentStatus() == AppointmentStatus.REJECTED || appointment.getAppointmentStatus() == AppointmentStatus.CANCELLED)) {
-        return true;
-    } else {
-        return false;
-    }
-}
+
 
 public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newStartTime, Time newEndTime) {
-    Scanner scanner = new Scanner(System.in);
-    Appointment appointment = findAppointmentByID(appointmentID);
+    Appointment appointment = al.findAppointmentByID(appointmentID);
     if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELLED) {
-        String doctorID = appointment.getDoctor().getUserID();
+        Staff doctor = appointment.getDoctor();
+        Patient patient = appointment.getPatient();
 
-        // Check if the doctor or patient has an existing appointment at the new time slot
-        if (doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
-                patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
+        if (av.checkAppointmentConflict(patient, doctor, newDate, newEndTime, newEndTime)){
             System.out.println("Appointment slot is already occupied.");
             return false;
         }
 
-        // Check for any existing conflicting appointment for the doctor or patient at the new time slot
-        if (doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
-                patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime) ||
-                isDuplicateInCSV(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
-            System.out.println("Appointment slot is already occupied by you.");
-            return false;
-        }
+        // // Check if the doctor or patient has an existing appointment at the new time slot
+        // if (av.doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
+        //         av.patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
+        //     System.out.println("Appointment slot is already occupied.");
+        //     return false;
+        // }
+
+
+        // // Check for any existing conflicting appointment for the doctor or patient at the new time slot
+        // if (av.doctorAndTimeMatch(doctorID, newDate, newStartTime, newEndTime) ||
+        //         av.patientIsMatch(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime) ||
+        //         av.isDuplicateInCSV(appointment.getPatient().getUserID(), doctorID, newDate, newStartTime, newEndTime)) {
+        //     System.out.println("Appointment slot is already occupied by you.");
+        //     return false;
+        // }
 
         // Update appointment details
         appointment.setDate(newDate);
@@ -92,7 +107,7 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
 
         // System.out.println("Appointment ID " + appointmentID + " rescheduled.");
         // System.out.println("New Date: " + newDate + ", New Start Time: " + newStartTime + ", New End Time: " + newEndTime);
-        saveAppointments();
+        as.saveAppointments();
 
         return true;
     } else {
@@ -105,12 +120,12 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
 
     //change the existing appointemnt's status to cancelled
     public boolean cancelAppointment(int appointmentID) {
-        Appointment appointment = findAppointmentByID(appointmentID);
+        Appointment appointment = al.findAppointmentByID(appointmentID);
         if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELLED) {
             appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
             // schedule.freeTimeSlot(appointment.getDate(),appointment.getTime());
             System.out.println("Appointment ID " + appointmentID + " has been canceled.");
-            saveAppointments();
+            as.saveAppointments();
             return true;
         } else {
             System.out.println("Appointment not found or already canceled.");
@@ -120,7 +135,7 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
 
     //update the outcome of an appointment
     public boolean updateAppointmentOutcome(int appointmentID, String outcome) {
-        Appointment appointment = findAppointmentByID(appointmentID);
+        Appointment appointment = al.findAppointmentByID(appointmentID);
         if (appointment != null && appointment.getAppointmentStatus() == AppointmentStatus.CONFIRMED) {
             appointment.setOutcome(outcome);
             System.out.println("Outcome updated for Appointment ID " + appointmentID);

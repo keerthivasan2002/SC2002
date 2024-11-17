@@ -1,8 +1,7 @@
-import java.io.File;
 import java.sql.Time;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 
@@ -12,8 +11,11 @@ public class AppointmentStorage{
     
     FileManager appointmentFileManager = new FileManager(appointment_File);
     
-    
+    // initialize thedate and time format
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
+    // Read from CSV file to memory
     public ArrayList<Appointment> getAppointments() {
         String[][] appointmentArray = appointmentFileManager.readFile();
         if (appointmentArray == null || appointmentArray.length == 0) {
@@ -23,7 +25,7 @@ public class AppointmentStorage{
          for (int i = 1; i < appointmentArray.length; i++) {
             String[] row = appointmentArray[i];
             if (row.length > 7) {
-                String appointmentID = row[0];
+                int appointmentID = Integer.parseInt(row[0]);
                 String patientID = row[1];
                 //System.out.println("I am here: " + patientID);
                 String doctorID = row[2];
@@ -47,7 +49,7 @@ public class AppointmentStorage{
                 AppointmentStatus status = AppointmentStatus.valueOf(row[6].toUpperCase()); // Assuming status is in the fifth column
                 String outcome = row[7]; // Assuming outcome is in the sixth column
 
-                Appointment appointment = new Appointment(patientID, doctorID, date, startTime, endTime);
+                Appointment appointment = new Appointment(appointmentID, patientID, doctorID, date, startTime, endTime);
                 appointment.setAppointmentStatus(status);
                 appointment.setOutcome(outcome);
                 appointments.add(appointment);
@@ -58,43 +60,8 @@ public class AppointmentStorage{
         return appointments;
     }
 
-    //display all the appointments based on the selected patientID
-    public ArrayList<Appointment> viewPatientAppointments(String patientID, boolean showPastAppointments) {
-        ArrayList<Appointment> patientAppointments = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
-
-        // System.out.println("\nAppointments for Patient ID: " + patientID);
-        for (Appointment appointment : appointments) {
-            if (appointment.getPatient().getUserID().equals(patientID)) {
-                if (!showPastAppointments && appointment.getDate().after(cal.getTime())) {
-                    patientAppointments.add(appointment);
-                }else if (showPastAppointments && appointment.getDate().before(cal.getTime())){
-                    patientAppointments.add(appointment);
-                }
-            }
-        }
-        return patientAppointments;
-    }
-
-    //display all the appointments based on the selected patientID
-    public ArrayList<Appointment> viewPatientAppointments(String patientID) {
-        ArrayList<Appointment> patientAppointments = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
-
-        // System.out.println("\nAppointments for Patient ID: " + patientID);
-        for (Appointment appointment : appointments) {
-            if (appointment.getPatient().getUserID().equals(patientID)) {
-                patientAppointments.add(appointment);
-            }
-        }
-        return patientAppointments;
-    }
-
     //Write from meomory to CSV file
     public void saveAppointments() {
-        // Save all appointments to a file
-        FileManager appointmentFileManager = new FileManager(appointment_File);
-
         // Header for CSV
         String[][] appointmentData = new String[appointments.size() + 1][7];
         appointmentData[0] = new String[]{"AppointmentID", "PatientID", "DoctorID", "Date", "Time", "Appointment Status", "Appointment Outcome"};
@@ -105,6 +72,12 @@ public class AppointmentStorage{
 
         //Write to file
         appointmentFileManager.writeFile(appointmentData, false);
+    }
+
+
+    // Add a new appointment to the CSV file
+    public void addAppointmentToCSV(String[] appointment) {
+        appointmentFileManager.addNewRow(appointment);
     }
 
 }
