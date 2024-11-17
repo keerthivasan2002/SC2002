@@ -36,7 +36,7 @@ public class LogInManager {
                 Staff user = new Staff(userID, pass, isDefaultPassword);
                 users.add(user);
             } else {
-                System.out.println("Incomplete data in row, skipping: " + String.join(",", row));
+                System.out.println("Incomplete data in row, skipping: [LoginManager]" + String.join(",", row));
             }
         }
     }

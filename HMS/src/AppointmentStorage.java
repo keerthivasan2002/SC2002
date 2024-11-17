@@ -54,7 +54,7 @@ public class AppointmentStorage{
                 appointment.setOutcome(outcome);
                 appointments.add(appointment);
             } else {
-                System.out.println("Incomplete data in row, skipping: lol " + String.join(",", row));
+                System.out.println("Incomplete data in row, skipping: [AppoinmentStorage] " + String.join(",", row));
             }
         }
         return appointments;

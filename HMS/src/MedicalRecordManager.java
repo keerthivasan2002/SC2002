@@ -43,7 +43,7 @@ public class MedicalRecordManager {
                 MedicalRecord medicalRecord = new MedicalRecord(patientID, dateOfDiagnosis,diagnosis,prescription,prescriptionStatus);
                 MedicalRecords.add(medicalRecord);
             }else{
-                System.out.println("Incomplete data in row, skipping: " + String.join(",", row));
+                System.out.println("Incomplete data in row, skipping: [Medical Record Manager]" + String.join(",", row));
             }
             // For debug purposes [ensure file from medical record is read properly]
             // System.out.println("Loaded Medical Records:");
