@@ -1,8 +1,6 @@
 import java.util.Scanner;
 
 public class PharmacistUI implements UserUI{
-    private String userID;
-public class PharmacistUI {
     Staff pharmacist;
     StaffManager sm;
     private MedicineInventory medicines;

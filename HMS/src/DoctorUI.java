@@ -229,7 +229,7 @@ public class DoctorUI implements UserUI{
         }
     
         selectedAppointment.setOutcome(outcome);
-        am.appointmentStorage;
+        am.saveAppointments();
         System.out.println("Appointment outcome recorded successfully.");
     }
     
