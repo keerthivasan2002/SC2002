@@ -118,7 +118,7 @@ public class PatientUI {
         while(true){
             System.out.print("Enter Doctor ID to view available slots: ");
             doctorID = sc.next();
-            Staff doctor = AppointmentManager.findStaffByID(doctorID);
+            Staff doctor = appointmentManager.findStaffByID(doctorID);
             if(doctor == null){
                 System.out.println("Doctor ID not found. Please try again.");
             } else {
@@ -236,6 +236,7 @@ public class PatientUI {
         System.out.println("Enter the following details to schedule an appointment:");
         System.out.print("Doctor ID: ");
         String doctorID = sc.nextLine().toUpperCase();
+        Staff doctor = appointmentManager.findStaffByID(doctorID);
 
         Calendar cal = Calendar.getInstance();
         Date date = null;
@@ -266,8 +267,7 @@ public class PatientUI {
                 calendar.add(Calendar.MINUTE, 30);
                 endTime = new Time(calendar.getTimeInMillis());
 
-                boolean success = appointmentManager.addAppointment(userID, doctorID, date, startTime, endTime);
-                
+                boolean success = appointmentManager.addAppointment(patient, doctor, date, startTime, endTime);
                 if (success) {
                     System.out.println("Appointment scheduled successfully.");
                 } else {
@@ -286,7 +286,7 @@ public class PatientUI {
     }
 
     private void rescheduleAppointment() {
-        ArrayList<Appointment> appointment = appointmentManager.appointmentFilter.getPatientAppointments(userID,0);
+        ArrayList<Appointment> appointment = appointmentManager.getPatientAppointments(userID,0);
         appointmentManager.displayAppointment(appointment);
         System.out.print("Enter Appointment ID to Reschedule: ");
         int appointmentID = -1;

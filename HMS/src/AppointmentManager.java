@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,7 +38,55 @@ public class AppointmentManager {
         this.scheduleManager = scheduleManager; // Set scheduleManager after both objects are created
     }
 
-    
+    /* ---------------------------------------- Start Scheduling Function ------------------------------------------ */
+    public boolean addAppointment(Patient patient, Staff doctor, Date date, Time startTime, Time endTime) {
+        return appointmentScheduler.addAppointment(patient, doctor, date, startTime, endTime);
+    }
+
+    public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newStartTime, Time newEndTime) {
+        return appointmentScheduler.rescheduleAppointment(appointmentID, newDate, newStartTime, newEndTime);
+    }
+
+    public boolean cancelAppointment(int appointmentID) {
+        return appointmentScheduler.cancelAppointment(appointmentID);
+    }
+
+    public boolean updateAppointmentOutcome(int appointmentID, String outcome) {
+        return appointmentScheduler.updateAppointmentOutcome(appointmentID, outcome);
+    }
+
+    /* ---------------------------------------- End Scheduling Function ------------------------------------------ */
+
+    /* ---------------------------------------- Start Look Up Function ------------------------------------------ */
+    public Staff findStaffByID(String staffID) {
+        return appointmentLookup.findStaffByID(staffID);
+    }
+
+    public Patient findPatientByID(String patientID) {
+        return appointmentLookup.findPatientByID(patientID);
+    }
+
+    public Appointment findAppointmentByID(int id) {
+        return appointmentLookup.findAppointmentByID(id);
+    }
+
+    /* ---------------------------------------- End Look Up Function ------------------------------------------ */
+
+    /* ---------------------------------------- Start Filtering Function ------------------------------------------ */
+    public ArrayList<Appointment> getDoctorAppointments(Staff doctor, int status) {
+        return appointmentFilter.getDoctorAppointments(doctor, status);
+    }
+
+    public ArrayList<Appointment> getAppointmentsByStatus(ArrayList<Appointment> appointments, int status) {
+        return appointmentFilter.getAppointmentsByStatus(appointments, AppointmentStatus.values()[status]);
+    }
+    /* ---------------------------------------- End Filtering Function ------------------------------------------ */
+
+    /* ---------------------------------------- Start Validator Function ------------------------------------------ */
+    public boolean doctorIDExists(Staff doctor) {
+        return appointmentValidator.doctorIDExists(doctor);
+    }
+
     /* ---------------------------------------- Start Appointment Request Function ------------------------------------------ */
 
     public void appointmentRequest(Staff doctor){
@@ -245,14 +294,7 @@ public class AppointmentManager {
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 
-    public boolean appointmentAlreadyHasOutcome(int appointmentID) {
-        Appointment appointment = appointmentLookup.findAppointmentByID(appointmentID);
-        if (appointment.getOutcome() != "NULL" || appointment.getOutcome() != "N/A") {
-            return false;
-        } else {
-            return true;
-        }
-    }
+
 
     //Function to see the available appointment
     public void ViewAvailableTime(Date date){

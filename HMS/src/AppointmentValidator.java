@@ -8,7 +8,7 @@ public class AppointmentValidator {
     private ArrayList<Appointment> appointments;
     private AppointmentStorage as;
     // private AppointmentFilter af;
-    
+
     // initialize thedate and time format
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -200,6 +200,16 @@ public class AppointmentValidator {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public boolean appointmentAlreadyHasOutcome(int appointmentID) {
+        AppointmentLookup al = new AppointmentLookup();
+        Appointment appointment = al.findAppointmentByID(appointmentID);
+        if (appointment.getOutcome() != "NULL" || appointment.getOutcome() != "N/A") {
+            return false;
+        } else {
+            return true;
         }
     }
 }

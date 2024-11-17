@@ -5,8 +5,8 @@ public class AppointmentLookup {
 
     private AppointmentStorage as;
 
-    private static ArrayList <Patient> patients = new ArrayList<>();
-    private static ArrayList <Staff> staffList = new ArrayList<>();
+    private ArrayList <Patient> patients = new ArrayList<>();
+    private ArrayList <Staff> staffList = new ArrayList<>();
 
     public AppointmentLookup() {
         this.as = new AppointmentStorage();
@@ -25,7 +25,7 @@ public class AppointmentLookup {
     }
 
     // find patient by patient ID
-    public static Patient findPatientByID(String patientID) {
+    public Patient findPatientByID(String patientID) {
         for (Patient patient : patients) {
             if (patient.getPatientID().equals(patientID)) {
                 return patient;
@@ -35,7 +35,7 @@ public class AppointmentLookup {
     }
 
     // find staff by staff ID
-    public static Staff findStaffByID(String staffID) {
+    public Staff findStaffByID(String staffID) {
         for (Staff staff : staffList) {
             if (staff.getUserID().equals(staffID)) {
                 return staff;
