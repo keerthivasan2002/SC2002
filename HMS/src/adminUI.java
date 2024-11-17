@@ -53,7 +53,7 @@ public class adminUI {
 
         public void adminOption() {
             int choice;
-            System.out.println("Hello " + admin.getName() + ".");
+            System.out.println("Hello " + admin.getName() + " (UserID: " + userID + ").");
             System.out.println("What would you like to do today?");
             adminMenu();
             choice = sc.nextInt();

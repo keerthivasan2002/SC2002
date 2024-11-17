@@ -165,8 +165,8 @@ public class DoctorUI {
         String diagnosis = sc.nextLine();
         System.out.println("Enter the prescription: ");
         String prescription = sc.nextLine();
-        System.out.println("Enter the prescription status (true/false): ");
-        boolean prescriptionStatus = sc.nextBoolean();
+        // System.out.println("Enter the prescription status (true/false): ");
+        boolean prescriptionStatus = false;
     
         // Create a new MedicalRecord object
         MedicalRecord newRecord = new MedicalRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus);
