@@ -10,6 +10,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AppointmentManager {
+    //initialising the interface 
+    private AppointmentStorage appointmentStorage;
+    private AppointmentScheduler appointmentScheduler;
+    private AppointmentValidator appointmentValidator;
+    private AppointmentFilter appointmentFilter;
+
     //initialising the variables
     private ArrayList<Appointment> appointments;
     private String appointment_File = "Appointment_List.csv";
@@ -22,7 +28,11 @@ public class AppointmentManager {
 
     //constructor for appointmentManager
     public AppointmentManager() {
-        this.appointments = new ArrayList<>();
+        this.appointmentStorage = new AppointmentStorage();
+        this.appointmentValidator = new AppointmentValidator(appointmentStorage);
+        this.appointmentScheduler = new AppointmentScheduler(appointmentValidator);
+        this.appointmentFilter = new AppointmentFilter(appointmentStorage);
+        this.appointments = appointmentStorage.getAppointments(); //initialise the appointments
     }
 
     //using a schedule manager
@@ -397,13 +407,15 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
     /* ---------------------------------------- Start Saving Upcoming Appointments Function ------------------------------------------ */
     //save all the upcoming appointments for a doctor
     public void getUpcomingAppointmentsForDoctor(Staff doctor) {
-        LocalDate currentDate = LocalDate.now();
-
         //get the current time
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        String currentTime = "12:00";
+        String currentTimeString = timeFormat.format(cal.getTime());
+        String currentDateString = dateFormat.format(cal.getTime());
 
+        //debug purpose
+        System.out.println("Current Date: " + currentDateString);
+        System.out.println("Current Time: " + currentTimeString);
+        
         ArrayList<Appointment> upcomingAppointments = new ArrayList<>();
 
         for (Appointment appointment : appointments) {
@@ -416,12 +428,10 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
                 System.out.println("Skipping appointment with ID " + appointment.getAppointmentID() + " because the doctor is null.");
                 continue;
             }
-            if (appointment.getDoctor().getUserID().equalsIgnoreCase(doctor.getUserID())) {
-                LocalDate appointmentDate = appointment.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                if (appointmentDate.isAfter(currentDate) || appointmentDate.isEqual(currentDate)) {
-
+            if (appointmentValidator.doctorIDExists(doctor)) {
+                if (appointmentValidator.appointmentDateIsAfterCurrentDate(appointment, cal)) {
                     // Check if the appointment time is after the current time
-                    if (appointmentTimeIsAfterCurrentTime(appointment, currentTime)) {
+                    if (appointmentValidator.appointmentTimeIsAfterCurrentTime(appointment, cal)) {
                         upcomingAppointments.add(appointment);
                     }
                 }
@@ -431,21 +441,11 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
         displayAppointment(confirmedAppointments);
     }
 
-    //check if the appointment time is after the current time
-    public boolean appointmentTimeIsAfterCurrentTime(Appointment appointment, String currentTime) {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        try {
-            Date appointmentTime = timeFormat.parse(appointment.getStringStartTime());
-            Date currentTimeDate = timeFormat.parse(currentTime);
-            return appointmentTime.after(currentTimeDate);
-        } catch (ParseException e) {
-            System.out.println("[appointmentTimeIsAfterCurrentTime] Error parsing time: " + e.getMessage());
-            return false;
-        }
-    }
+
     /* ---------------------------------------- End Saving Upcoming Appointments Function ------------------------------------------ */
 
 
+    /* ---------------------------------------- End Saving Upcoming Appointments Function ------------------------------------------ */
 
     //display all the appointments based on the selected patientID
     public ArrayList<Appointment> viewPatientAppointments(String patientID, boolean showPastAppointments) {
@@ -454,8 +454,8 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
 
         // System.out.println("\nAppointments for Patient ID: " + patientID);
         for (Appointment appointment : appointments) {
-            if (appointment.getPatient().getUserID().equals(patientID)) {
-                if (!showPastAppointments && appointment.getDate().after(cal.getTime())) {
+            if (appointmentValidator.patientIDExists(patientID)) {
+                if (!showPastAppointments && appointmentValidator.appointmentDateIsAfterCurrentDate(appointment, cal)) {
                     patientAppointments.add(appointment);
                 }else if (showPastAppointments && appointment.getDate().before(cal.getTime())){
                     patientAppointments.add(appointment);
@@ -468,11 +468,10 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
     //display all the appointments based on the selected patientID
     public ArrayList<Appointment> viewPatientAppointments(String patientID) {
         ArrayList<Appointment> patientAppointments = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
 
         // System.out.println("\nAppointments for Patient ID: " + patientID);
         for (Appointment appointment : appointments) {
-            if (appointment.getPatient().getUserID().equals(patientID)) {
+            if (appointmentValidator.patientIDExists(patientID)) {
                 patientAppointments.add(appointment);
             }
         }
@@ -510,7 +509,7 @@ public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newSt
     public ArrayList<Appointment> getAppointmentsByDoctorID(String doctorID) {
         ArrayList<Appointment> filteredAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {
-            if ((appointment.getDoctor().getUserID()).equalsIgnoreCase(doctorID)) {
+            if ((appointmentValidator.doctorIDExists(doctorID)) {
                 filteredAppointments.add(appointment);
             }
         }

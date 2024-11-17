@@ -6,36 +6,44 @@ public class ApplicationUI {
         System.out.println(System.getProperty("user.dir"));
         Scanner sc = new Scanner(System.in);
         String exit = "0";
-
         while(!exit.equals("1")){
-            System.out.println("Welcome to the login page");
-            System.out.println("Please enter your Hospital ID and Password");
+            try{
+                
+                    System.out.println("Welcome to the login page");
+                    System.out.println("Please enter your Hospital ID and Password");
 
-            System.out.println();
-            System.out.print("Username: ");
-            //String userName = sc.next().toUpperCase();
-            String userName = "D001"; // speed up testing purpose
+                    System.out.println();
+                    System.out.print("UserID: ");
+                    String userIDString = sc.next().toUpperCase();
+                    // String userName = "D001"; // speed up testing purpose
 
-            System.out.print("Password: ");
-            //String password = sc.next();
-            String password = "Password";
+                    System.out.print("Password: ");
+                    String password = sc.next();
+                    // String password = "Password";
 
-            LogInManager login = new LogInManager(userName, password);
-            boolean accept = login.authoriseLogin();
-            if (accept) {
-                System.out.println("Welcome");
-                userOption(userName);
-            } else {
-                System.out.println("Login failed.");
-                System.out.println("If you would like to exit. Press 1.");
-                System.out.println("If you would like to try again. press any other key.");
-                exit = sc.next();
+                    LogInManager login = new LogInManager(userIDString, password);
+                    boolean accept = login.authoriseLogin();
+                    if (accept) {
+                        System.out.println("Welcome");
+                        userOption(userIDString);
+                    } else {
+                        System.out.println("Login failed.");
+                        System.out.println("If you would like to exit. Press 1.");
+                        System.out.println("If you would like to try again. press any other key.");
+                        exit = sc.next();
+                    }
+            } catch (Exception e) {
+                System.out.println("An error occurred. Please try again.");
+            } finally {
+                sc.close();
             }
         }
-
     }
 
-    public static void userOption(String userName) {
+    public static void userOption(String userIDString) {
+
+    
+
         //initialise outside to avoid initialising multiple times
         ScheduleManager scheduleManager = new ScheduleManager();
         AppointmentManager am = new AppointmentManager();
@@ -49,34 +57,33 @@ public class ApplicationUI {
         scheduleManager.initialiseSchedule(); // Initialize schedule
 
 
-        String useString = userName.toUpperCase();
+        String useString = userIDString.toUpperCase();
 
         if (useString.length() == 5){
 
             //Patient 
             if (useString.startsWith("p") || useString.startsWith("P")){ // [To Remove] Can remove
-
-                PatientManager pm = new PatientManager();
                 MedicalRecordManager mrm = new MedicalRecordManager();
-                PatientUI patientUI = new PatientUI(useString, pm, mrm, scheduleManager, am);
+                PatientManager pm = new PatientManager();
+                new PatientUI(useString, pm, mrm, scheduleManager, am);
             }
         } else if(useString.length() == 4){
             //Doctor
             if (useString.startsWith("d") || useString.startsWith("D")){
                 MedicalRecordManager mrm = new MedicalRecordManager();
                 StaffManager sm = new StaffManager();
-                DoctorUI doctorUI = new DoctorUI(useString, sm, mrm, am, scheduleManager);
+                new DoctorUI(useString, sm, mrm, am, scheduleManager);
             }
             //Admin
             else if (useString.startsWith("a") || useString.startsWith("A")){
-               StaffManager sm = new StaffManager();
-                AdministratorUI adminUI = new AdministratorUI(useString, sm, am);
+                StaffManager sm = new StaffManager();
+                new AdministratorUI(useString, sm, am);
             } 
 
             //Pharmacist
-            else if (useString.startsWith("p") || useString.startsWith("P") || userName.startsWith("PH") || userName.startsWith("pH")){
+            else if (useString.startsWith("p") || useString.startsWith("P")){
                  StaffManager sm = new StaffManager();
-                 PharmacistUI pharmacistUI = new PharmacistUI(userName, sm);
+                 new PharmacistUI(useString, sm);
             } 
 
         }else {

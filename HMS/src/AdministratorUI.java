@@ -28,11 +28,9 @@ public class AdministratorUI {
     request is approved, the stock level will be updated automatically
     */
 
-        private String userID; // Why is there error here
-        private Staff staff, admin, doctor;
+        private String userID;
+        private Staff admin;
         private StaffManager sm;
-        private PatientManager pm;
-        private Patient patient;
         private AppointmentManager am;
 
         private MedicineInventory mi = new MedicineInventory();
@@ -65,7 +63,7 @@ public class AdministratorUI {
     public void adminOption() {
         int choice = -1;
 
-        System.out.println("Hello " + admin.getName() + ".");
+        System.out.println("Hello " + admin.getName() + " (UserID: " + userID + ").");
         System.out.println("What would you like to do today?");
 
         while (true){
@@ -243,7 +241,7 @@ public class AdministratorUI {
                     System.out.println("Enter the ID of the staff member to remove: ");
                     staffIDString = sc.nextLine();
                     System.out.println("StaffID = " + staffIDString);
-                    sm.removeStaffMember(staffIDString);
+                    StaffManager.removeStaffMember(staffIDString);
                     break;
                 case 4:
                     sm.displayStaffMembers();
@@ -256,11 +254,6 @@ public class AdministratorUI {
         }
     }
 
-
-
-    private void manageAppointment(){
-        
-    }
     public void MedicationInventoryMenu() {
         System.out.println("-----------------------------------");
         System.out.println("Medication Inventory Menu");
