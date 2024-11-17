@@ -3,8 +3,6 @@ import java.util.Calendar;
 
 public class AppointmentFilter {
     private ArrayList<Appointment> appointments;
-    private ArrayList<Appointment> appointmentByStatus;
-
 
     private AppointmentStorage as = new AppointmentStorage();
     private AppointmentValidator av = new AppointmentValidator();
@@ -13,7 +11,6 @@ public class AppointmentFilter {
 
 
     public AppointmentFilter() {
-
         this.appointments = as.getAppointments();
     }
 
@@ -57,6 +54,8 @@ public class AppointmentFilter {
 
     /* ---------------------------------------- Filter by Status ------------------------------------------ */
     public ArrayList<Appointment> getAppointmentsByStatus(ArrayList<Appointment> appointments, AppointmentStatus status) {
+        ArrayList<Appointment> appointmentByStatus = new ArrayList<>();
+
         for (Appointment appointment : appointments) {
             if (appointment.getAppointmentStatus() == status) {
                 appointmentByStatus.add(appointment);
@@ -64,6 +63,16 @@ public class AppointmentFilter {
         }
         return appointmentByStatus;
     }
+        
 
+    public ArrayList<Appointment> getAppointmentByDate(ArrayList<Appointment> appointments, Calendar cal) {
+        ArrayList<Appointment> appointmentByDate = new ArrayList<>();
 
+        for (Appointment appointment : appointments) {
+            if (appointment.getDate().equals(cal.getTime()) || appointment.getDate().after(cal.getTime())) {
+                appointmentByDate.add(appointment);
+            }
+        }
+        return appointmentByDate;
+    }
 }

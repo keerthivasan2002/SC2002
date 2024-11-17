@@ -2,12 +2,12 @@ import java.util.Scanner;
 
 public class OptionHandling {
 
+    Scanner sc = new Scanner(System.in);
+
     public int getOption(int min, int max){
         int option = 0; 
         boolean valid  =false;
         int limit = 0;
-        Scanner sc = new Scanner(System.in);
-
         while (!valid){
 
             // Limit the number of invalid attempts
@@ -45,4 +45,5 @@ public class OptionHandling {
         }
         return option;
     }
+
 }

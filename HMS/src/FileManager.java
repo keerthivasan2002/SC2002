@@ -1,7 +1,5 @@
 import java.io.*;
-import java.nio.Buffer;
 import java.util.ArrayList;
-import java.util.List;
 
 public class FileManager {
     private String file;

@@ -1,14 +1,15 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 
 public class LogInManager {
     private String userName;
     private String password;
 
-    private static ArrayList<User> users;;
+    private ArrayList<User> users;;
     private String user_file = "UserID.csv";
+    
+    Scanner sc = new Scanner(System.in);
 
     // Constructor to handle file operations
     public LogInManager(String userName, String password) {
@@ -64,7 +65,6 @@ public class LogInManager {
     }
 
     private void changePassword(User user) {
-        Scanner sc = new Scanner(System.in);
         System.out.print("Enter your new password: ");
         String newPassword = sc.nextLine();
         

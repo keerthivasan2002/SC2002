@@ -169,7 +169,8 @@ public class DoctorUI implements UserUI{
         boolean prescriptionStatus = false;
     
         // Create a new MedicalRecord object
-        MedicalRecord newRecord = new MedicalRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus);
+        // MedicalRecord newRecord = new MedicalRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus);
+        // mrm.addNewRecord(newRecord); // Add to MedicalRecordManager
         mrm.addNewRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus); // Add to MedicalRecordManager
     
         System.out.println("Medical record added successfully.");
@@ -181,14 +182,13 @@ public class DoctorUI implements UserUI{
     
         System.out.println("Enter the Patient ID: ");
         String patientID = sc.next().toUpperCase();
-    
         Patient patient = pm.selectPatient(patientID);
         if (patient == null) {
             System.out.println("Patient not found.");
             return;
         }
     
-        ArrayList<Appointment> appointments = am.viewPatientAppointments(patientID);
+        ArrayList<Appointment> appointments = am.getPatientAppointments(patient,0);
         if (appointments == null || appointments.isEmpty()) {
             System.out.println("No appointments found for the patient.");
             return;
@@ -292,6 +292,11 @@ public class DoctorUI implements UserUI{
 
             boolean success = scheduleManager.addSchedule(doctor, date, startTime, endTime, comments);
 
+            if (success) {
+                System.out.println("Schedule added successfully.");
+            } else {
+                System.out.println("Failed to add schedule.");
+            }
         }catch (ParseException e){
             System.out.println("Invalid date or time format. Please try again. \n");
             sc.nextLine();

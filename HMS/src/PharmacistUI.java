@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class PharmacistUI implements UserUI{
     private String userID;
+public class PharmacistUI {
     Staff pharmacist;
     StaffManager sm;
     private MedicineInventory medicines;
@@ -11,7 +12,6 @@ public class PharmacistUI implements UserUI{
     OptionHandling oh = new OptionHandling();
 
     public PharmacistUI(String userID, StaffManager sm){
-        this.userID = userID;
         this.sm = sm;
         this.pharmacist = sm.selectStaff(userID);
         medicines = new MedicineInventory();

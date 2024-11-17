@@ -32,6 +32,7 @@ public class AdministratorUI implements UserUI{
         private Staff admin;
         private StaffManager sm;
         private AppointmentManager am;
+        private PatientManager pm;
 
         private MedicineInventory mi = new MedicineInventory();
         
@@ -154,12 +155,14 @@ public class AdministratorUI implements UserUI{
                 case 1:
                     System.out.print("Enter Patient ID: ");
                     String patientID = sc.nextLine().trim();
-                    filteredAppointments = am.getAppointmentsByPatientID(patientID);
+                    Patient patient = pm.selectPatient(patientID);
+                    filteredAppointments = am.getPatientAppointments(patient,0);
                     break;
                 case 2:
                     System.out.print("Enter Doctor ID: ");
                     String doctorID = sc.nextLine().trim();
-                    filteredAppointments = am.getAppointmentsByDoctorID(doctorID);
+                    Staff doctor = sm.selectStaff(doctorID);
+                    filteredAppointments = am.getDoctorAppointments(doctor,0);
                     break;
                 case 3:
                     break;

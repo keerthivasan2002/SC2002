@@ -113,34 +113,7 @@ public class AppointmentValidator {
 
 
     /* ---------------------------------------- Check AppointmentID ------------------------------------------ */
-    // ensure user key in the correct appointment ID
-    public int getValidAppointmentID(ArrayList<Appointment> filteredAppointments) {
-        OptionHandling oh = new OptionHandling();
-        int selectedAppointmentID = -1;
-        boolean valid = false;
-
-        while (!valid) {
-            selectedAppointmentID = oh.getOption(0, Integer.MAX_VALUE);
-
-            if (selectedAppointmentID == 0) {
-                return -1; // Return -1 to indicate user wants to go back to the main menu
-            }
-            // Check if the entered appointment ID is in the filtered list
-            for (Appointment appointment : filteredAppointments) {
-                if (appointment.getAppointmentID() == selectedAppointmentID) {
-                    valid = true;
-                    break;
-                }
-            }
-
-            if (!valid) {
-                System.out.println("Invalid appointment ID. Please enter a valid appointment ID from the list.");
-            }
-        }
-
-        return selectedAppointmentID;
-    }
-
+    
 
 //Extra function for debug purposes
 

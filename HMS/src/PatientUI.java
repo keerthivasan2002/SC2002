@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,19 +13,23 @@ public class PatientUI implements UserUI{
     private Patient patient;
     private PatientManager pm; //keep reference to a PatientManager
     private MedicalRecordManager mrm;
-    private ScheduleManager scheduleManager;
+    // private ScheduleManager scheduleManager;
     private AppointmentManager appointmentManager;
-    private ArrayList<Appointment> Appointment_Record;
 
     private Scanner sc = new Scanner(System.in);
     OptionHandling oh = new OptionHandling();
+    Calendar cal = Calendar.getInstance();
+
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     public PatientUI(String userID, PatientManager pm, MedicalRecordManager mrm, ScheduleManager scheduleManager, AppointmentManager am){
         this.userID = userID;
         this.pm = pm;
         this.mrm = mrm;
         this.patient = pm.selectPatient(userID);
-        //this.scheduleManager = scheduleManager;
+        // this.scheduleManager = scheduleManager;
         
         this.appointmentManager = am;
 
@@ -144,6 +147,8 @@ public class PatientUI implements UserUI{
         }
     }
 
+    /* ---------------------------------------- Menu Function ------------------------------------------ */
+
     //create a function for the patient menu
     private void patientMenu(){
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -173,6 +178,7 @@ public class PatientUI implements UserUI{
         System.out.println("Phone Number: " + patient.getPhoneNumber());
     }
 
+    //update personal information menu
     public void updatePatientMenu(){
         System.out.println("----------------------------------------------");
         System.out.println("Which information would you like to change?");
@@ -183,6 +189,7 @@ public class PatientUI implements UserUI{
         System.out.println("----------------------------------------------");
     }
 
+    /* ---------------------------------------- Update Personal Information Function ------------------------------------------ */
     private void updatePatientInfo(){
         int changeChoice = -1;
         while (changeChoice != 4) {
@@ -229,10 +236,13 @@ public class PatientUI implements UserUI{
         }
     }
 
-    //request new appointment
+    /* ---------------------------------------- Schedule Appointment Function ------------------------------------------ */
     private void requestNewAppointment() {
         
         System.out.println("Add Appointment");
+        ArrayList<Appointment> appointment = appointmentManager.getPatientAppointments(patient,0);
+        appointment = appointmentManager.getAppointmentByDate(appointment, cal);
+        appointmentManager.displayAppointment(appointment);
         System.out.println("Enter the following details to schedule an appointment:");
         System.out.print("Doctor ID: ");
         String doctorID = sc.nextLine().toUpperCase();
@@ -285,8 +295,9 @@ public class PatientUI implements UserUI{
         }
     }
 
+    /* ---------------------------------------- Reschedule Appointment Function ------------------------------------------ */
     private void rescheduleAppointment() {
-        ArrayList<Appointment> appointment = appointmentManager.getPatientAppointments(userID,0);
+        ArrayList<Appointment> appointment = appointmentManager.getPatientAppointments(patient,0);
         appointmentManager.displayAppointment(appointment);
         System.out.print("Enter Appointment ID to Reschedule: ");
         int appointmentID = -1;
@@ -352,9 +363,9 @@ public class PatientUI implements UserUI{
         }
     }
 
-    //cancel appointment
+    /* ---------------------------------------- Cancel Appointment Function ------------------------------------------ */
     private void cancelAppointment() {
-        ArrayList<Appointment> appointment = appointmentManager.viewPatientAppointments(userID);
+        ArrayList<Appointment> appointment = appointmentManager.getPatientAppointments(patient,0);
         appointmentManager.displayAppointment(appointment);
         System.out.print("Enter Appointment ID to Cancel: ");
         int appointmentID = appointmentManager.getValidAppointmentID(appointment);
@@ -367,9 +378,10 @@ public class PatientUI implements UserUI{
         }
     }
 
+    /* ---------------------------------------- View Scheduled Appointment Function ------------------------------------------ */
     protected void viewAppointments() {
         System.out.println("Viewing Appointments");
-        ArrayList appointment_record = appointmentManager.viewPatientAppointments(userID, false);
+        ArrayList<Appointment> appointment_record = appointmentManager.getPatientAppointments(patient, 1);
         if (appointment_record.isEmpty()) {
             System.out.println("No appointments found for patient. " + userID);
             return;
@@ -377,26 +389,13 @@ public class PatientUI implements UserUI{
             System.out.println("Appointments found for patient. " + userID);
         }
         appointmentManager.displayAppointment(appointment_record);
-        // ArrayList<Appointment> Appointment_Record =  appointmentManager.viewPatientAppointments(userID);
-        // if (Appointment_Record.size() == 0) {
-        //     System.out.println("No appointments found for patient. " + userID);
-        //     return;
-        // }
-        // for (Appointment appointment : Appointment_Record) {
-        //     System.out.println("Appointment ID: " + appointment.getAppointmentID());
-        //     System.out.println("Doctor: " + appointment.getDoctor());
-        //     System.out.println("Date: " + appointment.getStringDate());
-        //     System.out.println("Time: " + appointment.getStringTime());
-        //     System.out.println("Status: " + appointment.getAppointmentStatus());
-        //     System.out.println("Outcome: " + appointment.getOutcome());
-        //     System.out.println("-----------------------------------");
-        // }
         System.out.println("End of Appointments");
     }
 
+    /* ---------------------------------------- View Appointment Outcome Function ------------------------------------------ */
     protected void viewAppointmentOutcome() {
         System.out.println("Viewing Past Appointments Outcome Records");
-        ArrayList appointment_record = appointmentManager.getPatientAppointments(userID, -1);
+        ArrayList<Appointment> appointment_record = appointmentManager.getPatientAppointments(patient, -1);
         if (appointment_record.isEmpty()) {
             System.out.println("No past appointments found for patient. " + userID);
             return;
@@ -405,20 +404,6 @@ public class PatientUI implements UserUI{
         }
         appointmentManager.displayAppointment(appointment_record);
         System.out.println("End of Appointments");
-
-        // System.out.print("Enter Appointment ID to view outcome: ");
-        // int appointmentID = sc.nextInt();
-        // sc.nextLine(); // Consume newline
-    
-        // Appointment appointment = appointmentManager.findAppointmentByID(appointmentID);
-        // if (appointment != null && appointment.getPatient().getPatientID().equals(userID)) {
-        //     String outcome = appointment.getOutcome();
-        //     System.out.println("Appointment Outcome: " + (outcome.isEmpty() ? "No outcome recorded" : outcome));
-        // } else {
-        //     System.out.println("Appointment not found or not authorized to view.");
-        // }
-
-        // sc.nextLine(); // Clear the buffer
     }
 
 

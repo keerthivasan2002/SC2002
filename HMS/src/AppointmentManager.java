@@ -16,8 +16,6 @@ public class AppointmentManager {
     //initialising the variables
     private ArrayList<Appointment> appointments;
     private String appointment_File = "Appointment_List.csv";
-    private static ArrayList <Patient> patients = new ArrayList<>();
-    private static ArrayList <Staff> staffList = new ArrayList<>();
     private ScheduleManager scheduleManager;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -79,33 +77,67 @@ public class AppointmentManager {
         return appointmentLookup.findAppointmentByID(id);
     }
 
+    public int getFirstAppointmentID(ArrayList<Appointment> filteredAppointments) {
+        return appointmentLookup.getFirstAppointmentID(filteredAppointments);
+    }
+
+    public int getLastAppointmentID(ArrayList<Appointment> appointments) {
+        return appointmentLookup.getLastAppointmentID(appointments);
+    }
+
+    public int getValidAppointmentID(ArrayList<Appointment> filteredAppointments) {
+        return appointmentLookup.getValidAppointmentID(filteredAppointments);
+    }
     /* ---------------------------------------- End Look Up Function ------------------------------------------ */
 
     /* ---------------------------------------- Start Filtering Function ------------------------------------------ */
+    public ArrayList<Appointment> getPatientAppointments(Patient patient, int status) {
+        return appointmentFilter.getPatientAppointments(patient, status);
+    }
     public ArrayList<Appointment> getDoctorAppointments(Staff doctor, int status) {
         return appointmentFilter.getDoctorAppointments(doctor, status);
     }
 
-    public ArrayList<Appointment> getAppointmentsByStatus(ArrayList<Appointment> appointments, int status) {
-        return appointmentFilter.getAppointmentsByStatus(appointments, AppointmentStatus.values()[status]);
+    public ArrayList<Appointment> getAppointmentsByStatus(ArrayList<Appointment> appointments, AppointmentStatus status) {
+        return appointmentFilter.getAppointmentsByStatus(appointments, status);
     }
+
+    public ArrayList<Appointment> getAppointmentByDate(ArrayList<Appointment> appointments, Calendar cal) {
+        return appointmentFilter.getAppointmentByDate(appointments, cal);
+    }
+
     /* ---------------------------------------- End Filtering Function ------------------------------------------ */
 
     /* ---------------------------------------- Start Validator Function ------------------------------------------ */
-    public boolean doctorIDExists(Staff doctor) {
-        return appointmentValidator.doctorIDExists(doctor);
+    public boolean checkAppointmentConflict(Patient patient, Staff doctor, Date date, Time startTime, Time endTime) {
+        return appointmentValidator.checkAppointmentConflict(patient, doctor, date, startTime, endTime);
+    }
+
+    public boolean appointmentAlreadyCompletedOrCancelled(int appointmentID) {
+        return appointmentValidator.appointmentAlreadyCompletedOrCancelled(appointmentID);
+    }
+
+    public boolean appointmentAlreadyHasOutcome(int appointmentID) {
+        return appointmentValidator.appointmentAlreadyHasOutcome(appointmentID);
+    }
+    /* ---------------------------------------- End Validator Function ------------------------------------------ */
+
+    /* ---------------------------------------- Start Storage Function ------------------------------------------ */
+    public void saveAppointments() {
+        appointmentStorage.saveAppointments();
+    }
+
+    public void addAppointmentToCSV(String[] appointment) {
+        appointmentStorage.addAppointmentToCSV(appointment);
     }
 
     /* ---------------------------------------- Start Appointment Request Function ------------------------------------------ */
 
     public void appointmentRequest(Staff doctor){
-        ArrayList<Appointment> appointmentByDoctorID = new ArrayList();
-        // System.out.println("i am here first ");
+        ArrayList<Appointment> appointmentByDoctorID = appointmentFilter.getDoctorAppointments(doctor, 1);
         for (Appointment appointment : appointments){
-            if (appointment.getDoctor().getUserID().equalsIgnoreCase(doctor.getUserID())){
-                // System.out.println("i am here second ");
+            if (appointmentValidator.doctorIDExists(doctor)){
                 if (appointment.getAppointmentStatus() == AppointmentStatus.PENDING){
-                    // System.out.println("i am here third ");
                     appointmentByDoctorID.add(appointment);
                 }
             }
@@ -150,56 +182,6 @@ public class AppointmentManager {
         }
     }
 
-
-
-    public int getValidAppointmentID(ArrayList<Appointment> filteredAppointments) {
-        OptionHandling oh = new OptionHandling();
-        int selectedAppointmentID = -1;
-        boolean valid = false;
-
-        while (!valid) {
-            selectedAppointmentID = oh.getOption(0, Integer.MAX_VALUE);
-
-            if (selectedAppointmentID == 0) {
-                return -1; // Return -1 to indicate user wants to go back to the main menu
-            }
-            // Check if the entered appointment ID is in the filtered list
-            for (Appointment appointment : filteredAppointments) {
-                if (appointment.getAppointmentID() == selectedAppointmentID) {
-                    valid = true;
-                    break;
-                }
-            }
-
-            if (!valid) {
-                System.out.println("Invalid appointment ID. Please enter a valid appointment ID from the list.");
-            }
-        }
-
-        return selectedAppointmentID;
-    }
-
-    //do we need this??
-    public int getFirstAppointmentID(ArrayList<Appointment> filteredappointments){
-        int firstAppointmentID = getLastAppointmentID(filteredappointments);
-        for (Appointment appointment : filteredappointments){
-            if (appointment.getAppointmentID() < firstAppointmentID){
-                firstAppointmentID = appointment.getAppointmentID();
-            }
-        }
-        // System.out.println("First Appointment ID: " + firstAppointmentID);
-        return firstAppointmentID;
-    }
-    public int getLastAppointmentID(ArrayList<Appointment> appointments) {
-        int lastAppointmentID = 0;
-        for (Appointment appointment : appointments) {
-            if (appointment.getAppointmentID() > lastAppointmentID) {
-                lastAppointmentID = appointment.getAppointmentID();
-            }
-        }
-        // System.out.println("Last Appointment ID: " + lastAppointmentID);
-        return lastAppointmentID;
-    }
     // Approve or reject an appointment request
     public void approveAppointmentRequest(Appointment appointment, boolean isApproved) {
         if (isApproved) {
@@ -228,8 +210,10 @@ public class AppointmentManager {
         upcomingAppointments = appointmentFilter.getAppointmentsByStatus(upcomingAppointments, AppointmentStatus.CONFIRMED);
         displayAppointment(upcomingAppointments);
     }
+    /* ---------------------------------------- End Saving Upcoming Appointments Function ------------------------------------------ */
 
 
+    /* ---------------------------------------- Start Display Function ------------------------------------------ */
 
     // Display a list of appointments in a tabular format
     public void displayAppointment(ArrayList<Appointment> filteredAppointments) {
@@ -320,5 +304,7 @@ public class AppointmentManager {
             }
         }
     }
+
+    /* ---------------------------------------- End Display Function ------------------------------------------ */
 
 }
