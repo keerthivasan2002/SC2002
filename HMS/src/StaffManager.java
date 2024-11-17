@@ -53,7 +53,7 @@ public class StaffManager {
         }
 
         //display initialisation file
-        System.out.println("Staff data loaded successfully.[StaffManager]");
+        //System.out.println("Staff data loaded successfully.[StaffManager]");
         // displayStaffMembers();
     }
 

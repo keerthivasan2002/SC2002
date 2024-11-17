@@ -10,22 +10,22 @@ public class ApplicationUI{
         while(!exit.equals("1")){
             try{
                 
-                    System.out.println("Welcome to the login page");
+                    System.out.println("======Welcome to the HMS login page======");
                     System.out.println("Please enter your Hospital ID and Password");
 
                     System.out.println();
                     System.out.print("UserID: ");
-                    // String userIDString = sc.next().toUpperCase();
-                    String userIDString = "P1001"; // speed up testing purpose
+                    String userIDString = sc.next().toUpperCase();
+                    //String userIDString = "P1001"; // speed up testing purpose
 
                     System.out.print("Password: ");
-                    // String password = sc.next();
-                    String password = "password1001";
+                    String password = sc.next();
+                    //String password = "password1001";
 
                     LogInManager login = new LogInManager(userIDString, password);
                     boolean accept = login.authoriseLogin();
                     if (accept) {
-                        System.out.println("Welcome");
+                        System.out.println("\nWelcome");
                         userOption(userIDString); // does this work??
                     } else {
                         System.out.println("Login failed.");

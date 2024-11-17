@@ -51,10 +51,12 @@ public class PatientUI implements UserUI{
             choice = oh.getOption(1, 9);
             switch (choice){
                 case 1: //view medical record
+                    System.out.print("\n");
                     System.out.println("===============================");
                     System.out.println("Viewing Medical Records");
                     System.out.println("===============================");
                     viewMedicalRecords();
+                    System.out.println("\n");
                     break;
                 case 2: //update Personal information
                     patientInfo();
