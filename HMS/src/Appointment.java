@@ -26,12 +26,6 @@ public class Appointment extends Events {
         this.appointmentStatus = AppointmentStatus.PENDING; // Default status
         this.appointmentRecord = new MedicalRecord(patientID, date, patientID, doctorID, false);
     }
-    public Appointment(int appointmentID, String patientID, String doctorID, Date date, Time startTime, Time endTime) {
-        super(doctorID, date, startTime, endTime, "Appointment");
-        this.patient = new Patient(patientID);
-        this.appointmentStatus = AppointmentStatus.PENDING; // Default status
-        this.appointmentRecord = new MedicalRecord(patientID, date, patientID, doctorID, false);
-    }
 
     // Appointment-specific getters and setters
     public Patient getPatient() {

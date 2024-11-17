@@ -17,18 +17,48 @@ public class AppointmentFilter {
     /* ---------------------------------------- Filter by PatientID ------------------------------------------ */
     public ArrayList<Appointment> getPatientAppointments(Patient patient, int  showTypeOfAppointments) {
         ArrayList<Appointment> patientAppointments = new ArrayList<>();
-
+        Calendar cal = Calendar.getInstance();
+        System.out.println("Patient ID: " + patient.getPatientID());
         // System.out.println("\nAppointments for Patient ID: " + patientID);
         for (Appointment appointment : appointments) {
             if (av.patientIDExists(patient)) {
-                if (showTypeOfAppointments == 1 && av.afterDate(appointment, cal)) {
-                    patientAppointments.add(appointment);
-                }else if (showTypeOfAppointments == -1 && appointment.getDate().before(cal.getTime())){
-                    patientAppointments.add(appointment);
-                }else if (showTypeOfAppointments == 0){
-                    patientAppointments.add(appointment);
+                // System.out.println("i am in the loop");
+                switch (showTypeOfAppointments) {
+                    case 0:
+                        patientAppointments.add(appointment);
+                        break;
+                    case 1:
+                        if (appointment.getDate().after(cal.getTime())) {
+                            patientAppointments.add(appointment);
+                        }
+                        break;
+                    case -1:
+                        if (appointment.getDate().before(cal.getTime())) {
+                            patientAppointments.add(appointment);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
+        }
+
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
+                "Appointment ID", "Patient ID", "Doctor ID", "Date", "Time", "End time","Status", "Outcome");
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+
+        // Print each appointment's details in a formatted manner
+        for (Appointment appointment : patientAppointments) {
+            System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
+                    appointment.getAppointmentID(),
+                    appointment.getPatient().getPatientID(),
+                    appointment.getDoctor().getUserID(),
+                    appointment.getStringDate(),
+                    appointment.getStringStartTime(),
+                    appointment.getStringEndTime(),
+                    appointment.getAppointmentStatus(),
+                    appointment.getOutcome() != null ? appointment.getOutcome() : "N/A");
         }
         return patientAppointments;
     }

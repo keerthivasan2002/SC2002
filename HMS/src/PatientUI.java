@@ -134,17 +134,7 @@ public class PatientUI implements UserUI{
     // Function to view medical records
     private void viewMedicalRecords() {
         ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(userID);
-        if (records.isEmpty()) {
-            System.out.println("No medical records found for the patient.");
-        } else {
-            for (MedicalRecord record : records) {
-                System.out.println("Diagnosis Date: " + record.getStringDateOfDiagnosis());
-                System.out.println("Diagnosis: " + record.getDiagnosis());
-                System.out.println("Prescription: " + record.getPrescription());
-                System.out.println("Prescription Status: " + (record.isPrescriptionStatus() ? "Approved" : "Not Approved"));
-                System.out.println("-----------------------------------");
-            }
-        }
+        mrm.displayMedicalRecords(records);
     }
 
     /* ---------------------------------------- Menu Function ------------------------------------------ */
@@ -381,6 +371,7 @@ public class PatientUI implements UserUI{
     /* ---------------------------------------- View Scheduled Appointment Function ------------------------------------------ */
     protected void viewAppointments() {
         System.out.println("Viewing Appointments");
+        System.out.println("Appointments found for patient. " + patient.getUserID());
         ArrayList<Appointment> appointment_record = appointmentManager.getPatientAppointments(patient, 1);
         if (appointment_record.isEmpty()) {
             System.out.println("No appointments found for patient. " + userID);

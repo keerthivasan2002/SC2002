@@ -31,8 +31,9 @@ public class AppointmentValidator {
 
     /* ---------------------------------------- Check PatientID ------------------------------------------ */
     public boolean patientIDExists(Patient patient) {
+        System.out.println("Patient ID: " + patient.getPatientID());
         for (Appointment appointment : appointments) {
-            if (appointment.getPatient().getUserID().equalsIgnoreCase(patient.getUserID())) {
+            if (appointment.getPatient().getPatientID().equals(patient.getPatientID())) {
                 return true;
             }
         }
