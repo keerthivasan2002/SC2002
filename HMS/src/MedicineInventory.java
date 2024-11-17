@@ -14,6 +14,10 @@ public class MedicineInventory {
         loadMedicalInventory();
     }
 
+    public OptionHandling getOh(){
+        return oh;
+    }
+
     public void loadMedicalInventory(){
         String [][] medicinesArray = medicinesFileManager.readFile();
         if (medicinesArray == null || medicinesArray.length == 0){
@@ -134,7 +138,7 @@ public class MedicineInventory {
 
         while (iterator.hasNext()) {
             Medicines medicine = iterator.next(); // wah i don't unds this part
-            if (medicine.name.equals(toberemoved)) { // Check if name matches
+            if (medicine.name.equalsIgnoreCase(toberemoved)) { // Check if name matches
                 iterator.remove(); // Remove the medicine from the list
                 System.out.println("Medicine " + toberemoved + " removed.");
                 return; // Indicate that the removal was successful
@@ -154,7 +158,7 @@ public class MedicineInventory {
         System.out.println("Enter name of Medicine to update Stock:");
         String name = sc.nextLine(); // [TRY_EXCEPT]
         for (Medicines medicine : medicines) {
-            if (medicine.name.equals(name)) {
+            if (medicine.name.equalsIgnoreCase(name)) {
                 //int N = medicines.indexOf(medicine);
                 System.out.printf("%-15s %-10d %-15d\n", medicine.name, medicine.stock, medicine.lowStockAlert);
                 System.out.println("Enter new Stock Level to be updated:");
@@ -171,7 +175,7 @@ public class MedicineInventory {
         System.out.println("Enter name of Medicine to change Low Stock Alert level:");
         String name = sc.nextLine();
         for (Medicines medicine : medicines){
-            if(medicine.name.equals(name)){
+            if(medicine.name.equalsIgnoreCase(name)){
                 System.out.printf("%-15s %-10d %-15s\n", medicine.name, medicine.stock, medicine.lowStockAlert);
                 System.out.println("Enter new Low Stock Alert Value to be updated:");
                 medicine.lowStockAlert = oh.getOption(1, 99999999);
@@ -236,7 +240,7 @@ public class MedicineInventory {
         System.out.print("Enter name of Medicine to Approve:\n");
         String name = sc.nextLine();
         for (Medicines medicine : medicines) {
-            if (medicine.name.equals(name)) {
+            if (medicine.name.equalsIgnoreCase(name)) {
                 if(medicine.stock + medicine.requestQuantity <= medicine.lowStockAlert){
                     System.out.println("Not allowed to Approve, requested quantity too low\n");
                     return;
@@ -254,7 +258,7 @@ public class MedicineInventory {
         System.out.print("Enter name of Medicine to reject:\n");
         String name = sc.nextLine();
         for (Medicines medicine : medicines) {
-            if (medicine.name.equals(name)) {
+            if (medicine.name.equalsIgnoreCase(name)) {
                 if (medicine.stock <= medicine.lowStockAlert) medicine.status1 = Medicines.status.TOREQUEST;
                 else medicine.status1 = Medicines.status.NIL;
                 medicine.requestQuantity = 0;
@@ -263,11 +267,5 @@ public class MedicineInventory {
             }
         }
         System.out.println("Request not found\n");
-    }
-    public void viewrequestsPharmacist(){
-//        Optional to code out menu of current request status
-    }
-    public void submitrequests(){
-//        pharmacist to code out this
     }
 }

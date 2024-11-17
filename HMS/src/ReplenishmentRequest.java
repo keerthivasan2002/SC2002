@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -7,7 +9,18 @@ public class ReplenishmentRequest {
     private String status;  // Status can be "Pending", "Approved", or "Rejected"
     private MedicineInventory mi;
     // A list to store all replenishment requests (for demonstration purposes)
-    //private static ArrayList<ReplenishmentRequest> requests = new ArrayList<>();
+    private static ArrayList<ReplenishmentRequest> requests = new ArrayList<>();
+    OptionHandling oh = new OptionHandling();
+
+    // Getter for medicineName (for use in other classes)
+    public String getMedicineName() {
+        return medicineName;
+    }
+
+    // Getter for requestedQuantity (for use in other classes)
+    public int getRequestedQuantity() {
+        return requestedQuantity;
+    }
 
     // Constructor
     public ReplenishmentRequest(String medicineName, int requestedQuantity, MedicineInventory mi) {
@@ -18,17 +31,45 @@ public class ReplenishmentRequest {
     }
 
     // Method to submit a replenishment request
-    public static void submitReplenishmentRequest() {         // for pharmacist
+    public static void submitReplenishmentRequest(MedicineInventory mi) {         // for pharmacist
         Scanner sc = new Scanner(System.in);
+        OptionHandling oh = mi.getOh();
         System.out.println("Enter medicine name: ");
         String medicineName = sc.next();
-        System.out.println("Enter quantity: ");
-        int quantity = sc.nextInt();
-       // sc.nextLine();
+        sc.nextLine();
 
-       // ReplenishmentRequest request = new ReplenishmentRequest(medicineName, quantity, mi);
-        //requests.add(request);
-        //System.out.println("Replenishment request submitted for " + quantity + " units of " + medicineName + ".");
+        for (Medicines medicines: mi.medicines){
+            if(medicines.name.equalsIgnoreCase(medicineName)){
+//                System.out.println("Enter request quantity: ");
+//                medicines.requestQuantity = sc.nextInt();   //cldnt do oh bcos this is static method
+                medicines.requestQuantity = getQuantityFromUser(oh, mi, medicineName);
+                medicines.status1 = Medicines.status.PENDING;
+                System.out.println("Submitted Replenishment Request.");
+                return;
+            }
+        }
+        System.out.println("Error: Medicine " + medicineName + " not found in inventory.");
+    }
+
+    private static int getQuantityFromUser(OptionHandling oh, MedicineInventory mi, String medicineName) {
+        Scanner sc = new Scanner(System.in);
+        int minQuantity = 1; // Minimum quantity allowed
+        int maxQuantity = 9999999; // Assuming no upper limit initially; this can be adjusted for any business rules
+        int requestedQuantity = 1;
+
+        System.out.println("Enter request quantity: ");
+
+        try{
+            requestedQuantity = oh.getOption(minQuantity, maxQuantity); // Use OptionHandling here
+            if(requestedQuantity <= 0){
+                throw new IntNonNegativeException();
+            }
+        } catch (Exception e){
+            System.out.println("Invalid input. Please enter a number.");
+            return 0; //Or handle the error in a more sophisticated manner.
+        }
+        //sc.close(); //Important to prevent resource leak
+        return requestedQuantity;
     }
 
     // Method to approve a replenishment request

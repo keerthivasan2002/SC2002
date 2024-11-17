@@ -34,7 +34,6 @@ public class AdministratorUI {
         private PatientManager pm;
         private Patient patient;
         private AppointmentManager am;
-
         private MedicineInventory mi;
         
        // private InventoryManager im;
@@ -57,7 +56,7 @@ public class AdministratorUI {
 
             //Handling errors with the code
             if (this.admin == null) {
-                System.out.println("No doctors found with the given ID:" + userID);
+                System.out.println("No administrators found with the given ID:" + userID);
             } else {
                 adminOption();
             }
@@ -272,8 +271,8 @@ public class AdministratorUI {
         System.out.println("Medication Inventory Menu");
         System.out.println("1. Approve Requests from Pharmacists");
         System.out.println("2. View Medication Inventory");
-        System.out.println("3. Add Medication Inventory");
-        System.out.println("4. Remove Medication Inventory");
+        System.out.println("3. Add Medication to Inventory");
+        System.out.println("4. Remove Medication from Inventory");
         System.out.println("5. Updating Medication Stock Level");
         System.out.println("6. Update value of Low Stock Alert");
         System.out.println("7. Back to Main Menu");
@@ -285,7 +284,7 @@ public class AdministratorUI {
         System.out.println("-------------------------------------------------");
         System.out.println("1. Approve Request");
         System.out.println("2. Reject Request");
-        System.out.println("3. Back to Main Menu");
+        System.out.println("3. Go Back");
         System.out.println("-------------------------------------------------");
     }
 
@@ -345,18 +344,21 @@ public class AdministratorUI {
                     break;
                 case 3:
                     addMedicationInventory();
+                    mi.saveMedicines();
                     break;
                 case 4:
                     removeMedicationInventory();
+                    mi.saveMedicines();
                     break;
                 case 5:
                     updatingMedicationStockLevel();
+                    mi.saveMedicines();
                     break;
                 case 6:
                     updatelowStockAlertValue();
+                    mi.saveMedicines();
                     break;
                 case 7:
-                    mi.saveMedicines(); // I leave the save to csv part at the end leh
                     System.out.println("Exiting Medication Inventory Menu");
                     break;
                 default:
