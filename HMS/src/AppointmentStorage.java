@@ -15,52 +15,64 @@ public class AppointmentStorage{
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
-    // Read from CSV file to memory
+    public AppointmentStorage() {
+        appointments = new ArrayList<>();
+    }   
+
     public ArrayList<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    // Read from CSV file to memory
+    public ArrayList<Appointment> loadAppointments() {
+        appointments.clear(); // Clear existing appointments before loading new ones
         String[][] appointmentArray = appointmentFileManager.readFile();
+    
         if (appointmentArray == null || appointmentArray.length == 0) {
             System.out.println("Failed to load appointment data.[AppointmentStorage]");
-            return null;
+            // return appointments; // Return an empty list instead of null
         }
-         for (int i = 1; i < appointmentArray.length; i++) {
+    
+        for (int i = 1; i < appointmentArray.length; i++) {
             String[] row = appointmentArray[i];
             if (row.length > 7) {
-                int appointmentID = Integer.valueOf(row[0]);
-                //System.out.println("I am here: " + appointmentID);
+                int appointmentID = Integer.parseInt(row[0]);
+                // System.out.println("I am here: " + appointmentID);
                 String patientID = row[1];
-                //System.out.println("I am here: " + patientID);
                 String doctorID = row[2];
-
+    
                 Date date = null;
                 Time startTime = null;
                 Time endTime = null;
-
+    
                 // Parse date and time from the CSV file
                 try {
                     date = dateFormat.parse(row[3]); // Convert String to Date
                     Date parsedStartTime = timeFormat.parse(row[4]);
                     Date parsedEndTime = timeFormat.parse(row[5]);
-
+    
                     startTime = new Time(parsedStartTime.getTime());
-                    endTime = new Time (parsedEndTime.getTime());
+                    endTime = new Time(parsedEndTime.getTime());
                 } catch (ParseException e) {
-                    System.out.println("Error parsing time: " + e.getMessage());
-                    // Handle the error appropriately
+                    System.out.println("Error parsing time: [Appointment Strorage]" + e.getMessage());
+                    // Skip this row if there's an error in parsing
+                    continue;
                 }
-                AppointmentStatus status = AppointmentStatus.valueOf(row[6].toUpperCase()); // Assuming status is in the fifth column
-                String outcome = row[7]; // Assuming outcome is in the sixth column
-
+    
+                AppointmentStatus status = AppointmentStatus.valueOf(row[6].toUpperCase()); 
+                String outcome = row[7];
+    
                 Appointment appointment = new Appointment(patientID, doctorID, date, startTime, endTime);
                 appointment.setAppointmentStatus(status);
                 appointment.setOutcome(outcome);
                 appointments.add(appointment);
             } else {
-                System.out.println("Incomplete data in row, skipping: [AppoinmentStorage] " + String.join(",", row));
+                System.out.println("Incomplete data in row, skipping: [AppointmentStorage] " + String.join(",", row));
             }
-        }
-        // For debug purposes [ensure file from appointment is read properly]
+        }        
         return appointments;
     }
+    
 
     //Write from meomory to CSV file
     public void saveAppointments() {
@@ -84,15 +96,10 @@ public class AppointmentStorage{
 
     // Display a list of appointments in a tabular format
     public void displayAppointment(ArrayList<Appointment> filteredAppointments) {
-        // System.out.println("-----------------------------------");
-        // System.out.println("Appointments: ");
-        // System.out.println("-----------------------------------");
-
         if (filteredAppointments.isEmpty()) {
-            System.out.println("No appointments found.");
+            System.out.println("No appointments found. [AppointmentStorage]");
             return;
         } else {
-            // Print table headers
             System.out.println("--------------------------------------------------------------------------------------------------------------------------");
             System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
                     "Appointment ID", "Patient ID", "Doctor ID", "Date", "Time", "End time","Status", "Outcome");
@@ -112,4 +119,6 @@ public class AppointmentStorage{
             }
         }
     }
+
+    
 }

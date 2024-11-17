@@ -16,7 +16,7 @@ public class AppointmentValidator {
     public AppointmentValidator() {
         this.as = new AppointmentStorage();
         // this.af = new AppointmentFilter();
-        this.appointments = as.getAppointments(); // Get all appointments from the CSV file
+        // this.appointments = as.getAppointments();
     }
 
     /* ---------------------------------------- Check DoctorID ------------------------------------------ */
@@ -84,12 +84,12 @@ public class AppointmentValidator {
             Time appointmentStartTime = appointment.getStartTime(); //getting the string start time
             Time appointmentEndTime = appointment.getEndTime(); //getting the string end time
 
-            //check if there are any conflicts in patientID
+            //check if there are any duplicate in patientID
             if (patientIDExists(patient) && doctorIDExists(doctor) && isSameDay(appointmentDate,date) && isSameTime(appointmentStartTime,startTime) && isSameTime(appointmentEndTime,endTime)) {
                 return true;
            }
 
-            //check if there are any conflicts doctor side
+            //check if there are any duplicate doctor side
             if (doctorIDExists(doctor) && isSameDay(appointmentDate,date) && isSameTime(appointmentStartTime,startTime) && isSameTime(appointmentEndTime,endTime)) {
                 return true;
             }
@@ -168,7 +168,7 @@ public class AppointmentValidator {
 //        return false; // No duplicate found
 //    }
     public boolean appointmentAlreadyCompletedOrCancelled(int appointmentID) {
-        AppointmentLookup al = new AppointmentLookup();
+        AppointmentLookup al = new AppointmentLookup(as);
         Appointment appointment = al.findAppointmentByID(appointmentID);
         if (appointment != null && (appointment.getAppointmentStatus() == AppointmentStatus.CONFIRMED || appointment.getAppointmentStatus() == AppointmentStatus.REJECTED || appointment.getAppointmentStatus() == AppointmentStatus.CANCELLED)) {
             return true;
@@ -178,7 +178,7 @@ public class AppointmentValidator {
     }
 
     public boolean appointmentAlreadyHasOutcome(int appointmentID) {
-        AppointmentLookup al = new AppointmentLookup();
+        AppointmentLookup al = new AppointmentLookup(as);
         Appointment appointment = al.findAppointmentByID(appointmentID);
         if (appointment.getOutcome() != "NULL" || appointment.getOutcome() != "N/A") {
             return false;

@@ -26,18 +26,33 @@ public class AppointmentManager {
         this.appointmentStorage = new AppointmentStorage();
         this.appointmentValidator = new AppointmentValidator();
         this.appointmentScheduler = new AppointmentScheduler(appointmentValidator);
-        this.appointmentFilter = new AppointmentFilter();
-        this.appointmentLookup = new AppointmentLookup();
-        this.appointments = appointmentStorage.getAppointments(); //initialise the appointments
+        this.appointmentFilter = new AppointmentFilter(appointmentStorage);
+        this.appointmentLookup = new AppointmentLookup(appointmentStorage);
+        // displayAppointment(appointments);
     }
 
-    //POSSIBLE NEW CONSTRUCTOR
-    public AppointmentManager(AppointmentStorage appointmentStorage, AppointmentScheduler appointmentScheduler, AppointmentValidator appointmentValidator, AppointmentFilter appointmentFilter, AppointmentLookup appointmentLookup){
+    public AppointmentManager(AppointmentStorage appointmentStorage){
         this.appointmentStorage  = appointmentStorage;
-        this.appointmentScheduler = appointmentScheduler;
-        this.appointmentValidator = appointmentValidator;
-        this.appointmentFilter = appointmentFilter;
-        this.appointmentLookup = appointmentLookup;
+        this.appointmentScheduler = new AppointmentScheduler(appointmentValidator);
+        this.appointmentValidator = new AppointmentValidator();
+        this.appointmentFilter = new AppointmentFilter(appointmentStorage);
+        this.appointmentLookup = new AppointmentLookup(appointmentStorage);
+    }
+
+
+
+
+    // //POSSIBLE NEW CONSTRUCTOR
+    // public AppointmentManager(AppointmentStorage appointmentStorage, AppointmentScheduler appointmentScheduler, AppointmentValidator appointmentValidator, AppointmentFilter appointmentFilter, AppointmentLookup appointmentLookup){
+    //     this.appointmentStorage  = appointmentStorage;
+    //     this.appointmentScheduler = appointmentScheduler;
+    //     this.appointmentValidator = appointmentValidator;
+    //     this.appointmentFilter = appointmentFilter;
+    //     this.appointmentLookup = appointmentLookup;
+    // }
+
+    public void initializeAppointments() {
+        appointmentStorage.loadAppointments();
     }
 
     //using a schedule manager

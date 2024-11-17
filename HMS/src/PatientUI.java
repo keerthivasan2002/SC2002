@@ -99,7 +99,26 @@ public class PatientUI implements UserUI{
         Date choiceOfDate = null;
         String doctorID = null;
 
-        // Step 1: Get and validate the date input
+        //display all doctors
+        StaffManager sm = new StaffManager();
+        sm.displayAllDoctors();
+
+        // Step 1: Get and validate the Doctor ID
+        while(true){
+            System.out.print("Enter Doctor ID to view available slots: ");
+            doctorID = sc.nextLine().trim().toUpperCase();
+            Staff doctor = appointmentManager.findStaffByID(doctorID);
+
+            if(doctor == null){
+                System.out.println("Doctor ID not found. Please try again.");
+            } else {
+                System.out.println("Doctor found: " + doctor.getName());
+                break; // Exit loop if doctor exists
+            }
+        }
+
+
+        // Step 2: Get and validate the date input
         while(true){
             try{
                 System.out.print("Date (yyyy-MM-dd): ");
@@ -119,18 +138,7 @@ public class PatientUI implements UserUI{
             }
         }
 
-        // Step 2: Get and validate the Doctor ID
-        while(true){
-            System.out.print("Enter Doctor ID to view available slots: ");
-            doctorID = sc.next();
-            Staff doctor = appointmentManager.findStaffByID(doctorID);
-            if(doctor == null){
-                System.out.println("Doctor ID not found. Please try again.");
-            } else {
-                break; // Exit loop if doctor exists
-            }
-        }
-
+        
     }
 
     // Function to view medical records
@@ -239,7 +247,12 @@ public class PatientUI implements UserUI{
         System.out.print("Doctor ID: ");
         String doctorID = sc.nextLine().toUpperCase();
         Staff doctor = appointmentManager.findStaffByID(doctorID);
-
+        if (doctor == null) {
+            System.out.println("Doctor not found. Please try again.");
+            return;
+        }else {
+            System.out.println("Doctor found: " + doctor.getName() + " " + doctor.getUserID());
+        }
         Calendar cal = Calendar.getInstance();
         Date date = null;
         Time startTime = null;

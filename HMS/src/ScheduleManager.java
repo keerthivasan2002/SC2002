@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ScheduleManager {
+    private static ScheduleManager instance;
     private ArrayList<Schedule> schedules;
     private String scheduleFile = "Schedule.csv";
     private AppointmentManager am;
@@ -20,6 +21,13 @@ public class ScheduleManager {
         this.schedules = new ArrayList<>();
     }
 
+    // Static method to get the instance
+    public static synchronized ScheduleManager getInstance() {
+        if (instance == null) {
+            instance = new ScheduleManager();
+        }
+        return instance;
+    }
     public void initialiseSchedule() {
         // Load schedules from the file
         FileManager scheduleFileManager = new FileManager(scheduleFile);

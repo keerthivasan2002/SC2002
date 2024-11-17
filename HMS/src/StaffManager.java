@@ -376,6 +376,33 @@ public class StaffManager {
             }
         }
     }
+    public void displayAllDoctors() {
+        System.out.println("Displaying all doctors");
+        if (staffs.isEmpty()) {
+            System.out.println("No staff members to display.");
+        } else {
+            // Print table headers for just ID and Name
+            System.out.printf("%-10s %-15s%n", "ID", "Name");
+            System.out.println("-------------------------------------");
+    
+            // Print each doctor's details in a formatted manner
+            boolean hasDoctors = false; // To check if there are any doctors
+            for (Staff staff : staffs) {
+                if (staff.getrole().equals(HospitalRole.DOCTOR)) {
+                    hasDoctors = true; // Found at least one doctor
+                    System.out.printf("%-10s %-15s%n",
+                            staff.getUserID(),
+                            staff.getName());
+                }
+            }
+    
+            // If no doctors were found
+            if (!hasDoctors) {
+                System.out.println("No doctors found.");
+            }
+        }
+    }
+    
 
     public static void removeStaffMember(String staffIDRecord) {
         boolean removed = false;

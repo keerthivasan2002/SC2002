@@ -16,14 +16,8 @@ public class AppointmentScheduler {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
-    public AppointmentScheduler( AppointmentValidator appointmentValidator) {
-        this.av = appointmentValidator; ;
-        this.as = new AppointmentStorage();
-        // this.af = new AppointmentFilter();
-        this.al = new AppointmentLookup();
-        // this.s = new ScheduleManager();
-
-        this.appointments = as.getAppointments();
+    public AppointmentScheduler(AppointmentValidator av) {
+        this.av = av;
     }
 
 
@@ -38,7 +32,7 @@ public class AppointmentScheduler {
         //     System.out.println("Appointment already exists.");
         //     return false;
         // } 
-        
+        as.displayAppointment(appointments);
         if (av.checkAppointmentConflict(patient, doctor, date, startTime, endTime)) {
             System.out.println("Appointment slot is already occupied.");
             return false;

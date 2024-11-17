@@ -2,15 +2,14 @@ import java.util.ArrayList;
 
 public class AppointmentLookup {
     private ArrayList<Appointment> appointments;
-
     private AppointmentStorage as;
 
-    private ArrayList <Patient> patients = new ArrayList<>();
-    private ArrayList <Staff> staffList = new ArrayList<>();
+    private static ArrayList <Patient> patients = new ArrayList<>();
+    private static ArrayList <Staff> staffList = new ArrayList<>();
 
-    public AppointmentLookup() {
-        this.as = new AppointmentStorage();
-        this.appointments = as.getAppointments();
+    public AppointmentLookup(AppointmentStorage as) {
+        this.as = as;
+        // this.appointments = as.getAppointments();
 
     }    
 
@@ -26,8 +25,10 @@ public class AppointmentLookup {
 
     // find patient by patient ID
     public Patient findPatientByID(String patientID) {
+        
         for (Patient patient : patients) {
             if (patient.getPatientID().equals(patientID)) {
+                System.out.println("Patient found: " + patient.getPatientID());
                 return patient;
             }
         }
@@ -36,11 +37,20 @@ public class AppointmentLookup {
 
     // find staff by staff ID
     public Staff findStaffByID(String staffID) {
+        System.out.println("Staff ID: " + staffID);
+        System.out.println("I am here okaaaaaayyy ");
+        System.out.println("Size of staffList: " + staffList.size());
+
         for (Staff staff : staffList) {
-            if (staff.getUserID().equals(staffID)) {
+            System.out.println("I am here okaaaaaayyy too");
+            System.out.println("compare to Staff ID: " + staff.getUserID());
+            if (staff.getUserID().equalsIgnoreCase(staffID)) {
+                System.out.println("fount staff" + staff.getUserID());
                 return staff;
             }
         }
+        System.out.println("Staff not found");
+
         return null; // Return null if staff not found
     }
 
