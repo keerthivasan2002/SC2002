@@ -57,10 +57,8 @@ public class ApplicationUI{
 
         // Step 2: Set the references in each other
         scheduleManager.setAppointmentManager(am);
-        am.setScheduleManager(scheduleManager);
 
         // Step 3: Now initialize appointments and schedules as needed
-        //am.initializeAppointments();        // Initialize appointments
         scheduleManager.initialiseSchedule(); // Initialize schedule
 
 

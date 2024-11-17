@@ -247,7 +247,7 @@ public class AppointmentManager {
     }
 
     // In AppointmentManager
-    public List<Appointment> getAppointments(){
+   public ArrayList<Appointment> getAppointments(){
         return appointments;
     }
 

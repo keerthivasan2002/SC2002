@@ -7,6 +7,7 @@ public class ScheduleManager {
     private ArrayList<Schedule> schedules;
     private String scheduleFile = "Schedule.csv";
     private AppointmentManager am;
+    ArrayList<Appointment> appointments;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -14,6 +15,7 @@ public class ScheduleManager {
     // Setter to set AppointmentManager after initial creation
     public void setAppointmentManager(AppointmentManager am) {
         this.am = am;
+        this.appointments =  am.getAppointments();
     }
 
     public ScheduleManager() {
@@ -244,25 +246,24 @@ public class ScheduleManager {
             }
         }
 
-        //check conflict with existing appointments
-        for (Appointment appointment : am.getAppointments()) {
-            if (appointment.getDoctor().userID.equals(doctor.getUserID()) && isSameDay(appointment.getDate(), date) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+        /*for(Appointment appointment: appointments){
+            if(appointment.getDoctor().getUserID().equals(doctor.getUserID()) && isSameDay(appointment.getDate(), date) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
                 Date existingStart = combineDateAndTime(appointment.getDate(), appointment.getStartTime());
                 Date existingEnd = combineDateAndTime(appointment.getDate(), appointment.getEndTime());
 
-                if (startDateTime.before(existingEnd) && endDateTime.after(existingStart) ||
+                // Check if there is any overlap which will check for duplicates as well
+                if ((startDateTime.before(existingEnd) && endDateTime.after(existingStart)) ||
                         startDateTime.equals(existingStart) || endDateTime.equals(existingEnd)) {
                     System.out.println("Conflict detected with existing schedule: "
                             + appointment.getStringStartTime() + "-" + appointment.getStringEndTime());
                     return false;
                 }
             }
-        }
+        }*/
 
         // If no conflict, add the schedule
         Schedule newSchedule = new Schedule(doctor.getUserID(), date, startTime, endTime, description);
         schedules.add(newSchedule);
-        System.out.println("Schedule added successfully.");
 
         String[] schedule = new String[]{doctor.userID, dateFormat.format(date), timeFormat.format(startTime), timeFormat.format(endTime), description};
         FileManager appointmentFM = new FileManager(scheduleFile);
