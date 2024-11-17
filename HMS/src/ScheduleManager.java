@@ -270,6 +270,7 @@ public class ScheduleManager {
         return true;
     }
 
+
     public List<Schedule> getSchedules() {
         return schedules;
     }

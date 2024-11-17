@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class AppointmentManager {
     //initialising the interface 
-    private AppointmentStorage appointmentStorage;
+    private AppointmentStorage appointmentStorage; //this is to store the data
     private AppointmentScheduler appointmentScheduler;
     private AppointmentValidator appointmentValidator;
     private AppointmentFilter appointmentFilter;
