@@ -246,7 +246,7 @@ public class ScheduleManager {
             }
         }
 
-        /*for(Appointment appointment: appointments){
+        for(Appointment appointment: appointments){
             if(appointment.getDoctor().getUserID().equals(doctor.getUserID()) && isSameDay(appointment.getDate(), date) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
                 Date existingStart = combineDateAndTime(appointment.getDate(), appointment.getStartTime());
                 Date existingEnd = combineDateAndTime(appointment.getDate(), appointment.getEndTime());
@@ -259,7 +259,7 @@ public class ScheduleManager {
                     return false;
                 }
             }
-        }*/
+        }
 
         // If no conflict, add the schedule
         Schedule newSchedule = new Schedule(doctor.getUserID(), date, startTime, endTime, description);

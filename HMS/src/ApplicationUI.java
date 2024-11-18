@@ -47,18 +47,16 @@ public class ApplicationUI{
         ScheduleManager scheduleManager = new ScheduleManager();
 
         //all the separate appointment classes
-        AppointmentValidator amv = new AppointmentValidator();
+        /*AppointmentValidator amv = new AppointmentValidator();
         AppointmentStorage ams = new AppointmentStorage();
         AppointmentFilter amf = new AppointmentFilter();
         AppointmentScheduler amschedule = new AppointmentScheduler(amv);
-        AppointmentLookup aml = new AppointmentLookup();
+        AppointmentLookup aml = new AppointmentLookup();*/
 
-        AppointmentManager am = new AppointmentManager(ams, amschedule, amv, amf,aml);
+        AppointmentManager am = new AppointmentManager();
 
-        // Step 2: Set the references in each other
         scheduleManager.setAppointmentManager(am);
 
-        // Step 3: Now initialize appointments and schedules as needed
         scheduleManager.initialiseSchedule(); // Initialize schedule
 
 

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AppointmentManager {
     //initialising the interface 
@@ -29,20 +30,6 @@ public class AppointmentManager {
         this.appointmentFilter = new AppointmentFilter();
         this.appointmentLookup = new AppointmentLookup();
         this.appointments = appointmentStorage.getAppointments(); //initialise the appointments
-    }
-
-    //POSSIBLE NEW CONSTRUCTOR
-    public AppointmentManager(AppointmentStorage appointmentStorage, AppointmentScheduler appointmentScheduler, AppointmentValidator appointmentValidator, AppointmentFilter appointmentFilter, AppointmentLookup appointmentLookup){
-        this.appointmentStorage  = appointmentStorage;
-        this.appointmentScheduler = appointmentScheduler;
-        this.appointmentValidator = appointmentValidator;
-        this.appointmentFilter = appointmentFilter;
-        this.appointmentLookup = appointmentLookup;
-    }
-
-    //using a schedule manager
-    public void setScheduleManager(ScheduleManager scheduleManager) {
-        this.scheduleManager = scheduleManager; // Set scheduleManager after both objects are created
     }
 
     /* ---------------------------------------- Start Scheduling Function ------------------------------------------ */
@@ -201,13 +188,19 @@ public class AppointmentManager {
         String currentTimeString = timeFormat.format(cal.getTime());
         String currentDateString = dateFormat.format(cal.getTime());
 
-        //debug purpose
+        /*//debug purpose
         System.out.println("Current Date: " + currentDateString);
-        System.out.println("Current Time: " + currentTimeString);
+        System.out.println("Current Time: " + currentTimeString);*/
         
-        ArrayList<Appointment> upcomingAppointments = new ArrayList<>();
-        upcomingAppointments = appointmentFilter.getDoctorAppointments(doctor, 1);
-        upcomingAppointments = appointmentFilter.getAppointmentsByStatus(upcomingAppointments, AppointmentStatus.CONFIRMED);
+//        ArrayList<Appointment> upcomingAppointments = new ArrayList<>();
+//        upcomingAppointments = appointmentFilter.getDoctorAppointments(doctor, 1);
+//        upcomingAppointments = appointmentFilter.getAppointmentsByStatus(upcomingAppointments, AppointmentStatus.CONFIRMED);
+        ArrayList<Appointment> upcomingAppointments = appointmentFilter
+                .getDoctorAppointments(doctor, 1)
+                .stream()
+                .filter(app -> app.getAppointmentStatus() == AppointmentStatus.PENDING)
+                .collect(Collectors.toCollection(ArrayList::new));
+
         displayAppointment(upcomingAppointments);
     }
     /* ---------------------------------------- End Saving Upcoming Appointments Function ------------------------------------------ */

@@ -7,7 +7,7 @@ public class AppointmentFilter {
     private AppointmentStorage as = new AppointmentStorage();
     private AppointmentValidator av = new AppointmentValidator();
 
-    Calendar cal = Calendar.getInstance();
+    //Calendar cal = Calendar.getInstance();
 
 
     public AppointmentFilter() {
@@ -19,9 +19,15 @@ public class AppointmentFilter {
         ArrayList<Appointment> patientAppointments = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
         System.out.println("Patient ID: " + patient.getPatientID());
+
+        if (patient == null) {
+            System.out.println("Invalid patient provided.");
+            return patientAppointments; // Return empty list if patient is null
+        }
+
         // System.out.println("\nAppointments for Patient ID: " + patientID);
         for (Appointment appointment : appointments) {
-            if (av.patientIDExists(patient)) {
+            if (appointment.getPatient() != null && appointment.getPatient().getPatientID().equals(patient.getPatientID()) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
                 // System.out.println("i am in the loop");
                 switch (showTypeOfAppointments) {
                     case 0:
@@ -68,13 +74,16 @@ public class AppointmentFilter {
     /* ---------------------------------------- Filter by DoctorID ------------------------------------------ */
     public ArrayList<Appointment> getDoctorAppointments(Staff doctor, int showPastAppointments) {
         ArrayList<Appointment> doctorAppointments = new ArrayList<>();
+        Calendar cal = Calendar.getInstance(); // Initialize Calendar instance
+
         for (Appointment appointment : appointments) {
-            if (av.doctorIDExists(doctor)) {
+            // Check if the appointment belongs to the specified doctor
+            if (appointment.getDoctor().getUserID().equalsIgnoreCase(doctor.getUserID())) {
                 if (showPastAppointments == 1 && av.afterDate(appointment, cal)) {
                     doctorAppointments.add(appointment);
-                }else if (showPastAppointments == -1 && appointment.getDate().before(cal.getTime())){
+                } else if (showPastAppointments == -1 && appointment.getDate().before(cal.getTime())) {
                     doctorAppointments.add(appointment);
-                }else if (showPastAppointments == 0){
+                } else if (showPastAppointments == 0) {
                     doctorAppointments.add(appointment);
                 }
             }
