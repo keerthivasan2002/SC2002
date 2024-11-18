@@ -13,7 +13,7 @@ public class PatientUI implements UserUI{
     private Patient patient;
     private PatientManager pm; //keep reference to a PatientManager
     private MedicalRecordManager mrm;
-    // private ScheduleManager scheduleManager;
+    private ScheduleManager scheduleManager;
     private AppointmentManager appointmentManager;
 
     private Scanner sc = new Scanner(System.in);
@@ -29,7 +29,7 @@ public class PatientUI implements UserUI{
         this.pm = pm;
         this.mrm = mrm;
         this.patient = pm.selectPatient(userID);
-        // this.scheduleManager = scheduleManager;
+        this.scheduleManager = scheduleManager;
         
         this.appointmentManager = am;
 
@@ -99,7 +99,26 @@ public class PatientUI implements UserUI{
         Date choiceOfDate = null;
         String doctorID = null;
 
-        // Step 1: Get and validate the date input
+        //display all doctors
+        StaffManager sm = new StaffManager();
+        sm.displayAllDoctors();
+
+        // Step 1: Get and validate the Doctor ID
+        while(true){
+            System.out.print("Enter Doctor ID to view available slots: ");
+            doctorID = sc.nextLine().trim().toUpperCase();
+            Staff doctor = appointmentManager.findStaffByID(doctorID);
+
+            if(doctor == null){
+                System.out.println("Doctor ID not found. Please try again.");
+            } else {
+                System.out.println("Doctor found: " + doctor.getName());
+                break; // Exit loop if doctor exists
+            }
+        }
+
+
+        // Step 2: Get and validate the date input
         while(true){
             try{
                 System.out.print("Date (yyyy-MM-dd): ");
@@ -111,6 +130,26 @@ public class PatientUI implements UserUI{
                 if (choiceOfDate.before(today) && !choiceOfDate.equals(today)){
                     throw new IllegalArgumentException("Date cannot be in the past.");
                 }
+
+                // Check if the date is a weekend
+                cal.setTime(choiceOfDate);
+                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
+                    throw new IllegalArgumentException("Date cannot be on a weekend.");
+                }
+
+                // Check if the date is a public holiday (Optional)
+                // if (scheduleManager.isPublicHoliday(choiceOfDate)) {
+                //     throw new IllegalArgumentException("Date cannot be on a public holiday.");
+                // }
+
+                // Check if the doctor is available on the selected date
+                // if (!scheduleManager.isDoctorAvailable(doctorID, choiceOfDate)) {
+                //     throw new IllegalArgumentException("Doctor is not available on the selected date.");
+                // }else {
+                //     System.out.println("Doctor is available on the selected date.");
+                // }
+
                 break; // Exit loop if date is valid
             } catch (IllegalArgumentException e) {
                 System.out.println("Error: " + e.getMessage());
@@ -119,18 +158,7 @@ public class PatientUI implements UserUI{
             }
         }
 
-        // Step 2: Get and validate the Doctor ID
-        while(true){
-            System.out.print("Enter Doctor ID to view available slots: ");
-            doctorID = sc.next();
-            Staff doctor = appointmentManager.findStaffByID(doctorID);
-            if(doctor == null){
-                System.out.println("Doctor ID not found. Please try again.");
-            } else {
-                break; // Exit loop if doctor exists
-            }
-        }
-
+        
     }
 
     // Function to view medical records
@@ -181,6 +209,17 @@ public class PatientUI implements UserUI{
         System.out.println("----------------------------------------------");
     }
 
+    public  void changePasswordMenu(){
+        System.out.println("Change Password");
+        System.out.println("Your password must meet the following criteria:");
+        System.out.println("- At least 8 characters long");
+        System.out.println("- Contain at least one uppercase letter");
+        System.out.println("- Contain at least one lowercase letter");
+        System.out.println("- Contain at least one number");
+        System.out.println("- Contain at least one special character (!@#$%^&*()-+=)");
+        System.out.println("-------------------------------------------------------------------");
+    }
+
     /* ---------------------------------------- Update Personal Information Function ------------------------------------------ */
     private void updatePatientInfo(){
         int changeChoice = -1;
@@ -206,13 +245,13 @@ public class PatientUI implements UserUI{
                     System.out.print("Enter your current password for verification: ");
                     String verify = sc.nextLine();
                     if (verify.equals(patient.getPassword())) {
-                        System.out.print("Enter new password: ");
-                        String newPassword = sc.nextLine();
-                        patient.updatePassword(newPassword);
+                        String newPassword = pm.changePasswordString();
+                        patient.setPassword(newPassword);
                         System.out.println("Password updated successfully.");
                     } else {
                         System.out.println("Incorrect password. Please try again.");
                     }
+                    
                     break;
                 case 4:
                     break;
@@ -228,6 +267,7 @@ public class PatientUI implements UserUI{
         }
     }
 
+    
     /* ---------------------------------------- Schedule Appointment Function ------------------------------------------ */
     private void requestNewAppointment() {
         
@@ -239,7 +279,12 @@ public class PatientUI implements UserUI{
         System.out.print("Doctor ID: ");
         String doctorID = sc.nextLine().toUpperCase();
         Staff doctor = appointmentManager.findStaffByID(doctorID);
-
+        if (doctor == null) {
+            System.out.println("Doctor not found. Please try again.");
+            return;
+        }else {
+            System.out.println("Doctor found: " + doctor.getName() + " " + doctor.getUserID());
+        }
         Calendar cal = Calendar.getInstance();
         Date date = null;
         Time startTime = null;

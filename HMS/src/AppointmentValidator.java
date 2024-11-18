@@ -7,16 +7,24 @@ import java.util.Date;
 public class AppointmentValidator {
     private ArrayList<Appointment> appointments;
     private AppointmentStorage as;
-    // private AppointmentFilter af;
 
     // initialize thedate and time format
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
-    public AppointmentValidator() {
-        this.as = new AppointmentStorage();
-        // this.af = new AppointmentFilter();
-        this.appointments = as.getAppointments(); // Get all appointments from the CSV file
+    public AppointmentValidator(AppointmentStorage as) {
+        if (as == null) {
+            throw new IllegalArgumentException("AppointmentStorage cannot be null");
+        }
+        System.out.println("AppointmentValidator received AppointmentStorage: [AppointmentValidator]" + (as != null));
+    
+        this.as = as;
+        System.out.println("AppointmentValidator initialized with a valid AppointmentStorage.");
+
+        // this.appointments = as.getAppointments();
+        // if (this.appointments == null) {
+        //     this.appointments = new ArrayList<>(); // Initialize if null
+        // }
     }
 
     /* ---------------------------------------- Check DoctorID ------------------------------------------ */
@@ -73,28 +81,33 @@ public class AppointmentValidator {
     /* ---------------------------------------- Check Patient don't double schedule ------------------------------------------ */
     //checking all possible conflicts that might arise in the appointmentvalidator
     public boolean checkAppointmentConflict(Patient patient, Staff doctor, Date date, Time startTime, Time endTime){
-        //in the case there is no appointments to check against
+        // If there are no appointments, no conflict exists
         if(appointments == null || appointments.isEmpty()){
-            return true;
+            return false;
         }
-
-        //interate through the appointments to get the
+    
         for(Appointment appointment: appointments){
-            Date appointmentDate = appointment.getDate(); //getting the string date
-            Time appointmentStartTime = appointment.getStartTime(); //getting the string start time
-            Time appointmentEndTime = appointment.getEndTime(); //getting the string end time
-
-            //check if there are any conflicts in patientID
-            if (patientIDExists(patient) && doctorIDExists(doctor) && isSameDay(appointmentDate,date) && isSameTime(appointmentStartTime,startTime) && isSameTime(appointmentEndTime,endTime)) {
-                return true;
-           }
-
-            //check if there are any conflicts doctor side
-            if (doctorIDExists(doctor) && isSameDay(appointmentDate,date) && isSameTime(appointmentStartTime,startTime) && isSameTime(appointmentEndTime,endTime)) {
-                return true;
+            // Check if the appointment is on the same day
+            if(isSameDay(appointment.getDate(), date)){
+                // Check for overlapping times
+                if(timesOverlap(appointment.getStartTime(), appointment.getEndTime(), startTime, endTime)){
+                    // Conflict exists if the doctor is the same or the patient has another appointment
+                    if(appointment.getDoctor().getUserID().equalsIgnoreCase(doctor.getUserID()) ||
+                       appointment.getPatient().getPatientID().equalsIgnoreCase(patient.getPatientID())){
+                        return true;
+                    }
+                }
             }
-
         }
+    
+        return false; // No conflict found
+    }
+    
+    // Helper method to determine if two time periods overlap
+    private boolean timesOverlap(Time existingStart, Time existingEnd, Time newStart, Time newEnd){
+        return newStart.before(existingEnd) && existingStart.before(newEnd);
+    }
+    
 
         // //ensure it checks the csv also for duplicates
         // for (int i = 1; i < appointments.size(); i++) {
@@ -109,8 +122,7 @@ public class AppointmentValidator {
         // }
 
 
-        return false; // No duplicate found
-    }
+     // No duplicate found
 
 
     /* ---------------------------------------- Check AppointmentID ------------------------------------------ */
@@ -119,56 +131,58 @@ public class AppointmentValidator {
 //Extra function for debug purposes
 
     //    /* ---------------------------------------- Check Patient don't double schedule ------------------------------------------ */
-//    //ensure patient don't double book
-//    public boolean patientIsMatch(String patientID, String doctorID, Date date, Time startTime, Time endTime) {
-//        for (Appointment appointment : appointments) {
-//            if (appointment.getPatient().getUserID().equals(patientID) && appointment.getDoctor().getUserID().equals(doctorID) && appointment.getDate().equals(date) && appointment.getStartTime().equals(startTime) && appointment.getEndTime().equals(endTime)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    /* ---------------------------------------- Check Doctor Availability ------------------------------------------ */
-//    //check doctor availability
-//    public boolean doctorAndTimeMatch(String doctorID, Date date, Time startTime, Time endTime) {
-//        for (Appointment appointment : appointments) {
-//            if (appointment.getDoctor().getUserID().equals(doctorID) && appointment.getDate().equals(date) && appointment.getStartTime().equals(startTime) && appointment.getEndTime().equals(endTime)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    /* ---------------------------------------- Check Duplicate Appointment ------------------------------------------ */
-//    //this is to check if the appointmentValidator has any duplicates
-//    //maybe can remove
-//    public boolean isDuplicateInCSV(String patientID, String doctorID, Date date, String startTime, Time endTime) {
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-//
-//
-//        String dateStr = dateFormat.format(date);
-//        String startTimeStr = timeFormat.format(startTime);
-//        String endTimeStr = timeFormat.format(endTime);
-//
-//        if (appointments == null || appointments.size() == 0) {
-//            return false; // No records in the CSV
-//        }
-//
-//        for (int i = 1; i < appointments.size(); i++) {
-//            String[] row = appointments.get(i).toArray();
-//
-//            // Check if all relevant fields match
-//            if (row[1].equals(patientID) && row[2].equals(doctorID) &&
-//                    row[3].equals(dateStr) && row[4].equals(startTimeStr) && row[5].equals(endTimeStr)) {
-//                return true; // Duplicate found
-//            }
-//        }
-//        return false; // No duplicate found
-//    }
+   //ensure patient don't double book
+   public boolean patientIsMatch(String patientID, String doctorID, Date date, Time startTime, Time endTime) {
+       for (Appointment appointment : appointments) {
+           if (appointment.getPatient().getUserID().equals(patientID) && appointment.getDoctor().getUserID().equals(doctorID) && appointment.getDate().equals(date) && appointment.getStartTime().equals(startTime) && appointment.getEndTime().equals(endTime)) {
+               return true;
+           }
+       }
+       return false;
+   }
+
+   /* ---------------------------------------- Check Doctor Availability ------------------------------------------ */
+   //check doctor availability
+   public boolean doctorAndTimeMatch(String doctorID, Date date, Time startTime, Time endTime) {
+       for (Appointment appointment : appointments) {
+           if (appointment.getDoctor().getUserID().equals(doctorID) && appointment.getDate().equals(date) && appointment.getStartTime().equals(startTime) && appointment.getEndTime().equals(endTime)) {
+               return true;
+           }
+       }
+       return false;
+   }
+
+   /* ---------------------------------------- Check Duplicate Appointment ------------------------------------------ */
+   //this is to check if the appointmentValidator has any duplicates
+   //maybe can remove
+   public boolean isDuplicateInCSV(String patientID, String doctorID, Date date, Time startTime, Time endTime) {
+       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+       SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
+
+       String dateStr = dateFormat.format(date);
+       String startTimeStr = timeFormat.format(startTime);
+       String endTimeStr = timeFormat.format(endTime);
+
+       if (appointments == null || appointments.size() == 0) {
+           return false; // No records in the CSV
+       }
+
+       for (int i = 1; i < appointments.size(); i++) {
+           String[] row = appointments.get(i).toArray();
+
+           // Check if all relevant fields match
+           if (row[1].equals(patientID) && row[2].equals(doctorID) &&
+                   row[3].equals(dateStr) && row[4].equals(startTimeStr) && row[5].equals(endTimeStr)) {
+               return true; // Duplicate found
+           }
+       }
+       return false; // No duplicate found
+   }
+
+
     public boolean appointmentAlreadyCompletedOrCancelled(int appointmentID) {
-        AppointmentLookup al = new AppointmentLookup();
+        AppointmentLookup al = new AppointmentLookup(as);
         Appointment appointment = al.findAppointmentByID(appointmentID);
         if (appointment != null && (appointment.getAppointmentStatus() == AppointmentStatus.CONFIRMED || appointment.getAppointmentStatus() == AppointmentStatus.REJECTED || appointment.getAppointmentStatus() == AppointmentStatus.CANCELLED)) {
             return true;
@@ -178,7 +192,7 @@ public class AppointmentValidator {
     }
 
     public boolean appointmentAlreadyHasOutcome(int appointmentID) {
-        AppointmentLookup al = new AppointmentLookup();
+        AppointmentLookup al = new AppointmentLookup(as);
         Appointment appointment = al.findAppointmentByID(appointmentID);
         if (appointment.getOutcome() != "NULL" || appointment.getOutcome() != "N/A") {
             return false;

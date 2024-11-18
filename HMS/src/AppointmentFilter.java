@@ -4,31 +4,45 @@ import java.util.Calendar;
 public class AppointmentFilter {
     private ArrayList<Appointment> appointments;
 
-    private AppointmentStorage as = new AppointmentStorage();
-    private AppointmentValidator av = new AppointmentValidator();
+    private AppointmentStorage as;
+    private AppointmentValidator av;;
 
-    //Calendar cal = Calendar.getInstance();
+    Calendar cal = Calendar.getInstance();
 
 
-    public AppointmentFilter() {
+    public AppointmentFilter(AppointmentStorage as, AppointmentValidator av) {
+        if (as == null) {
+            throw new IllegalArgumentException("AppointmentStorage cannot be null");
+        }
+        if (av == null) {
+            throw new IllegalArgumentException("AppointmentValidator cannot be null");
+        }
+    
+        this.as = as;
+        this.av = av;
         this.appointments = as.getAppointments();
-    }
+        if (this.appointments == null) {
+            System.out.println("AppointmentStorage returned null. Initializing an empty list.[AppointmentFilter]");
+            this.appointments = new ArrayList<>();
+        }
+        System.out.println("AppointmentFilter initialized with valid AppointmentStorage: [AppointmentFilter]" + (as != null));
+        System.out.println("AppointmentFilter initialized with valid AppointmentValidator:  [AppointmentFilter] " + (av != null));
+        System.out.println("AppointmentFilter initialized with " + this.appointments.size() + " appointments.");
 
+    }
+    
     /* ---------------------------------------- Filter by PatientID ------------------------------------------ */
     public ArrayList<Appointment> getPatientAppointments(Patient patient, int  showTypeOfAppointments) {
         ArrayList<Appointment> patientAppointments = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
-        System.out.println("Patient ID: " + patient.getPatientID());
-
-        if (patient == null) {
-            System.out.println("Invalid patient provided.");
-            return patientAppointments; // Return empty list if patient is null
+        
+         // Ensure that appointments is not null
+         if (appointments == null) {
+            System.out.println("Appointments list is null. Initializing to an empty list.[AppointmentFilter]");
+            appointments = new ArrayList<>();
         }
-
-        // System.out.println("\nAppointments for Patient ID: " + patientID);
+        
         for (Appointment appointment : appointments) {
-            if (appointment.getPatient() != null && appointment.getPatient().getPatientID().equals(patient.getPatientID()) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
-                // System.out.println("i am in the loop");
+            if (patient.getPatientID().equals(appointment.getPatient().getPatientID())) {
                 switch (showTypeOfAppointments) {
                     case 0:
                         patientAppointments.add(appointment);
@@ -48,24 +62,6 @@ public class AppointmentFilter {
                 }
             }
         }
-
-        System.out.println("--------------------------------------------------------------------------------------------------------------------------");
-        System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
-                "Appointment ID", "Patient ID", "Doctor ID", "Date", "Time", "End time","Status", "Outcome");
-        System.out.println("--------------------------------------------------------------------------------------------------------------------------");
-
-        // Print each appointment's details in a formatted manner
-        for (Appointment appointment : patientAppointments) {
-            System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
-                    appointment.getAppointmentID(),
-                    appointment.getPatient().getPatientID(),
-                    appointment.getDoctor().getUserID(),
-                    appointment.getStringDate(),
-                    appointment.getStringStartTime(),
-                    appointment.getStringEndTime(),
-                    appointment.getAppointmentStatus(),
-                    appointment.getOutcome() != null ? appointment.getOutcome() : "N/A");
-        }
         return patientAppointments;
     }
 
@@ -74,16 +70,20 @@ public class AppointmentFilter {
     /* ---------------------------------------- Filter by DoctorID ------------------------------------------ */
     public ArrayList<Appointment> getDoctorAppointments(Staff doctor, int showPastAppointments) {
         ArrayList<Appointment> doctorAppointments = new ArrayList<>();
-        Calendar cal = Calendar.getInstance(); // Initialize Calendar instance
-
+        
+        // Ensure that appointments is not null
+        if (appointments == null) {
+            System.out.println("Appointments list is null. Initializing to an empty list.[AppointmentFilter]");
+            appointments = new ArrayList<>();
+        }
+        
         for (Appointment appointment : appointments) {
-            // Check if the appointment belongs to the specified doctor
-            if (appointment.getDoctor().getUserID().equalsIgnoreCase(doctor.getUserID())) {
+            if (av.doctorIDExists(doctor)) {
                 if (showPastAppointments == 1 && av.afterDate(appointment, cal)) {
                     doctorAppointments.add(appointment);
-                } else if (showPastAppointments == -1 && appointment.getDate().before(cal.getTime())) {
+                }else if (showPastAppointments == -1 && appointment.getDate().before(cal.getTime())){
                     doctorAppointments.add(appointment);
-                } else if (showPastAppointments == 0) {
+                }else if (showPastAppointments == 0){
                     doctorAppointments.add(appointment);
                 }
             }
@@ -114,4 +114,6 @@ public class AppointmentFilter {
         }
         return appointmentByDate;
     }
+
+ 
 }

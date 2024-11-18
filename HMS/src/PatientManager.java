@@ -46,6 +46,8 @@ public class PatientManager{
         // displayPatient(); // Display all patients
     }
 
+    
+
     //selecting the specific patient that we want to look at
     public Patient selectPatient(String patientID){
         for(Patient patient : patients){
@@ -75,6 +77,8 @@ public class PatientManager{
         patientFileManager.writeFile(patientData, false);
     }
 
+    
+    
     //tester function
     public void printPatients() {
         for (Patient patient : patients) {
@@ -138,6 +142,52 @@ public class PatientManager{
                 }
             }
         }
+    }
+    
+    public String changePasswordString(){
+        String newPassword = "";
+        while (true) {
+            changePasswordMenu();
+            System.out.print("Enter your new password: ");
+            newPassword = sc.nextLine();
+            if (isValidPassword(newPassword)) {
+                break;
+            } else {
+                System.out.println("Password does not meet the requirements. Please try again.");
+            }
+        }
+        return newPassword;
+    }
+    public void changePasswordMenu(){
+        System.out.println("Change Password");
+        System.out.println("Your password must meet the following criteria:");
+        System.out.println("- At least 8 characters long");
+        System.out.println("- Contain at least one uppercase letter");
+        System.out.println("- Contain at least one lowercase letter");
+        System.out.println("- Contain at least one number");
+        System.out.println("- Contain at least one special character (!@#$%^&*()-+=)");
+        System.out.println("-------------------------------------------------------------------");
+    }
+    public void setPassword(String password, String userID) {
+        for (Patient patient : patients) {
+            if (patient.getUserID().equals(userID)) {
+                patient.setPassword(password);
+                System.out.println("Password updated successfully.[patientmanager]" + patient.getPassword());
+                savePatients(); // Save the updated password to the CSV file
+                return;
+            }
+        }
+    }
+
+    public boolean isValidPassword(String password) {
+        // Enforce password requirements
+        boolean hasUppercase = password.chars().anyMatch(Character::isUpperCase);
+        boolean hasLowercase = password.chars().anyMatch(Character::isLowerCase);
+        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        boolean hasSpecial = password.matches(".*[!@#$%^&*()-+=].*"); // Check for at least one special character
+        boolean isLengthValid = password.length() >= 8; // Minimum length 8 characters
+    
+        return hasUppercase && hasLowercase && hasDigit && hasSpecial && isLengthValid;
     }
 
 }

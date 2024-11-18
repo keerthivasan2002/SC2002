@@ -35,6 +35,11 @@ public class Staff extends User {
         return userID;
     }
 
-
+    public String[] toDisplayArray() {
+        return new String[]{
+                userID,
+                name
+        };
+    }
   
 }

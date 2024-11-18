@@ -68,6 +68,18 @@ public class StaffManager {
         return null;
     }
 
+    public void setPassword(String newPassword, String staffID) {
+        for (Staff staff : staffs) {
+            if (staff.getUserID().equalsIgnoreCase(staffID)) {
+                staff.setPassword(newPassword);
+                System.out.println("Password updated successfully.");
+                saveStaff();
+                return;
+            }
+        }
+        System.out.println("Staff member with ID " + staffID + " was not found.");
+    }
+
     public void addStaffMember(String id, String password) {
         boolean isDefaultPassword = true; // By default, the password is set to default
         Staff newUser = new Staff(id, password, true); // Assuming default password is true
@@ -376,6 +388,33 @@ public class StaffManager {
             }
         }
     }
+    public void displayAllDoctors() {
+        System.out.println("Displaying all doctors");
+        if (staffs.isEmpty()) {
+            System.out.println("No staff members to display.");
+        } else {
+            // Print table headers for just ID and Name
+            System.out.printf("%-10s %-15s%n", "ID", "Name");
+            System.out.println("-------------------------------------");
+    
+            // Print each doctor's details in a formatted manner
+            boolean hasDoctors = false; // To check if there are any doctors
+            for (Staff staff : staffs) {
+                if (staff.getrole().equals(HospitalRole.DOCTOR)) {
+                    hasDoctors = true; // Found at least one doctor
+                    System.out.printf("%-10s %-15s%n",
+                            staff.getUserID(),
+                            staff.getName());
+                }
+            }
+    
+            // If no doctors were found
+            if (!hasDoctors) {
+                System.out.println("No doctors found.");
+            }
+        }
+    }
+    
 
     public static void removeStaffMember(String staffIDRecord) {
         boolean removed = false;

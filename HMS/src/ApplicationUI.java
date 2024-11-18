@@ -15,18 +15,23 @@ public class ApplicationUI{
 
                     System.out.println();
                     System.out.print("UserID: ");
-                    //String userIDString = sc.next().toUpperCase();
-                    String userIDString = "D001"; // speed up testing purpose
+                    String userIDString = sc.next().toUpperCase();
+                    // String userIDString = "P1001"; // speed up testing purpose
 
                     System.out.print("Password: ");
-                    //String password = sc.next();
-                    String password = "Password@001";
+                    String password = sc.next();
+                    // String password = "Password@1001";
 
                     LogInManager login = new LogInManager(userIDString, password);
+                    System.out.println("\nLogInManager initialized");
+
                     boolean accept = login.authoriseLogin();
+                    System.out.println("Login authorised: " + accept);
+
                     if (accept) {
                         System.out.println("\nWelcome");
                         userOption(userIDString); // does this work??
+                        System.out.println("If you would like to exit. Press 1.");
                     } else {
                         System.out.println("Login failed.");
                         System.out.println("If you would like to exit. Press 1.");
@@ -34,7 +39,7 @@ public class ApplicationUI{
                         exit = sc.next();
                     }
             } catch (Exception e) {
-                System.out.println("An error occurred. Please try again.");
+                System.out.println("An error occurred. Please try again. [Application UI]");
             }finally{
                 sc.nextLine();
             }
@@ -43,55 +48,54 @@ public class ApplicationUI{
     }
 
     public static void userOption(String userIDString) {
-        //initialise outside to avoid initialising multiple times
-        ScheduleManager scheduleManager = new ScheduleManager();
+        try {
+            AppointmentStorage as = new AppointmentStorage();
+            System.out.println("AppointmentStorage initialized: [ApplicationUI]" + (as != null));
 
-        //all the separate appointment classes
-        /*AppointmentValidator amv = new AppointmentValidator();
-        AppointmentStorage ams = new AppointmentStorage();
-        AppointmentFilter amf = new AppointmentFilter();
-        AppointmentScheduler amschedule = new AppointmentScheduler(amv);
-        AppointmentLookup aml = new AppointmentLookup();*/
+            AppointmentValidator av = new AppointmentValidator(as);
+            System.out.println("AppointmentValidator received AppointmentStorage: [ApplicationUI]" + (av != null));
 
-        AppointmentManager am = new AppointmentManager();
+            // AppointmentFilter af = new AppointmentFilter(as, av);
+            // System.out.println("AppointmentFilter initialized with AppointmentStorage: [ApplicationUI]" + (as != null));
 
-        scheduleManager.setAppointmentManager(am);
+            AppointmentManager am = new AppointmentManager(as,av);
+            System.out.println("AppointmentManager initialized with valid dependencies.[ApplicationUI]" + (am != null));
 
-        scheduleManager.initialiseSchedule(); // Initialize schedule
+            ScheduleManager scheduleManager = new ScheduleManager();
+            scheduleManager.setAppointmentManager(am);
+            am.setScheduleManager(scheduleManager);
 
-
-        String useString = userIDString.toUpperCase();
-
-        if (useString.length() == 5){
-
-            //Patient 
-            if (useString.startsWith("p") || useString.startsWith("P")){ // [To Remove] Can remove
-                MedicalRecordManager mrm = new MedicalRecordManager();
-                PatientManager pm = new PatientManager();
-                new PatientUI(useString, pm, mrm, scheduleManager, am);
-            }
-        } else if(useString.length() == 4){
-            //Doctor
-            if (useString.startsWith("d") || useString.startsWith("D")){
-                MedicalRecordManager mrm = new MedicalRecordManager();
-                StaffManager sm = new StaffManager();
-                new DoctorUI(useString, sm, mrm, am, scheduleManager);
-            }
-            //Admin
-            else if (useString.startsWith("a") || useString.startsWith("A")){
-                StaffManager sm = new StaffManager();
-                new AdministratorUI(useString, sm, am);
-            } 
-
-            //Pharmacist
-            else if (useString.startsWith("p") || useString.startsWith("P")){
-                 StaffManager sm = new StaffManager();
-                 new PharmacistUI(useString, sm);
-            } 
-
-        }else {
+            scheduleManager.initialiseSchedule(); // Initialize schedule
+            am.initializeAppointments(); // Initialize appointments
+            
+            String useString = userIDString.toUpperCase();
+    
+            if (useString.length() == 5) {
+                if (useString.startsWith("P")) {
+                    MedicalRecordManager mrm = new MedicalRecordManager();
+                    PatientManager pm = new PatientManager();
+                    new PatientUI(useString, pm, mrm, scheduleManager, am);
+                }
+            } else if (useString.length() == 4) {
+                if (useString.startsWith("D")) {
+                    MedicalRecordManager mrm = new MedicalRecordManager();
+                    StaffManager sm = new StaffManager();
+                    new DoctorUI(useString, sm, mrm, am, scheduleManager);
+                } else if (useString.startsWith("A")) {
+                    StaffManager sm = new StaffManager();
+                    new AdministratorUI(useString, sm, am);
+                } else if (useString.startsWith("P")) {
+                    StaffManager sm = new StaffManager();
+                    new PharmacistUI(useString, sm);
+                }
+            } else {
                 System.out.println("Invalid user ID");
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred in userOption(). [Application UI]");
+            e.printStackTrace(); // Print stack trace for more details
         }
     }
+    
 }
 
