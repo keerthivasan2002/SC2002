@@ -52,7 +52,7 @@ public class DoctorUI implements UserUI{
                 case 2: //Update patient Medical Record
                     System.out.println("Update Patient Medical Record");
                     //am.printAllAppointmentsFromCSV(); -> the data in the csv is correct
-                    recordAppointmentOutcome();
+                    updatePatientMedicalRecord();
                     break;
                 case 3: //view Personal Schedule
                     System.out.println("View Personal Schedule");
@@ -70,8 +70,8 @@ public class DoctorUI implements UserUI{
                     am.getUpcomingAppointmentsForDoctor(doctor);
                     break;
                 case 7: //Record Appointment Outcome
-                    updatePatientMedicalRecord(); //tombalek
-                    break;
+                    recordAppointmentOutcome();
+                break;
                 case 8: //Log out
                     System.out.println("Thank you! Hope to see you soon :)\n"); //This works
                     System.exit(0);

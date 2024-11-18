@@ -15,12 +15,12 @@ public class ApplicationUI{
 
                     System.out.println();
                     System.out.print("UserID: ");
-                    String userIDString = sc.next().toUpperCase();
-                    // String userIDString = "P1001"; // speed up testing purpose
+                    // String userIDString = sc.next().toUpperCase();
+                    String userIDString = "D001"; // speed up testing purpose
 
                     System.out.print("Password: ");
-                    String password = sc.next();
-                    // String password = "Password@1001";
+                    // String password = sc.next();
+                    String password = "Password@001";
 
                     LogInManager login = new LogInManager(userIDString, password);
                     System.out.println("\nLogInManager initialized");
