@@ -85,11 +85,6 @@ public class PatientManager{
     }
 
     public static ArrayList<Patient> getPatients(){
-        // if (patients == null || patients.isEmpty()) {
-        //     System.out.println("No patient found.");
-        // }else{
-        //     System.out.println("Patient data loaded successfully. [PatientManager]");
-        // }
         return patients;
     }
 
@@ -156,6 +151,7 @@ public class PatientManager{
         }
         return newPassword;
     }
+
     public void changePasswordMenu(){
         System.out.println("Change Password");
         System.out.println("Your password must meet the following criteria:");

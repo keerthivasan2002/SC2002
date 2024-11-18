@@ -22,15 +22,19 @@ public class Intern extends User {
 
 
     @Override
-    public String toString() {
-        return "StudentID: " + userID +
-                ", Name: " + name +
-                ", Gender: " + gender +
-                ", Date of Birth: " + dateOfBirth +
-                ", Blood Type: " + bloodType +
-                ", Email Address: " + emailAddress +
-                ", Phone Number: " + phoneNumber +
-                ", Role: " + role +
-                ", Specialisation: " + specialisation;
+    public String[] toArray() {
+        return new String[] {
+                userID,
+                password,
+                name,
+                dateOfBirth,
+                gender.toString(),
+                bloodType.toString(),
+                emailAddress,
+                String.valueOf(phoneNumber),
+                role.toString(),
+                specialisation
+        };
     }
+
 }

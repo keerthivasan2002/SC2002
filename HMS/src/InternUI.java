@@ -1,13 +1,14 @@
 import java.util.Scanner;
 
 public class InternUI implements UserUI {
-    private String internID;
     private Intern intern;
     private final Scanner sc = new Scanner(System.in);
+    private InternManager im;
+    OptionHandling oh = new OptionHandling();
 
-    public InternUI(String internID, InternManager sm) {
-        internID =internID;
-        this.intern = sm.selectIntern(internID);
+    public InternUI(String internID, InternManager im) {
+        this.intern = im.selectIntern(internID);
+        this.im = im;
 
         if (this.intern == null) {
             System.out.println("No intern found with the given ID: " + internID);
@@ -23,14 +24,14 @@ public class InternUI implements UserUI {
         System.out.println("What would you like to do today?");
 
         while (true) {
-            studentMenu();
+            InternMenu();
             choice = getOption(1, 4);
             switch (choice) {
                 case 1:
                     viewProfile();
                     break;
                 case 2:
-                    updateProfile();
+                    updateInfo();
                     break;
                 case 3:
                     //viewSchedule();
@@ -44,12 +45,12 @@ public class InternUI implements UserUI {
         }
     }
 
-    private void studentMenu() {
+    private void InternMenu() {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println("Intern Menu:");
         System.out.println("1. View Profile");
         System.out.println("2. Update Profile");
-        System.out.println("3. View Schedule");
+        System.out.println("3. View Tasks");
         System.out.println("4. Logout");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
@@ -84,17 +85,47 @@ public class InternUI implements UserUI {
         System.out.println();
     }
 
-    private void updateProfile() {
-        System.out.println("\nUpdate Profile:");
-        System.out.print("Enter new email address (current: " + intern.getEmailAddress() + "): ");
-        String email = sc.nextLine();
-        System.out.print("Enter new phone number (current: " + intern.getPhoneNumber() + "): ");
-        String phoneInput = sc.nextLine();
-        int phone = Integer.parseInt(phoneInput);
+    public void updateInternMenu() {
+        System.out.println("----------------------------------------------");
+        System.out.println("Which information would you like to change?");
+        System.out.println("1. Change Phone Number");
+        System.out.println("2. Change Password");
+        System.out.println("3. Back to Main Menu.");
+        System.out.println("----------------------------------------------");
+    }
 
-        intern.setEmailAddress(email);
-        intern.setPhoneNumber(phone);
-        System.out.println("Profile updated successfully.\n");
+    private void updateInfo() {
+        int changChoice = -1;
+        while(changChoice != 3) {
+            updateInternMenu();
+            changChoice = oh.getOption(1, 3);
+            switch (changChoice) {
+                case 1:
+                    System.out.print("Please enter your new phone number: ");
+                    int newPhoneNumber = im.setInternNumber();
+                    intern.setPhoneNumber(newPhoneNumber);
+                    System.out.println("Updated Phone Number: " + intern.getPhoneNumber());
+                    break;
+                case 2:
+                    System.out.print("Enter your current password for verification: ");
+                    String verify = sc.nextLine();
+                    if (verify.equals(intern.getPassword())) {
+                        String newPassword = im.changePasswordString();
+                        im.setPassword(newPassword, intern.userID);
+                        System.out.println("Password updated successfully.");
+                    } else {
+                        System.out.println("Incorrect password. Please try again.");
+                    }
+                    break;
+                case 3:
+                    break;
+                default:
+                    break;
+
+            }
+            im.saveInterns();
+            System.out.println("Information has been saved successfully!");
+        }
     }
 
 }
