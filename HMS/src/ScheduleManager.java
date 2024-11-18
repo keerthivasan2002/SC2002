@@ -16,7 +16,6 @@ public class ScheduleManager {
     // Setter to set AppointmentManager after initial creation
     public void setAppointmentManager(AppointmentManager am) {
         this.am = am;
-        this.appointments =  am.getAppointments();
     }
 
     public ScheduleManager() {

@@ -15,12 +15,12 @@ public class ApplicationUI{
 
                     System.out.println();
                     System.out.print("UserID: ");
-                    String userIDString = sc.next().toUpperCase();
-                    // String userIDString = "P1001"; // speed up testing purpose
+                    //String userIDString = sc.next().toUpperCase();
+                    String userIDString = "S2001"; // speed up testing purpose
 
                     System.out.print("Password: ");
-                    String password = sc.next();
-                    // String password = "Password@1001";
+                    //String password = sc.next();
+                    String password = "password123";
 
                     LogInManager login = new LogInManager(userIDString, password);
                     System.out.println("\nLogInManager initialized");
@@ -75,6 +75,9 @@ public class ApplicationUI{
                     MedicalRecordManager mrm = new MedicalRecordManager();
                     PatientManager pm = new PatientManager();
                     new PatientUI(useString, pm, mrm, scheduleManager, am);
+                }else if(useString.startsWith("S")){
+                    InternManager stump = new InternManager();
+                    new InternUI(useString, stump);
                 }
             } else if (useString.length() == 4) {
                 if (useString.startsWith("D")) {
