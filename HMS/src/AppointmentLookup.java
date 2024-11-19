@@ -8,6 +8,10 @@ public class AppointmentLookup {
     private static ArrayList <Staff> staffList = new ArrayList<>();
     private static boolean isInitialized = false; 
 
+
+    public AppointmentLookup() {
+    }
+    
     public AppointmentLookup(AppointmentStorage as) {
         if (as == null) {
             throw new IllegalArgumentException("AppointmentStorage cannot be null[ AppointmentLookup ]");

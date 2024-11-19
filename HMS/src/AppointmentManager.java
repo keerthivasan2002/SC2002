@@ -46,6 +46,7 @@ public class AppointmentManager {
         System.out.println("AppointmentManager received AppointmentStorage: [AppointmentManager]" + (appointmentStorage != null));
         System.out.println("AppointmentManager received AppointmentValidator: [AppointmentManager]" + (appointmentValidator != null));
         System.out.println("AppointmentFilter initialized with valid dependencies.");
+        this.appointments = appointmentStorage.getAppointments();
 
     }
 
@@ -218,13 +219,14 @@ public class AppointmentManager {
 
     public void appointmentRequest(Staff doctor){
         ArrayList<Appointment> appointmentByDoctorID = appointmentFilter.getDoctorAppointments(doctor, 1);
-        for (Appointment appointment : appointments){
-            if (appointmentValidator.doctorIDExists(doctor)){
-                if (appointment.getAppointmentStatus() == AppointmentStatus.PENDING){
-                    appointmentByDoctorID.add(appointment);
-                }
-            }
-        }
+        appointmentByDoctorID = appointmentFilter.getAppointmentsByStatus(appointmentByDoctorID, AppointmentStatus.PENDING);
+        // for (Appointment appointment : appointments){
+        //     if (appointment.getDoctor().getUserID().equals(doctor.getUserID())){
+        //         if (appointment.getAppointmentStatus() == AppointmentStatus.PENDING){
+        //             appointmentByDoctorID.add(appointment);
+        //         }
+        //     }
+        // }
         if (appointmentByDoctorID.isEmpty()){
             System.out.println("No pending appointment request found.");
             return;
@@ -275,6 +277,7 @@ public class AppointmentManager {
         } else {
             appointment.setAppointmentStatus(AppointmentStatus.REJECTED);
         }
+        appointmentStorage.setAppointment(appointments);
         appointmentStorage.saveAppointments();
     }
     /* ---------------------------------------- End Appointment Request Function ------------------------------------------ */

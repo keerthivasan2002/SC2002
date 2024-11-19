@@ -48,6 +48,7 @@ public class ApplicationUI{
     }
 
     public static void userOption(String userIDString) {
+        
         try {
             AppointmentStorage as = new AppointmentStorage();
             System.out.println("AppointmentStorage initialized: [ApplicationUI]" + (as != null));
@@ -63,6 +64,12 @@ public class ApplicationUI{
 
             LessonManager lm = new LessonManager();
 
+            MedicineInventory mi = new MedicineInventory();
+            System.out.println("MedicalInventory initialized: [ApplicationUI]" + (mi != null));
+            
+            MedicalRecordManager mrm = new MedicalRecordManager();
+            System.out.println("MedicalRecordManager initialized: [ApplicationUI]" + (mrm != null));
+            
             ScheduleManager scheduleManager = new ScheduleManager();
             scheduleManager.setAppointmentManager(am);
             am.setScheduleManager(scheduleManager);
@@ -74,7 +81,6 @@ public class ApplicationUI{
     
             if (useString.length() == 5) {
                 if (useString.startsWith("P")) {
-                    MedicalRecordManager mrm = new MedicalRecordManager();
                     PatientManager pm = new PatientManager();
                     new PatientUI(useString, pm, mrm, scheduleManager, am);
                 }else if(useString.startsWith("S")){
@@ -83,15 +89,16 @@ public class ApplicationUI{
                 }
             } else if (useString.length() == 4) {
                 if (useString.startsWith("D")) {
-                    MedicalRecordManager mrm = new MedicalRecordManager();
                     StaffManager sm = new StaffManager();
                     new DoctorUI(useString, sm, mrm, am, scheduleManager);
                 } else if (useString.startsWith("A")) {
+                    PatientManager pm = new PatientManager();
                     StaffManager sm = new StaffManager();
-                    new AdministratorUI(useString, sm, am);
+                   
+                    new AdministratorUI(useString, sm, am, pm, mi);
                 } else if (useString.startsWith("P")) {
                     StaffManager sm = new StaffManager();
-                    new PharmacistUI(useString, sm);
+                    new PharmacistUI(useString, sm, mi, as);
                 }
             } else {
                 System.out.println("Invalid user ID");

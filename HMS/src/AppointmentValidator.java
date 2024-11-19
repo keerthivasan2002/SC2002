@@ -21,7 +21,7 @@ public class AppointmentValidator {
         this.as = as;
         System.out.println("AppointmentValidator initialized with a valid AppointmentStorage.");
 
-        // this.appointments = as.getAppointments();
+        this.appointments = as.getAppointments();
         // if (this.appointments == null) {
         //     this.appointments = new ArrayList<>(); // Initialize if null
         // }

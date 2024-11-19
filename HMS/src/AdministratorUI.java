@@ -46,16 +46,22 @@ public class AdministratorUI implements UserUI{
          AdminManager am;
          ..
           */
-        public AdministratorUI(String userID, StaffManager sm, AppointmentManager am) {
+        public AdministratorUI(String userID, StaffManager sm, AppointmentManager am, PatientManager pm, MedicineInventory mi) {
             this.userID = userID;
             this.sm = sm;
             this.admin = sm.selectStaff(userID);
             this.am = am;
-
-
+            this.mi = mi;
+            this.pm = pm;
+            System.out.println("AdministratorUI initialized with valid dependencies.[AdministratorUI]");
+            System.out.println("UserID: " + userID);
+            System.out.println("StaffManager is null: [AdministratorUI]" + (sm == null));
+            System.out.println("Admin is null: [AdministratorUI]" + (admin == null));
+            System.out.println("AppointmentManager is null: [AdministratorUI]" + (am == null));
+            System.out.println("PatientManager is null: [AdministratorUI]" + (pm == null));
             //Handling errors with the code
             if (this.admin == null) {
-                System.out.println("No doctors found with the given ID:" + userID);
+                System.out.println("No administrators found with the given ID:" + userID);
             } else {
                 userOption();
             }
@@ -131,9 +137,7 @@ public class AdministratorUI implements UserUI{
         System.out.println("3. Completed");
         System.out.println("4. Rejected");
         System.out.println("5. Pending");
-        System.out.println("6. Approved");
-        System.out.println("7. Scheduled");
-        System.out.println("8. Back to Main Menu");
+        System.out.println("6. Back to Main Menu");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -155,14 +159,24 @@ public class AdministratorUI implements UserUI{
                 case 1:
                     System.out.print("Enter Patient ID: ");
                     String patientID = sc.nextLine().trim();
+                    System.out.println("PatientID = " + patientID);
                     Patient patient = pm.selectPatient(patientID);
+                    System.out.println("Patient = " + patient.getName());
                     filteredAppointments = am.getPatientAppointments(patient,0);
+                    if (filteredAppointments.isEmpty()) {
+                        System.out.println("No appointments found for the given criteria.[AdministratorUI]");
+                        continue;
+                    }
                     break;
                 case 2:
                     System.out.print("Enter Doctor ID: ");
                     String doctorID = sc.nextLine().trim();
                     Staff doctor = sm.selectStaff(doctorID);
                     filteredAppointments = am.getDoctorAppointments(doctor,0);
+                    if (filteredAppointments.isEmpty()) {
+                        System.out.println("No appointments found for the given criteria.[AdministratorUI]");
+                        continue;
+                    }
                     break;
                 case 3:
                     break;
@@ -179,7 +193,7 @@ public class AdministratorUI implements UserUI{
 
             ArrayList<Appointment> filteredStatusAppointments = new ArrayList<>();
             int statusChoice = -1;
-            while (statusChoice != 8){
+            while (statusChoice != 6){
                 statusMenu();
                 System.out.print("Enter your choice: ");
                 statusChoice = oh.getOption(1, 6);
@@ -260,15 +274,49 @@ public class AdministratorUI implements UserUI{
     public void MedicationInventoryMenu() {
         System.out.println("-----------------------------------");
         System.out.println("Medication Inventory Menu");
-        System.out.println("1. View Medication Inventory");
-        System.out.println("2. Add Medication Inventory");
-        System.out.println("3. Remove Medication Inventory");
-        System.out.println("4. Updating Medication Stock Level");
-        System.out.println("5. Back to Main Menu");
+        System.out.println("1. Approve Requests from Pharmacists");
+        System.out.println("2. View Medication Inventory");
+        System.out.println("3. Add Medication to Inventory");
+        System.out.println("4. Remove Medication from Inventory");
+        System.out.println("5. Updating Medication Stock Level");
+        System.out.println("6. Update value of Low Stock Alert");
+        System.out.println("7. Back to Main Menu");
         System.out.println("-----------------------------------");
-
+        System.out.print("Enter your choice: ");
     }
 
+    public void requestMenuDisplay(){
+        System.out.println("-------------------------------------------------");
+        System.out.println("1. Approve Request");
+        System.out.println("2. Reject Request");
+        System.out.println("3. Go Back");
+        System.out.println("-------------------------------------------------");
+    }
+
+    private void requestMenu(){
+        int choice2 = -1;
+        while(choice2 != 3){
+            if(mi.viewRequestsAdmin() == 0){
+               System.out.println("Returning to Administrator menu...\n");
+               return;
+            }
+            requestMenuDisplay();
+            choice2 = oh.getOption(1,3);
+            switch(choice2){
+                case 1:
+                    mi.approveRequest();
+                    mi.saveMedicines();
+                    break;
+                case 2:
+                    mi.rejectRequest();
+                    mi.saveMedicines();
+                    break;
+                default:
+                    break;
+
+            }
+        }
+    }
     public void viewMedicationInventory(){
         mi.viewMedicalInventory();
     } // Case 1
@@ -279,31 +327,47 @@ public class AdministratorUI implements UserUI{
 
     public void removeMedicationInventory(){
         mi.rm();
+        mi.saveMedicines();
     }
 
     public void updatingMedicationStockLevel(){
         mi.update();
+        mi.saveMedicines();
+    }
+    public void updatelowStockAlertValue(){
+        mi.updateLowStockAlert();
+        mi.saveMedicines();
     }
 
     private void manageMedicationInventory(){
         int choice = -1;
-        while(choice != 5){
+        while(choice != 7){
             MedicationInventoryMenu();
-            choice = oh.getOption(1, 5);
+            choice = oh.getOption(1, 7);
             switch (choice){
                 case 1:
-                    viewMedicationInventory();
+                    requestMenu();
                     break;
                 case 2:
-                    addMedicationInventory();
+                    viewMedicationInventory();
                     break;
                 case 3:
-                    removeMedicationInventory();
+                    addMedicationInventory();
+                    mi.saveMedicines();
                     break;
                 case 4:
-                    updatingMedicationStockLevel();
+                    removeMedicationInventory();
+                    mi.saveMedicines();
                     break;
                 case 5:
+                    updatingMedicationStockLevel();
+                    mi.saveMedicines();
+                    break;
+                case 6:
+                    updatelowStockAlertValue();
+                    mi.saveMedicines();
+                    break;
+                case 7:
                     System.out.println("Exiting Medication Inventory Menu");
                     break;
                 default:

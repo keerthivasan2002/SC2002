@@ -68,7 +68,7 @@ public class AppointmentFilter {
 
 
     /* ---------------------------------------- Filter by DoctorID ------------------------------------------ */
-    public ArrayList<Appointment> getDoctorAppointments(Staff doctor, int showPastAppointments) {
+    public ArrayList<Appointment> getDoctorAppointments(Staff doctor, int showTypeOfAppointments) {
         ArrayList<Appointment> doctorAppointments = new ArrayList<>();
         
         // Ensure that appointments is not null
@@ -78,13 +78,23 @@ public class AppointmentFilter {
         }
         
         for (Appointment appointment : appointments) {
-            if (av.doctorIDExists(doctor)) {
-                if (showPastAppointments == 1 && av.afterDate(appointment, cal)) {
-                    doctorAppointments.add(appointment);
-                }else if (showPastAppointments == -1 && appointment.getDate().before(cal.getTime())){
-                    doctorAppointments.add(appointment);
-                }else if (showPastAppointments == 0){
-                    doctorAppointments.add(appointment);
+            if (doctor.getUserID().equalsIgnoreCase(appointment.getDoctor().getUserID())) {
+                switch (showTypeOfAppointments) {
+                    case 0:
+                        doctorAppointments.add(appointment);
+                        break;
+                    case 1:
+                        if (appointment.getDate().after(cal.getTime())) {
+                            doctorAppointments.add(appointment);
+                        }
+                        break;
+                    case -1:
+                        if (appointment.getDate().before(cal.getTime())) {
+                            doctorAppointments.add(appointment);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
         }

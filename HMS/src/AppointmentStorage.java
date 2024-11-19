@@ -19,6 +19,10 @@ public class AppointmentStorage{
         appointments = new ArrayList<>();
     }   
 
+    public void setAppointment(ArrayList<Appointment> UpdatedAppointments) {
+        this.appointments = UpdatedAppointments;
+    }
+
     public ArrayList<Appointment> getAppointments() {
         if (appointments == null || appointments.isEmpty()) {
             System.out.println("Appointments list is null or empty. Loading appointments from CSV. [AppointmentStorage]");

@@ -64,7 +64,7 @@ public class StaffManager {
             }
         }
 
-        System.out.println("An error has occurred: User with ID " + staffID + "not found!");
+        System.out.println("An error has occurred: User with ID " + staffID + " not found!");
         return null;
     }
 
