@@ -1,7 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 
-public class AdministratorUI {
 public class AdministratorUI implements UserUI{
         // Need DoctorID, Need patientID,
         // Staff management UI
@@ -29,9 +28,9 @@ public class AdministratorUI implements UserUI{
     request is approved, the stock level will be updated automatically
     */
 
+        private String userID;
+        private Staff admin;
         private StaffManager sm;
-        private PatientManager pm;
-        private Patient patient;
         private AppointmentManager am;
         private PatientManager pm;
 
