@@ -51,10 +51,6 @@ public class StaffManager {
                 System.out.println("Incomplete data in row, skipping: " + String.join(",", row)); //exception statement to show the data is loaded properly
             }
         }
-
-        //display initialisation file
-        //System.out.println("Staff data loaded successfully.[StaffManager]");
-        // displayStaffMembers();
     }
 
     public Staff selectStaff(String staffID){

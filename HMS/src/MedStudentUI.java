@@ -1,21 +1,21 @@
 import java.util.Scanner;
 
-public class InternUI implements UserUI {
-    private Intern intern;
+public class MedStudentUI implements StudentUI {
+    private Student student;
     private final Scanner sc = new Scanner(System.in);
-    private InternManager im;
-    OptionHandling oh = new OptionHandling();
-    LessonManager lm;
+    private StudentManager im;
+    public OptionHandling oh = new OptionHandling();
+    private LessonManager lm;
 
-    public InternUI(String internID, InternManager im, LessonManager lm) {
-        this.intern = im.selectIntern(internID);
+    public MedStudentUI(String internID, StudentManager im, LessonManager lm) {
+        this.student = im.selectIntern(internID);
         this.im = im;
         this.lm = lm;
         lm.initializeLessons();
 
 
-        if (this.intern == null) {
-            System.out.println("No intern found with the given ID: " + internID);
+        if (this.student == null) {
+            System.out.println("No student found with the given ID: " + internID);
         } else {
             userOption();
         }
@@ -24,12 +24,12 @@ public class InternUI implements UserUI {
     @Override
     public void userOption() {
         int choice;
-        System.out.println("Hello " + intern.getName() + ".");
+        System.out.println("Hello " + student.getName() + ".");
         System.out.println("What would you like to do today?");
 
         while (true) {
             InternMenu();
-            choice = getOption(1, 5);
+            choice = oh.getOption(1, 5);
             switch (choice) {
                 case 1:
                     viewProfile();
@@ -63,33 +63,15 @@ public class InternUI implements UserUI {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
-    private int getOption(int min, int max) {
-        int option;
-        while (true) {
-            System.out.print("Please enter your choice: ");
-            try {
-                option = Integer.parseInt(sc.nextLine());
-                if (option >= min && option <= max) {
-                    break;
-                } else {
-                    System.out.println("Option out of range. Please try again.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
-            }
-        }
-        return option;
-    }
-
-    private void viewProfile() {
+    public void viewProfile() {
         System.out.println("\nProfile Details:");
-        System.out.println("Student ID: " + intern.getUserID());
-        System.out.println("Name: " + intern.getName());
-        System.out.println("Gender: " + intern.getGender());
-        System.out.println("Date of Birth: " + intern.getDateOfBirth());
-        System.out.println("Specialization: " + intern.getSpecialisation());
-        System.out.println("Email: " + intern.getEmailAddress());
-        System.out.println("Phone: " + intern.getPhoneNumber());
+        System.out.println("Student ID: " + student.getUserID());
+        System.out.println("Name: " + student.getName());
+        System.out.println("Gender: " + student.getGender());
+        System.out.println("Date of Birth: " + student.getDateOfBirth());
+        System.out.println("Specialization: " + student.getSpecialisation());
+        System.out.println("Email: " + student.getEmailAddress());
+        System.out.println("Phone: " + student.getPhoneNumber());
         System.out.println();
     }
 
@@ -102,7 +84,7 @@ public class InternUI implements UserUI {
         System.out.println("----------------------------------------------");
     }
 
-    private void updateInfo() {
+    public void updateInfo() {
         int changChoice = -1;
         while(changChoice != 3) {
             updateInternMenu();
@@ -111,15 +93,15 @@ public class InternUI implements UserUI {
                 case 1:
                     System.out.print("Please enter your new phone number: ");
                     int newPhoneNumber = im.setInternNumber();
-                    intern.setPhoneNumber(newPhoneNumber);
-                    System.out.println("Updated Phone Number: " + intern.getPhoneNumber());
+                    student.setPhoneNumber(newPhoneNumber);
+                    System.out.println("Updated Phone Number: " + student.getPhoneNumber());
                     break;
                 case 2:
                     System.out.print("Enter your current password for verification: ");
                     String verify = sc.nextLine();
-                    if (verify.equals(intern.getPassword())) {
+                    if (verify.equals(student.getPassword())) {
                         String newPassword = im.changePasswordString();
-                        im.setPassword(newPassword, intern.userID);
+                        im.setPassword(newPassword, student.userID);
                         System.out.println("Password updated successfully.");
                     } else {
                         System.out.println("Incorrect password. Please try again.");
