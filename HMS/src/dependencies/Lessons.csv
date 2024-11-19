@@ -1,0 +1,4 @@
+DoctorID,startTime,endTime,description,courseCode,moduleDescription,moduleDifficulty,Intern ID,Intern Name,day
+D001,09:00:00,10:30:00,LESSON,101,Introduction to CPR and emergency response,Beginner,S2001,John Doe,Monday
+D001,11:00:00,12:30:00,LESSON,201,Understanding patient confidentiality,Intermediate,S2001,John Doe,Tuesday
+D001,13:00:00,14:30:00,LESSON,103,Basics of surgical procedures,Advanced,S2001,John Doe,Friday

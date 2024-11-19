@@ -11,6 +11,10 @@ public class Intern extends User {
         this.bloodType = bloodType;
     }
 
+    public Intern(String userID) {
+        super(userID);
+    }
+
     public String getSpecialisation(){
         return specialisation;
     }

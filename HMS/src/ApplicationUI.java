@@ -61,6 +61,8 @@ public class ApplicationUI{
             AppointmentManager am = new AppointmentManager(as,av);
             System.out.println("AppointmentManager initialized with valid dependencies.[ApplicationUI]" + (am != null));
 
+            LessonManager lm = new LessonManager();
+
             ScheduleManager scheduleManager = new ScheduleManager();
             scheduleManager.setAppointmentManager(am);
             am.setScheduleManager(scheduleManager);
@@ -77,7 +79,7 @@ public class ApplicationUI{
                     new PatientUI(useString, pm, mrm, scheduleManager, am);
                 }else if(useString.startsWith("S")){
                     InternManager stump = new InternManager();
-                    new InternUI(useString, stump);
+                    new InternUI(useString, stump, lm);
                 }
             } else if (useString.length() == 4) {
                 if (useString.startsWith("D")) {

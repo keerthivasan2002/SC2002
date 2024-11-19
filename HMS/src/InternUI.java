@@ -5,10 +5,14 @@ public class InternUI implements UserUI {
     private final Scanner sc = new Scanner(System.in);
     private InternManager im;
     OptionHandling oh = new OptionHandling();
+    LessonManager lm;
 
-    public InternUI(String internID, InternManager im) {
+    public InternUI(String internID, InternManager im, LessonManager lm) {
         this.intern = im.selectIntern(internID);
         this.im = im;
+        this.lm = lm;
+        lm.initializeLessons();
+
 
         if (this.intern == null) {
             System.out.println("No intern found with the given ID: " + internID);
@@ -25,7 +29,7 @@ public class InternUI implements UserUI {
 
         while (true) {
             InternMenu();
-            choice = getOption(1, 4);
+            choice = getOption(1, 5);
             switch (choice) {
                 case 1:
                     viewProfile();
@@ -34,9 +38,12 @@ public class InternUI implements UserUI {
                     updateInfo();
                     break;
                 case 3:
-                    //viewSchedule();
+                    lm.displayWeeklyTimetable();
                     break;
                 case 4:
+                    lm.displayTodayTimetable();
+                    break;
+                case 5:
                     System.out.println("Logging out. Have a great day!");
                     return;
                 default:
@@ -50,8 +57,9 @@ public class InternUI implements UserUI {
         System.out.println("Intern Menu:");
         System.out.println("1. View Profile");
         System.out.println("2. Update Profile");
-        System.out.println("3. View Tasks");
-        System.out.println("4. Logout");
+        System.out.println("3. View Weekly Timetable");
+        System.out.println("4. View Daily Timetable");
+        System.out.println("5. Logout");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
