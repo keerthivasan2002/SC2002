@@ -93,7 +93,7 @@ public class ApplicationUI{
                     new AdministratorUI(useString, sm, am, pm, mi);
                 } else if (useString.startsWith("P")) {
                     StaffManager sm = new StaffManager();
-                    new PharmacistUI(useString, sm, mi);
+                    new PharmacistUI(useString, sm, mi, as);
                 }
             } else {
                 System.out.println("Invalid user ID");

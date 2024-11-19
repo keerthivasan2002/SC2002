@@ -1,6 +1,10 @@
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PharmacistUI implements UserUI{
+    private AppointmentStorage as;
+    private ArrayList<Appointment> appointments;
     Staff pharmacist;
     StaffManager sm;
     private MedicineInventory mi;
@@ -10,11 +14,17 @@ public class PharmacistUI implements UserUI{
     Scanner sc = new Scanner(System.in);
     OptionHandling oh = new OptionHandling();
 
-    public PharmacistUI(String userID, StaffManager sm, MedicineInventory mi){
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
+
+    public PharmacistUI(String userID, StaffManager sm, MedicineInventory mi, AppointmentStorage as){
         this.userID = userID;
         this.sm = sm;
         this.pharmacist = sm.selectStaff(userID);
         this.mi = mi;
+        this.as = as;
+        this.appointments = as.getAppointments();
 
         if(this.pharmacist == null){
             System.out.println("No pharmacists found with the given ID: " + userID);
@@ -33,7 +43,7 @@ public class PharmacistUI implements UserUI{
             choice = oh.getOption(1, 5);
             switch (choice){
                 case 1: //view appointment outcome records
-                    // viewAppointmentOutcomeRecords();
+                    viewAppointmentOutcomeRecords();
                     break;
                 case 2: //update prescription status
                     mi.updateMedicalInventory();
@@ -70,22 +80,32 @@ public class PharmacistUI implements UserUI{
         System.out.println("-----------------------------------");
     }
 
-    // public void viewAppointmentOutcomeRecords(){
-    //     System.out.println("Viewing Appointment Outcome Records");
-    //     System.out.println("Enter the appointment ID to view the outcome: ");
-    //     int appointmentID = oh.getOption(0, Integer.MAX_VALUE);
-    //     Appointment appointment = sm.getAppointmentManager().getAppointment(appointmentID);
-    //     if(appointment != null){
-    //         System.out.println("Appointment ID: " + appointment.getAppointmentID());
-    //         System.out.println("Patient ID: " + appointment.getPatientID());
-    //         System.out.println("Doctor ID: " + appointment.getDoctorID());
-    //         System.out.println("Date: " + appointment.getDate());
-    //         System.out.println("Start Time: " + appointment.getStartTime());
-    //         System.out.println("End Time: " + appointment.getEndTime());
-    //         System.out.println("Status: " + appointment.getAppointmentStatus());
-    //         System.out.println("Outcome: " + appointment.getOutcome());
-    //     }else{
-    //         System.out.println("Appointment not found.");
-    //     }
-    // }
+    public void viewAppointmentOutcomeRecords(){
+        System.out.println("Viewing Appointment Outcome Records");
+        System.out.println("Enter the patient ID to view the outcome: ");
+        String patientID = sc.nextLine().toUpperCase();
+        System.out.println("Enter the doctor ID to view the outcome: ");
+        String doctorID = sc.nextLine().toUpperCase();
+
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("%-20s %-20s %-20s %-20s %-20s %-20s %-20s%n", 
+                "Appointment ID", "Patient ID", "Doctor ID", "Date", "Start Time", "End Time", "Outcome", "Status");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+    
+        // Iterate through appointments and display each matching appointment in table format
+        for (Appointment appointment : appointments) {
+            if (appointment.getPatient().getUserID().equals(patientID) && appointment.getDoctor().getUserID().equals(doctorID)) {
+                System.out.printf("%-20s %-20s %-20s %-20s %-20s %-20s %-20s %n",
+                        appointment.getAppointmentID(),
+                        appointment.getPatient().getUserID(),
+                        appointment.getDoctor().getUserID(),
+                        appointment.getStringDate(),
+                        appointment.getStringStartTime(),
+                        appointment.getStringEndTime(),
+                        appointment.getOutcome()
+                        );
+            }
+        }
+        // System.out.println("No matching appointment found.");
+    }
 }

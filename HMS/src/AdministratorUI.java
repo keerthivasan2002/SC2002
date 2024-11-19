@@ -305,9 +305,11 @@ public class AdministratorUI implements UserUI{
             switch(choice2){
                 case 1:
                     mi.approveRequest();
+                    mi.saveMedicines();
                     break;
                 case 2:
                     mi.rejectRequest();
+                    mi.saveMedicines();
                     break;
                 default:
                     break;
@@ -330,9 +332,11 @@ public class AdministratorUI implements UserUI{
 
     public void updatingMedicationStockLevel(){
         mi.update();
+        mi.saveMedicines();
     }
     public void updatelowStockAlertValue(){
         mi.updateLowStockAlert();
+        mi.saveMedicines();
     }
 
     private void manageMedicationInventory(){
