@@ -71,7 +71,7 @@ public class DoctorUI implements UserUI{
 
                     break;
                 case 6: //View Upcoming Appointment
-                    am.getUpcomingAppointmentsForDoctor(doctor);
+                    viewUpcomingRecord();
                     break;
                 case 7: //Record Appointment Outcome
                     recordAppointmentOutcome();
@@ -118,28 +118,13 @@ public class DoctorUI implements UserUI{
     public void updatePatientMedicalRecord() {
         PatientManager pm = new PatientManager();
 
-        
-        // System.out.println("Enter the patient ID: ");
-        // String patientID = sc.next();
-        // Patient patient = pm.selectPatient(patientID);
-        // if (patient == null) {
-        //     System.out.println("Patient not found.");
-        //     return;
-        // }
-
-        // ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(patientID);
-        // if (records.isEmpty()) {
-        //     System.out.println("No medical records found for patient " + patientID);
-        //     return;
-        // }
-
         System.out.println("Enter patientID: ");
         String patientID = sc.next().toUpperCase();  
         Patient patient = pm.selectPatient(patientID);
         if(patient == null){
             System.out.println("Patient not found.");
             return;
-        }  
+        }
         sc.nextLine(); // Clear the buffer
         Calendar calendar = Calendar.getInstance();
         Date dateOfDiagnosis;
@@ -178,7 +163,6 @@ public class DoctorUI implements UserUI{
         mrm.addNewRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus); // Add to MedicalRecordManager
     
         System.out.println("Medical record added successfully.");
-        sc.nextLine(); // Clear the buffer
     }
 
     public void updatePatientMedicalRecordV2(){

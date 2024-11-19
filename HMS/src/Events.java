@@ -21,6 +21,13 @@ public class Events {
         this.description = description;
     }
 
+    public Events(String doctorID, Time startTime, Time endTime, String description){
+        this.doctor = new Staff(doctorID);
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.description = description;
+    }
+
     // Getter methods
     public Staff getDoctor() {
         return doctor;

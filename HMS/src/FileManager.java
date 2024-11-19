@@ -75,8 +75,8 @@ public class FileManager {
 
     // Overloaded addNewRow with append parameter
     public void addNewRow(String[] rowData, boolean append) {
-       String filePath = System.getProperty("user.dir") + "/dependencies/" + getFile();
-    //    String filePath = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile();
+       //String filePath = System.getProperty("user.dir") + "/dependencies/" + getFile();
+       String filePath = System.getProperty("user.dir") + "/HMS/src/dependencies/" + getFile();
 
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, append))) {

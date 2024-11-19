@@ -2,5 +2,6 @@ public enum HospitalRole {
     DOCTOR,
     PATIENT,
     ADMINISTRATOR,
-    PHARMACIST
+    PHARMACIST,
+    STUDENT
 }

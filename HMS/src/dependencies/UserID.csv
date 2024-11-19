@@ -1,11 +1,12 @@
 UserID,Password,isDefaultPassword
 D001,Password@001,false
-D002,passwords,true
-P001,Password@001,false
-A001,Password@001,false
+D002,password,true
+P001,password,true
+A001,password,false
 D003,PASSWORD,false
 D004,tanGuishan1^,false
 A002,password,true
 P1001,Password@1001,false
 P1002,password,true
 P1003,Password@21,false
+S2001,password123,false
