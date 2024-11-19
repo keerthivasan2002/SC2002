@@ -8,7 +8,10 @@ public class PatientManager{
     private Scanner sc = new Scanner(System.in);
     // Constructor for PatientManager
     public PatientManager() {
+        System.out.println("Initializing PatientManager...");
         initializePatients(); // Load patient data from file
+        System.out.println("PatientManager initialized with " + patients.size() + " patients.");
+
     }
 
     //initialise the array based on the csv that is loaded in

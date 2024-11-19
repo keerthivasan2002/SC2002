@@ -17,14 +17,15 @@ public class AppointmentScheduler {
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     public AppointmentScheduler(AppointmentValidator av, AppointmentStorage as, AppointmentLookup al)  {
-        System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (as == null)); // Debug check
-        System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (av == null)); // Debug check
-
+       
         this.av = av;
         this.as = as;
         this.al = al;
         this.appointments = as.getAppointments();
         // this.appointments = as.getAppointments();
+        System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (as == null)); // Debug check
+        System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (av == null)); // Debug check
+        System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (al == null)); // Debug check
     }
 
 

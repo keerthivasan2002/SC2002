@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.sql.Time;
 import java.util.*;
 import java.text.ParseException;
@@ -14,6 +15,9 @@ public class DoctorUI implements UserUI{
 
     Scanner sc = new Scanner(System.in);
     OptionHandling oh = new OptionHandling();
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     public DoctorUI(String userID, StaffManager sm, MedicalRecordManager mrm, AppointmentManager am, ScheduleManager scheduleManager){
         this.userID = userID;
@@ -175,6 +179,62 @@ public class DoctorUI implements UserUI{
     
         System.out.println("Medical record added successfully.");
         sc.nextLine(); // Clear the buffer
+    }
+
+    public void updatePatientMedicalRecordV2(){
+        PatientManager pm = new PatientManager();
+        
+        System.out.println("Enter the patient ID: ");
+        String patientID = sc.next().toUpperCase();
+        Patient patient = pm.selectPatient(patientID);
+        if (patient == null) {
+            System.out.println("Patient not found.");
+            return;
+        }
+
+        ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(patientID);
+        if (records.isEmpty()) {
+            System.out.println("No medical records found for patient " + patientID);
+            return;
+        }
+        mrm.displayMedicalRecords(records);
+        if (records.isEmpty()) {
+            System.out.println("No medical records found for patient " + patientID);
+            return;
+        }
+
+        for (MedicalRecord record : records){
+            try {
+                
+                System.out.println("Enter the date of diagnosis (yyyy-MM-dd): ");
+                String dateInput = sc.next();
+                sc.nextLine(); // Clear the buffer
+               
+                if (!record.getDateOfDiagnosis().equals(dateInput)){
+                    throw new Exception("Invalid date. Please try again.");
+                }else{
+                    Date dateOfDiagnosis = dateFormat.parse(dateInput);
+                    record.setDateOfDiagnosis(dateOfDiagnosis);
+                    System.out.println("Enter the diagnosis: ");
+                    String diagnosis = sc.nextLine();
+                    record.setDiagnosis(diagnosis);
+                    System.out.println("Enter the prescription: ");
+                    String prescription = sc.nextLine();
+                    record.setPrescription(prescription);
+                    // System.out.println("Enter the prescription status (true/false): ");
+                    boolean prescriptionStatus = false;
+                    record.setPrescriptionStatus(prescriptionStatus);
+                    // MedicalRecord newRecord = new MedicalRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus);
+                    // mrm.addNewRecord(newRecord);
+                }
+            } catch (ParseException e) {
+                System.out.println("Error parsing date: [DoctorUI]" + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Error: [DoctorUI]" + e.getMessage());
+            }
+        }
+       
+        System.out.println("Medical record added successfully.");
     }
     
     public void recordAppointmentOutcome() {

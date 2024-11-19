@@ -46,13 +46,18 @@ public class AdministratorUI implements UserUI{
          AdminManager am;
          ..
           */
-        public AdministratorUI(String userID, StaffManager sm, AppointmentManager am) {
+        public AdministratorUI(String userID, StaffManager sm, AppointmentManager am, PatientManager pm) {
             this.userID = userID;
             this.sm = sm;
             this.admin = sm.selectStaff(userID);
             this.am = am;
-
-
+            this.pm = pm;
+            System.out.println("AdministratorUI initialized with valid dependencies.[AdministratorUI]");
+            System.out.println("UserID: " + userID);
+            System.out.println("StaffManager is null: [AdministratorUI]" + (sm == null));
+            System.out.println("Admin is null: [AdministratorUI]" + (admin == null));
+            System.out.println("AppointmentManager is null: [AdministratorUI]" + (am == null));
+            System.out.println("PatientManager is null: [AdministratorUI]" + (pm == null));
             //Handling errors with the code
             if (this.admin == null) {
                 System.out.println("No doctors found with the given ID:" + userID);
@@ -131,9 +136,7 @@ public class AdministratorUI implements UserUI{
         System.out.println("3. Completed");
         System.out.println("4. Rejected");
         System.out.println("5. Pending");
-        System.out.println("6. Approved");
-        System.out.println("7. Scheduled");
-        System.out.println("8. Back to Main Menu");
+        System.out.println("6. Back to Main Menu");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -155,14 +158,24 @@ public class AdministratorUI implements UserUI{
                 case 1:
                     System.out.print("Enter Patient ID: ");
                     String patientID = sc.nextLine().trim();
+                    System.out.println("PatientID = " + patientID);
                     Patient patient = pm.selectPatient(patientID);
+                    System.out.println("Patient = " + patient.getName());
                     filteredAppointments = am.getPatientAppointments(patient,0);
+                    if (filteredAppointments.isEmpty()) {
+                        System.out.println("No appointments found for the given criteria.[AdministratorUI]");
+                        continue;
+                    }
                     break;
                 case 2:
                     System.out.print("Enter Doctor ID: ");
                     String doctorID = sc.nextLine().trim();
                     Staff doctor = sm.selectStaff(doctorID);
                     filteredAppointments = am.getDoctorAppointments(doctor,0);
+                    if (filteredAppointments.isEmpty()) {
+                        System.out.println("No appointments found for the given criteria.[AdministratorUI]");
+                        continue;
+                    }
                     break;
                 case 3:
                     break;
@@ -179,7 +192,7 @@ public class AdministratorUI implements UserUI{
 
             ArrayList<Appointment> filteredStatusAppointments = new ArrayList<>();
             int statusChoice = -1;
-            while (statusChoice != 8){
+            while (statusChoice != 6){
                 statusMenu();
                 System.out.print("Enter your choice: ");
                 statusChoice = oh.getOption(1, 6);
