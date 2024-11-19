@@ -19,7 +19,7 @@ public class AppointmentStorage{
         appointments = new ArrayList<>();
     }   
 
-    public void setAppointments(ArrayList<Appointment> UpdatedAppointments) {
+    public void setAppointment(ArrayList<Appointment> UpdatedAppointments) {
         this.appointments = UpdatedAppointments;
     }
 

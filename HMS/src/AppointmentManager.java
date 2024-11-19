@@ -277,7 +277,7 @@ public class AppointmentManager {
         } else {
             appointment.setAppointmentStatus(AppointmentStatus.REJECTED);
         }
-        appointmentStorage.setAppointments(appointments);
+        appointmentStorage.setAppointment(appointments);
         appointmentStorage.saveAppointments();
     }
     /* ---------------------------------------- End Appointment Request Function ------------------------------------------ */

@@ -1,17 +1,17 @@
-PatientID,DateOfDiagnosis,Diagnosis,Prescription,PrescriptionStatus
-P1003,2000-05-14,Flu,Glue,TRUE
-P1003,2000-05-17,Addiction,Nicotine,FALSE
-P1003,2020-01-23,druggy,drug,FALSE
-P1002,2020-01-01,meow,meow,TRUE
-P1003,2002-10-20,fight club,ethan,FALSE
-P1003,2024-10-14,stupid,ethan,FALSE
-P1003,2024-10-24,dumb dumb,need eat more drug,FALSE
-P1003,2024-10-12,druggy,meo,FALSE
-P1001,2024-04-04,Flu,paracetamol,TRUE
-P1002,2024-11-16,Flu,amoxicillin ibuprofen paracetamol,TRUE
-P1002,2024-11-15,heart attack,eat med till die,TRUE
-P1003,2024-11-15,stupid,dumbpills,FALSE
-P1001,2024-11-17,Chest Infection,amoxicillin,FALSE
-P1003,2024-11-17,flu,paracetamol,false
-P1003,2024-11-17,flu,paracetamol,false
-P1001,2024-11-17,chest infection,amoxicillin,false
+MedicalRecordID,PatientID,DateOfDiagnosis,Diagnosis,Prescription,PrescriptionStatus
+1,P1001,2020-01-01,Diabetes,Insulin,false
+2,P1002,2020-01-02,Diabetes,Insulin,false
+3,P1003,2020-01-03,Diabetes,Insulin,false
+4,P1002,2020-01-04,Diabetes,Insulin,false
+5,P1001,2025-01-05,Heart Disease,Aspirin,false
+6,P1003,2020-01-06,Heart Disease,Aspirin,false
+7,P1001,2020-01-07,Heart Disease,Aspirin,false
+8,P1002,2020-01-08,fungal infection,Amoxicillin,false
+9,P1003,2020-01-09,fungal infection,Amoxicillin,true
+10,P1001,2020-01-10,fungal infection,Amoxicillin,false
+11,P1002,2025-01-11,Allergy,Cetrizine,false
+12,P1003,2025-01-12,Allergy,Cetrizine,true
+13,P1001,2025-01-13,Allergy,Cetrizine,false
+14,P1002,2025-01-14,Headache,Paracet,false
+15,P1003,2025-01-15,Headache,Paracet,true
+16,P1001,2025-01-16,Headache,Paracet,false

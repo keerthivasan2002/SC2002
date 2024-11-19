@@ -33,7 +33,7 @@ public class PharmacistUI implements UserUI{
             choice = oh.getOption(1, 5);
             switch (choice){
                 case 1: //view appointment outcome records
-                
+                    // viewAppointmentOutcomeRecords();
                     break;
                 case 2: //update prescription status
                     mi.updateMedicalInventory();
@@ -70,4 +70,22 @@ public class PharmacistUI implements UserUI{
         System.out.println("-----------------------------------");
     }
 
+    // public void viewAppointmentOutcomeRecords(){
+    //     System.out.println("Viewing Appointment Outcome Records");
+    //     System.out.println("Enter the appointment ID to view the outcome: ");
+    //     int appointmentID = oh.getOption(0, Integer.MAX_VALUE);
+    //     Appointment appointment = sm.getAppointmentManager().getAppointment(appointmentID);
+    //     if(appointment != null){
+    //         System.out.println("Appointment ID: " + appointment.getAppointmentID());
+    //         System.out.println("Patient ID: " + appointment.getPatientID());
+    //         System.out.println("Doctor ID: " + appointment.getDoctorID());
+    //         System.out.println("Date: " + appointment.getDate());
+    //         System.out.println("Start Time: " + appointment.getStartTime());
+    //         System.out.println("End Time: " + appointment.getEndTime());
+    //         System.out.println("Status: " + appointment.getAppointmentStatus());
+    //         System.out.println("Outcome: " + appointment.getOutcome());
+    //     }else{
+    //         System.out.println("Appointment not found.");
+    //     }
+    // }
 }

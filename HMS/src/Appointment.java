@@ -24,7 +24,7 @@ public class Appointment extends Events {
         this.appointmentID = idCounter++;
         this.patient = new Patient(patientID);
         this.appointmentStatus = AppointmentStatus.PENDING; // Default status
-        this.appointmentRecord = new MedicalRecord(patientID, date, patientID, doctorID, false);
+        // this.appointmentRecord = new MedicalRecord(patientID, date, patientID, doctorID, false);
     }
 
     // Appointment-specific getters and setters

@@ -10,9 +10,9 @@ public class DoctorUI implements UserUI{
     protected StaffManager sm;
     protected Patient patient;
     protected MedicalRecordManager mrm;
+    private ArrayList<MedicalRecord> medicalRecord;
     protected ScheduleManager scheduleManager;
     private AppointmentManager am;
-
     Scanner sc = new Scanner(System.in);
     OptionHandling oh = new OptionHandling();
 
@@ -25,7 +25,7 @@ public class DoctorUI implements UserUI{
         this.doctor = sm.selectStaff(userID);
         this.mrm = mrm;
         this.am = am;
-
+        this.medicalRecord = mrm.getMedicalRecord();
         
         this.scheduleManager = scheduleManager;
         //Handling errors with the code

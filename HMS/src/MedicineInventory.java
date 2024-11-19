@@ -1,17 +1,22 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Iterator;
 
 public class MedicineInventory {
     public ArrayList<Medicines> medicines;
+    private ArrayList<MedicalRecord> medicalRecords;
+    
     private String medicine_File = "Medicine_List.csv";
     Scanner sc = new Scanner(System.in);
     FileManager medicinesFileManager = new FileManager(medicine_File);
+    MedicalRecordManager mrm = new MedicalRecordManager();
     OptionHandling oh = new OptionHandling();
 
     public MedicineInventory(){
         medicines = new ArrayList<Medicines>();
         loadMedicalInventory();
+        this.medicalRecords = mrm.getMedicalRecord();
     }
 
     public OptionHandling getOh(){
@@ -71,39 +76,123 @@ public class MedicineInventory {
         System.out.println("--------------------------------------------------------------------------------");
     }
 
-    public boolean updateMedicalInventory() {
-        MedicalRecordManager mrm = new MedicalRecordManager();
-
-        // System.out.println("Enter patient ID: ");
-        // String patientID = sc.next();
-
-        System.out.println("Enter medicine name: ");
-        String medicineName = sc.next();
-
-        
-        System.out.println("Enter quantity: ");
-        int quantity = sc.nextInt();
-        // sc.nextLine();
-
-        for (Medicines med : medicines) {
-            if (med.name.equalsIgnoreCase(medicineName)) {
-                if (med.stock >= quantity) {
-                    med.stock -= quantity;
-                    System.out.println(quantity + " units of " + medicineName + " prescribed. New stock: " + med.stock);
-                    // Check if stock is below the low stock alert level
-                    if (med.stock <= med.lowStockAlert) {
-                        System.out.println("Alert: Stock for " + medicineName + " is low. Current stock: " + med.stock);
-                    }
-                    return true;  // Successfully updated
-                } else {
-                    System.out.println("Error: Insufficient stock for " + medicineName);
-                    return false; // Not enough stock
-                }
+    public void viewAvailableMedicines(){
+        System.out.println("Available Medicines: ");
+        System.out.printf("%-15s %-10s \n", "Medicine", "Stock");
+        System.out.println("----------------------------------------");
+        for (Medicines med : medicines){
+            if (med.stock > 0){
+                System.out.printf("%-15s %-10d \n", med.name, med.stock);
             }
         }
-        System.out.println("Error: Medicine " + medicineName + " not found in inventory.");
-        return false;  // Medicine not found
     }
+
+
+    public boolean updateMedicalInventory() {
+        try{        
+            // Check if there are any medical records
+            if (medicalRecords == null || medicalRecords.size() == 0) {
+                System.out.println("No medical records found.");
+                return false;
+            }
+
+            System.out.println("Enter patient ID: ");
+            String patientID = sc.next();        
+        
+            // Get all records for the patient
+            ArrayList<MedicalRecord> records =  mrm.getAllRecordsForPatient(patientID);
+            if (records == null || records.size() == 0) {
+                System.out.println("No medical records found for patient ID [medicine inventory]1" + patientID);
+                return false;
+            } 
+            // Display all records for the patient
+            mrm.displayMedicalRecords(records);
+
+            // Get all records for the patient
+            ArrayList<MedicalRecord> recordsByStatus = new ArrayList<>();
+            for (MedicalRecord record : records) {
+                if (record.isPrescriptionStatus() == false) {
+                    recordsByStatus.add(record);
+                }
+            }
+            if (recordsByStatus == null || recordsByStatus.size() == 0) {
+                System.out.println("No medical records found for patient ID [medicine inventory]2" + patientID);
+                return false;
+            }
+            
+            // Display records with pending prescriptions
+            mrm.displayMedicalRecords(recordsByStatus);
+
+
+            // Prompt and accept input for recordID
+            ArrayList<MedicalRecord> recordsByID = new ArrayList<>();
+            System.out.println("Enter medical record ID: ");
+            int recordID = mrm.getValidMedicalRecordID();
+            // System.out.println("Record size: " + records.size());
+            if (recordID == -1) {
+                throw new InvalidPositiveOptionException();
+            }else if (recordID == -2){
+                throw new IntNonNegativeException();
+            }else{
+                for (MedicalRecord record : records) {
+                    if (record.getMedicalRecordID() == recordID) {
+                        recordsByID.add(record);
+                    }
+                }
+            }
+            
+            if (recordsByID == null || recordsByID.size() == 0) {
+                System.out.println("No medical records found for record ID [medicine inventory]3" + recordID);
+                return false;
+            }
+
+            viewAvailableMedicines();
+            System.out.println("Enter medicine name: ");
+            String medicineName = sc.next();
+
+            
+            System.out.println("Enter quantity to dispense to patient: ");
+            int quantity = sc.nextInt();
+            // sc.nextLine();
+
+            //update medical record status (dispenesed)
+            mrm.updateMedicalRecord(recordID);
+            mrm.saveMedicalRecords();
+
+            //update inventory
+            for (Medicines med : medicines) {
+                if (med.name.equalsIgnoreCase(medicineName)) {
+                    if (med.stock >= quantity) {
+                        med.stock -= quantity;
+                        System.out.println(quantity + " units of " + medicineName + " prescribed. New stock: " + med.stock);
+                        // Check if stock is below the low stock alert level
+                        if (med.stock <= med.lowStockAlert) {
+                            System.out.println("Alert: Stock for " + medicineName + " is low. Current stock: " + med.stock);
+                        }
+                        return true;  // Successfully updated
+                    } else {
+                        System.out.println("Error: Insufficient stock for " + medicineName);
+                        return false; // Not enough stock
+                    }
+                }
+            }
+            System.out.println("Error: Medicine " + medicineName + " not found in inventory.");
+        }catch(IntNonNegativeException e){
+            System.out.println("Error: Invalid input. Please enter a positive number.");
+            return false;  // Medicine not found
+        }catch(InvalidPositiveOptionException e){
+            System.out.println("Error: Invalid input. Please enter a valid record ID.");
+            return false;  // Medicine not found
+        }catch(Exception e){
+            System.out.println("Error: Invalid input. Please enter a number.");
+            return false;  // Medicine not found
+        }
+        return false;  // Default return statement
+    }
+
+    
+
+
     
     public void add() {
         // Prompt and accept input for userID

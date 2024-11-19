@@ -13,6 +13,7 @@ public class MedicalRecordManager {
     }
 
     public void initializeMedicalRecords(){
+        System.out.println("Loading Medical Records..." );
         FileManager medicalRecordFM = new FileManager(Mr_file);
         String[][] medicalRecordArray = medicalRecordFM.readFile();
 
@@ -27,18 +28,19 @@ public class MedicalRecordManager {
         for(int i = 1 ; i < medicalRecordArray.length; i++){
             String[] row = medicalRecordArray[i];
 
-            if(row.length >= 2){ //Ensure that there are enough fields in the row
-                String patientID = row[0];
+            if(row.length >= 5){ //Ensure that there are enough fields in the row
+                int medicalRecordID = Integer.parseInt(row[0]);
+                String patientID = row[1];
                 Date dateOfDiagnosis = null;
                 try {
-                    dateOfDiagnosis = dateFormat.parse(row[1]); // Assuming the date is in the second column
+                    dateOfDiagnosis = dateFormat.parse(row[2]); // Assuming the date is in the second column
                 } catch (ParseException e) {
                     System.out.println("Error parsing date for patient ID " + patientID + ": " + e.getMessage());
                     continue; // Skip to the next row if date parsing fails
                 }
-                String diagnosis = row[2];
-                String prescription = row[3];
-                Boolean prescriptionStatus = Boolean.parseBoolean(row[4]);
+                String diagnosis = row[3];
+                String prescription = row[4];
+                Boolean prescriptionStatus = Boolean.parseBoolean(row[5]);
 
                 MedicalRecord medicalRecord = new MedicalRecord(patientID, dateOfDiagnosis,diagnosis,prescription,prescriptionStatus);
                 MedicalRecords.add(medicalRecord);
@@ -58,6 +60,9 @@ public class MedicalRecordManager {
         }
     }
 
+    public ArrayList<MedicalRecord> getMedicalRecord(){
+        return MedicalRecords;
+    }
 
     // Method to get all medical records for a specific patient by userID
     public ArrayList<MedicalRecord> getAllRecordsForPatient(String userID) {
@@ -68,6 +73,60 @@ public class MedicalRecordManager {
             }
         }
         return patientRecords;
+    }
+
+    public void updateMedicalRecord(int medicalRecordID) {
+        for (MedicalRecord record : MedicalRecords) {
+            if (record.getMedicalRecordID() == medicalRecordID) {
+                record.setPrescriptionStatus(true);
+            }
+        }
+    }
+
+    public int getFirstMedicalRecordID(ArrayList<MedicalRecord> medicalRecords){
+        int firstMedicalRecordID = getLastMedicalRecordID(medicalRecords);
+        for (MedicalRecord record : medicalRecords){
+            if (record.getMedicalRecordID() < firstMedicalRecordID){
+                firstMedicalRecordID = record.getMedicalRecordID();
+            }
+        }
+        return firstMedicalRecordID;
+    }
+
+    public int getLastMedicalRecordID(ArrayList<MedicalRecord> medicalRecords){
+        int lastMedicalRecordID = 0;
+        for (MedicalRecord record : medicalRecords){
+            if (record.getMedicalRecordID() > lastMedicalRecordID){
+                lastMedicalRecordID = record.getMedicalRecordID();
+            }
+        }
+        return lastMedicalRecordID;
+    }
+    
+    public int getValidMedicalRecordID(){
+        OptionHandling oh = new OptionHandling();
+        int selectedID = -1;
+        boolean valid = false;
+
+        while(!valid){
+            selectedID = oh.getOption(0, Integer.MAX_VALUE);
+
+            if (selectedID == 0){
+                return -1;
+            }else if(selectedID < 0){
+                return -2;
+            }
+            for (MedicalRecord record : MedicalRecords){
+                if (record.getMedicalRecordID() == selectedID){
+                    valid = true;
+                    break;
+                }
+            }
+            if (!valid){
+                System.out.println("Invalid Medical Record ID. Please try again or enter 0 to cancel.");
+            }
+        }
+        return selectedID;
     }
 
     public void changeMedicalRecordPrescriptionStatus(String patientID, Date dateOfDiagnosis, Boolean newStatus) {
@@ -83,19 +142,20 @@ public class MedicalRecordManager {
 
     public void saveMedicalRecords() {
         FileManager medicalRecordFM = new FileManager(Mr_file);
-    
+
         // Header for CSV
-        String[] header = {"PatientID", "DateOfDiagnosis", "Diagnosis", "Prescription", "PrescriptionStatus"};
+        String[] header = {"MedicalRecordID","PatientID", "DateOfDiagnosis", "Diagnosis", "Prescription", "PrescriptionStatus"};
         medicalRecordFM.addNewRow(header, false); // Write header
     
         // Loop through each MedicalRecord and write individually
         for (MedicalRecord record : MedicalRecords) {
-            String[] recordData = new String[5];
-            recordData[0] = record.getPatientID();
-            recordData[1] = record.getStringDateOfDiagnosis();
-            recordData[2] = record.getDiagnosis();
-            recordData[3] = record.getPrescription();
-            recordData[4] = String.valueOf(record.isPrescriptionStatus());
+            String[] recordData = new String[6];
+            recordData[0] = String.valueOf(record.getMedicalRecordID());
+            recordData[1] = record.getPatientID();
+            recordData[2] = record.getStringDateOfDiagnosis();
+            recordData[3] = record.getDiagnosis();
+            recordData[4] = record.getPrescription();
+            recordData[5] = String.valueOf(record.isPrescriptionStatus());
     
             // Append each record to the file
             medicalRecordFM.addNewRow(recordData, true);
@@ -147,27 +207,33 @@ public class MedicalRecordManager {
         return MedicalRecords;
     }
 
-    // Display a list of appointments in a tabular format
+    // Display a list of appointments in a tabular format    
     public void displayMedicalRecords(ArrayList<MedicalRecord> medicalRecords) {
         if (medicalRecords.isEmpty()) {
             System.out.println("No medical records found.");
             return;
-        } else {
-            // Print table headers
-            System.out.println("-----------------------------------------------------------------------------------------------");
-            System.out.printf("%-20s %-30s %-20s %-20s%n",
-                    "Diagnosis Date", "Diagnosis", "Prescription", "Prescription Status");
-            System.out.println("-----------------------------------------------------------------------------------------------");
-    
-            // Print each medical record's details in a formatted manner
-            for (MedicalRecord medicalRecord : medicalRecords) {
-                System.out.printf("%-20s %-30s %-20s %-20s%n",
-                        medicalRecord.getStringDateOfDiagnosis(),
-                        medicalRecord.getDiagnosis(),
-                        medicalRecord.getPrescription(),
-                        medicalRecord.isPrescriptionStatus() ? "Approved" : "Not Approved");
-            }
         }
+    
+        // Print table headers
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("%-20s %-20s %-20s %-30s %-20s %-20s%n", 
+                "Medical Record ID", "Patient ID", "Date of Diagnosis", "Diagnosis", "Prescription", "Prescription Status");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
+    
+    
+        // Print each medical record's details in a formatted manner
+        for (MedicalRecord medicalRecord : medicalRecords) {
+            String diagnosisStatus = medicalRecord.isPrescriptionStatus() ? "Approved" : "Not Approved";
+            System.out.printf("%-20s %-30s %-20s %-30s %-20s %-20s%n",
+                    medicalRecord.getMedicalRecordID(),
+                    medicalRecord.getPatientID(),
+                    medicalRecord.getStringDateOfDiagnosis(),
+                    medicalRecord.getDiagnosis(),
+                    medicalRecord.getPrescription(),
+                    medicalRecord.isPrescriptionStatus() ? "Approved" : "Not Approved");
+        }
+    
+        System.out.println("-----------------------------------------------------------------------------------------------");
     }
     
 }

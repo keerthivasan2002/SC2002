@@ -16,11 +16,11 @@ public class ApplicationUI{
                     System.out.println();
                     System.out.print("UserID: ");
                     String userIDString = sc.next().toUpperCase();
-                    // String userIDString = "D001"; // speed up testing purpose
+                    // String userIDString = "P001"; // speed up testing purpose
 
                     System.out.print("Password: ");
-                    String password = sc.next();
-                    // String password = "Password@001";
+                    // String password = sc.next();
+                    String password = "Password@001";
 
                     LogInManager login = new LogInManager(userIDString, password);
                     System.out.println("\nLogInManager initialized");
@@ -64,6 +64,10 @@ public class ApplicationUI{
 
             MedicineInventory mi = new MedicineInventory();
             System.out.println("MedicalInventory initialized: [ApplicationUI]" + (mi != null));
+            
+            MedicalRecordManager mrm = new MedicalRecordManager();
+            System.out.println("MedicalRecordManager initialized: [ApplicationUI]" + (mrm != null));
+            
             ScheduleManager scheduleManager = new ScheduleManager();
             scheduleManager.setAppointmentManager(am);
             am.setScheduleManager(scheduleManager);
@@ -75,13 +79,11 @@ public class ApplicationUI{
     
             if (useString.length() == 5) {
                 if (useString.startsWith("P")) {
-                    MedicalRecordManager mrm = new MedicalRecordManager();
                     PatientManager pm = new PatientManager();
                     new PatientUI(useString, pm, mrm, scheduleManager, am);
                 }
             } else if (useString.length() == 4) {
                 if (useString.startsWith("D")) {
-                    MedicalRecordManager mrm = new MedicalRecordManager();
                     StaffManager sm = new StaffManager();
                     new DoctorUI(useString, sm, mrm, am, scheduleManager);
                 } else if (useString.startsWith("A")) {
