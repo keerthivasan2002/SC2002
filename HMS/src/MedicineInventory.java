@@ -72,18 +72,24 @@ public class MedicineInventory {
     }
 
     public boolean updateMedicalInventory() {
+        MedicalRecordManager mrm = new MedicalRecordManager();
+
+        // System.out.println("Enter patient ID: ");
+        // String patientID = sc.next();
+
         System.out.println("Enter medicine name: ");
         String medicineName = sc.next();
+
+        
         System.out.println("Enter quantity: ");
         int quantity = sc.nextInt();
-        sc.nextLine();
+        // sc.nextLine();
 
         for (Medicines med : medicines) {
             if (med.name.equalsIgnoreCase(medicineName)) {
                 if (med.stock >= quantity) {
                     med.stock -= quantity;
                     System.out.println(quantity + " units of " + medicineName + " prescribed. New stock: " + med.stock);
-
                     // Check if stock is below the low stock alert level
                     if (med.stock <= med.lowStockAlert) {
                         System.out.println("Alert: Stock for " + medicineName + " is low. Current stock: " + med.stock);

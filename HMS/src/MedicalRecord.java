@@ -53,4 +53,22 @@ public class MedicalRecord {
         return patientID;
     }
 
+    //setter functions
+    public String setDiagnosis(String diagnosis) {
+        return this.diagnosis = diagnosis;
+    }
+
+    public String setPrescription(String prescription) {
+        return this.prescription = prescription;
+    }
+
+    public boolean setPrescriptionStatus(boolean prescriptionStatus) {
+        return this.prescriptionStatus = prescriptionStatus;
+    }
+
+    public Date setDateOfDiagnosis(Date dateOfDiagnosis) {
+        return this.dateOfDiagnosis = dateOfDiagnosis;
+    }
+
+    
 }

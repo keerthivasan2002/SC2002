@@ -1,11 +1,12 @@
 public class InvalidPositiveOptionException extends Exception
 {
     //construct
-    public InvalidPositiveOptionException() {
-        super("Invalid Option, Please enter option between stated range.");
+    public InvalidPositiveOptionException(String message) {
+        super(message);
     }
 
-    // public IntNonNegativeException(String meassage){
-    //     super(message);
-    // }
+    public InvalidPositiveOptionException(){
+        System.out.println("Invalid value! Please enter a within the range.");
+    }
+
 }

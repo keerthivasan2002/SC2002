@@ -1,22 +1,28 @@
-import java.lang.reflect.Array;
 import java.sql.Time;
+import java.util.Calendar;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.lang.IllegalArgumentException;
 
-public class PatientUI {
+
+public class PatientUI implements UserUI{
     private String userID;
     private Patient patient;
     private PatientManager pm; //keep reference to a PatientManager
     private MedicalRecordManager mrm;
     private ScheduleManager scheduleManager;
     private AppointmentManager appointmentManager;
-    private ArrayList<Appointment> Appointment_Record;
 
     private Scanner sc = new Scanner(System.in);
     OptionHandling oh = new OptionHandling();
+    Calendar cal = Calendar.getInstance();
+
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     public PatientUI(String userID, PatientManager pm, MedicalRecordManager mrm, ScheduleManager scheduleManager, AppointmentManager am){
         this.userID = userID;
@@ -31,11 +37,11 @@ public class PatientUI {
         if(this.patient == null){
             System.out.println("No patient found with the given ID:" + userID);
         }else{
-            patientOption();
+            userOption();
         }
     }
 
-    public void patientOption(){
+    public void userOption(){
         int choice = -1;
 
         System.out.println("Hello " + patient.getName() + ".");
@@ -45,17 +51,19 @@ public class PatientUI {
             choice = oh.getOption(1, 9);
             switch (choice){
                 case 1: //view medical record
+                    System.out.print("\n");
                     System.out.println("===============================");
                     System.out.println("Viewing Medical Records");
                     System.out.println("===============================");
                     viewMedicalRecords();
+                    System.out.println("\n");
                     break;
                 case 2: //update Personal information
                     patientInfo();
                     updatePatientInfo();
                     break;
                 case 3: //View Available appointment Slots
-                    // viewAvailableAppointmentSlots();
+                    viewAvailableAppointmentSlots();
                     break;
                 case 4: //Schedule an Appointment
                     requestNewAppointment();
@@ -83,21 +91,83 @@ public class PatientUI {
         }
     }
 
+    private void viewAvailableAppointmentSlots() {
+        System.out.println("Each appointment booked is only limited to 30 minutes!");
+        System.out.println("Enter the date to view available appointment slots");
+
+        Calendar cal = Calendar.getInstance(); // Get today's date
+        Date choiceOfDate = null;
+        String doctorID = null;
+
+        //display all doctors
+        StaffManager sm = new StaffManager();
+        sm.displayAllDoctors();
+
+        // Step 1: Get and validate the Doctor ID
+        while(true){
+            System.out.print("Enter Doctor ID to view available slots: ");
+            doctorID = sc.nextLine().trim().toUpperCase();
+            Staff doctor = appointmentManager.findStaffByID(doctorID);
+
+            if(doctor == null){
+                System.out.println("Doctor ID not found. Please try again.");
+            } else {
+                System.out.println("Doctor found: " + doctor.getName());
+                break; // Exit loop if doctor exists
+            }
+        }
+
+
+        // Step 2: Get and validate the date input
+        while(true){
+            try{
+                System.out.print("Date (yyyy-MM-dd): ");
+                String dateInput = sc.next().trim();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                dateFormat.setLenient(false); // Strict parsing
+                choiceOfDate = dateFormat.parse(dateInput);
+                Date today = cal.getTime();
+                if (choiceOfDate.before(today) && !choiceOfDate.equals(today)){
+                    throw new IllegalArgumentException("Date cannot be in the past.");
+                }
+
+                // Check if the date is a weekend
+                cal.setTime(choiceOfDate);
+                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
+                    throw new IllegalArgumentException("Date cannot be on a weekend.");
+                }
+
+                // Check if the date is a public holiday (Optional)
+                // if (scheduleManager.isPublicHoliday(choiceOfDate)) {
+                //     throw new IllegalArgumentException("Date cannot be on a public holiday.");
+                // }
+
+                // Check if the doctor is available on the selected date
+                // if (!scheduleManager.isDoctorAvailable(doctorID, choiceOfDate)) {
+                //     throw new IllegalArgumentException("Doctor is not available on the selected date.");
+                // }else {
+                //     System.out.println("Doctor is available on the selected date.");
+                // }
+
+                break; // Exit loop if date is valid
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: " + e.getMessage());
+            } catch (ParseException e) {
+                System.out.println("Invalid date format. Please try again.");
+            }
+        }
+
+        
+    }
+
     // Function to view medical records
     private void viewMedicalRecords() {
         ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(userID);
-        if (records.isEmpty()) {
-            System.out.println("No medical records found for the patient.");
-        } else {
-            for (MedicalRecord record : records) {
-                System.out.println("Diagnosis Date: " + record.getStringDateOfDiagnosis());
-                System.out.println("Diagnosis: " + record.getDiagnosis());
-                System.out.println("Prescription: " + record.getPrescription());
-                System.out.println("Prescription Status: " + (record.isPrescriptionStatus() ? "Approved" : "Not Approved"));
-                System.out.println("-----------------------------------");
-            }
-        }
+        mrm.displayMedicalRecords(records);
     }
+
+    /* ---------------------------------------- Menu Function ------------------------------------------ */
 
     //create a function for the patient menu
     private void patientMenu(){
@@ -109,11 +179,10 @@ public class PatientUI {
         System.out.println("4. Schedule an Appointment");
         System.out.println("5. Reschedule an Appointment");
         System.out.println("6. Cancel an Appointment");
-        System.out.println("7. View Scheduled Prescription");
+        System.out.println("7. View Scheduled Appointments");
         System.out.println("8. View Past Appointments Outcome Records");
         System.out.println("9. Logout");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.print("Enter your choice: ");
     }
 
     //method for testing purposes
@@ -129,31 +198,46 @@ public class PatientUI {
         System.out.println("Phone Number: " + patient.getPhoneNumber());
     }
 
-    private void updatePatientInfo(){
-        int changeChoice;
+    //update personal information menu
+    public void updatePatientMenu(){
+        System.out.println("----------------------------------------------");
         System.out.println("Which information would you like to change?");
         System.out.println("1. Change Email Address");
         System.out.println("2. Change Phone Number");
         System.out.println("3. Change Password");
         System.out.println("4. Back to Main Menu.");
+        System.out.println("----------------------------------------------");
+    }
 
-        changeChoice = oh.getOption(1,4 );
-        // sc.nextLine(); // Clear the buffer
+    public  void changePasswordMenu(){
+        System.out.println("Change Password");
+        System.out.println("Your password must meet the following criteria:");
+        System.out.println("- At least 8 characters long");
+        System.out.println("- Contain at least one uppercase letter");
+        System.out.println("- Contain at least one lowercase letter");
+        System.out.println("- Contain at least one number");
+        System.out.println("- Contain at least one special character (!@#$%^&*()-+=)");
+        System.out.println("-------------------------------------------------------------------");
+    }
 
-        while (changeChoice > 0 && changeChoice < 4) {
+    /* ---------------------------------------- Update Personal Information Function ------------------------------------------ */
+    private void updatePatientInfo(){
+        int changeChoice = -1;
+        while (changeChoice != 4) {
+            updatePatientMenu();
+            changeChoice = oh.getOption(1,4);
             switch (changeChoice) {
                 case 1:
                     System.out.print("Please enter your new email: ");
-                    String newEmail = sc.nextLine();
-                    patient.updateEmailAddress(newEmail);
+                    String newEmail = pm.setPatientEmail();
+                    patient.setEmailAddress(newEmail);
                     System.out.println("Updated Email: " + patient.getEmailAddress());
                     break;
 
                 case 2:
                     System.out.print("Please enter your new phone number: ");
-                    int newPhoneNumber = sc.nextInt();
-                    sc.nextLine();
-                    patient.updatePhoneNumber(newPhoneNumber);
+                    int newPhoneNumber = pm.setPatientPhoneNumber();
+                    patient.setPhoneNumber(newPhoneNumber);
                     System.out.println("Updated Phone Number: " + patient.getPhoneNumber());
                     break;
 
@@ -161,15 +245,16 @@ public class PatientUI {
                     System.out.print("Enter your current password for verification: ");
                     String verify = sc.nextLine();
                     if (verify.equals(patient.getPassword())) {
-                        System.out.print("Enter new password: ");
-                        String newPassword = sc.nextLine();
-                        patient.updatePassword(newPassword);
+                        String newPassword = pm.changePasswordString();
+                        patient.setPassword(newPassword);
                         System.out.println("Password updated successfully.");
                     } else {
                         System.out.println("Incorrect password. Please try again.");
                     }
+                    
                     break;
-
+                case 4:
+                    break;
                 default:
                     System.out.println("Invalid choice. Returning to the main menu.");
                     break;
@@ -178,97 +263,146 @@ public class PatientUI {
             // Save the updated patient list to the file
             pm.savePatients();
             System.out.println("Information updated and saved successfully.");
-
-            // Ask if they want to continue updating
-            System.out.println("\nWould you like to update more information?");
-            System.out.println("1. Change Email Address");
-            System.out.println("2. Change Phone Number");
-            System.out.println("3. Change Password");
-            System.out.println("Press any other number to exit.");
-            changeChoice = sc.nextInt();
-            sc.nextLine(); // Clear the buffer
+            // sc.nextLine(); // Clear the buffer
         }
     }
 
-    //request new appointment
+    
+    /* ---------------------------------------- Schedule Appointment Function ------------------------------------------ */
     private void requestNewAppointment() {
         
         System.out.println("Add Appointment");
+        ArrayList<Appointment> appointment = appointmentManager.getPatientAppointments(patient,0);
+        appointment = appointmentManager.getAppointmentByDate(appointment, cal);
+        appointmentManager.displayAppointment(appointment);
         System.out.println("Enter the following details to schedule an appointment:");
         System.out.print("Doctor ID: ");
         String doctorID = sc.nextLine().toUpperCase();
-
-        Date date = null;
-        Time time = null;
-
-        System.out.print("Date (yyyy-MM-dd): ");
-        String dateInput = sc.next().trim();
-        System.out.print("Time (HH:mm): ");
-        String timeInput = sc.next().trim();
-
-        try{            
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            date = dateFormat.parse(dateInput);
-            
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            Date parsedTime = timeFormat.parse(timeInput);
-            time = new Time(parsedTime.getTime());
-
-            boolean success = appointmentManager.addAppointment(userID, doctorID, date, time);
-            
-            if (success) {
-                System.out.println("Appointment scheduled successfully.");
-            } else {
-                System.out.println("Failed to schedule appointment. Please try another time slot.");
-            }
-        } catch (ParseException e) {
-            System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
-            sc.nextLine(); // Clear the buffer
-            requestNewAppointment();
+        Staff doctor = appointmentManager.findStaffByID(doctorID);
+        if (doctor == null) {
+            System.out.println("Doctor not found. Please try again.");
+            return;
+        }else {
+            System.out.println("Doctor found: " + doctor.getName() + " " + doctor.getUserID());
         }
-        sc.nextLine(); // Clear the buffer
+        Calendar cal = Calendar.getInstance();
+        Date date = null;
+        Time startTime = null;
+        Time endTime = null;
+        while (true){
+            try{            
+                System.out.print("Date (yyyy-MM-dd): ");
+                String dateInput = sc.next().trim();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                date = dateFormat.parse(dateInput);
+                if (date.before(cal.getTime()) && !date.equals(cal.getTime())) {
+                    throw new IllegalArgumentException("Date cannot be in the past.");
+                }
+                
+                System.out.print("Time (HH:mm): ");
+                String timeInput = sc.next().trim();
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                Date parsedTime = timeFormat.parse(timeInput);
+                startTime = new Time(parsedTime.getTime());
+                if (date.equals(cal.getTime()) && !parsedTime.before(cal.getTime())) {
+                    throw new IllegalArgumentException("Time cannot be in the past.");
+                }
+
+                // Calculate endTime by adding 30 minutes to startTime
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(parsedTime);
+                calendar.add(Calendar.MINUTE, 30);
+                endTime = new Time(calendar.getTimeInMillis());
+
+                boolean success = appointmentManager.addAppointment(patient, doctor, date, startTime, endTime);
+                if (success) {
+                    System.out.println("Appointment scheduled successfully.");
+                } else {
+                    System.out.println("Failed to schedule appointment. Please try another time slot.");
+                }
+                break;
+            }catch (IllegalArgumentException e){
+                System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
+            }catch (ParseException e) {
+                System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
+            }finally{
+                System.out.println("End of appointment scheduling.");
+                sc.nextLine(); // Clear the buffer
+            }
+        }
     }
 
-    //reschedule appointment
+    /* ---------------------------------------- Reschedule Appointment Function ------------------------------------------ */
     private void rescheduleAppointment() {
-        ArrayList<Appointment> appointment = appointmentManager.viewPatientAppointments(userID);
+        ArrayList<Appointment> appointment = appointmentManager.getPatientAppointments(patient,0);
         appointmentManager.displayAppointment(appointment);
         System.out.print("Enter Appointment ID to Reschedule: ");
-        int appointmentID = appointmentManager.getValidAppointmentID(appointment);
-
-        Date newDate = null;
-        Time newTime = null;
-
-        System.out.print("Enter New Appointment Date (yyyy-MM-dd): ");
-        String dateInput = sc.next();
-        System.out.print("Enter New Appointment Time (HH:mm): ");
-        String timeInput = sc.next();
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            newDate = dateFormat.parse(dateInput);
-            
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            Date parsedTime = timeFormat.parse(timeInput);
-            newTime = new Time(parsedTime.getTime());
-
-            boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newTime);
-            if (success) {
-                System.out.println("Appointment rescheduled successfully.");
+        int appointmentID = -1;
+        while (true) {
+            appointmentID = appointmentManager.getValidAppointmentID(appointment);
+        
+            if (appointmentID == -1) {
+                System.out.println("No appointments found for patient. " + userID);
+            } else if (appointmentManager.appointmentAlreadyCompletedOrCancelled(appointmentID)) {
+                System.out.println("Appointment has already been completed or canceled or rejected. Please select another appointment.");
             } else {
-                System.out.println("Failed to reschedule appointment. New time slot may not be available.");
+                break;
             }
-        } catch (ParseException e) {
-            System.out.println("Invalid date or time format. Please try again.");
-            sc.nextLine(); // Clear the buffer
-            rescheduleAppointment();
         }
-        System.out.println("End of appointment rescheduled .");
-        sc.nextLine(); // Clear the buffer
+        
+        Calendar cal = Calendar.getInstance();
+        Date newDate = null;
+        Time newStartTime = null;
+        Time newEndTime = null;
+
+        
+        while(true){
+            try {
+                System.out.print("Enter New Appointment Date (yyyy-MM-dd): ");
+                String dateInput = sc.next();   
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                newDate = dateFormat.parse(dateInput);
+                if (newDate.before(cal.getTime()) && !newDate.equals(cal.getTime())) {
+                    throw new IllegalArgumentException("Date cannot be in the past.");
+                }
+
+                System.out.print("Enter New Appointment Time (HH:mm): ");
+                String timeInput = sc.next();
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                Date parsedTime = timeFormat.parse(timeInput);
+                newStartTime = new Time(parsedTime.getTime());
+                if (newDate.equals(cal.getTime()) && !parsedTime.before(cal.getTime())) {
+                    throw new IllegalArgumentException("Time cannot be in the past.");
+                }
+
+                // Calculate newEndTime by adding 30 minutes to newStartTime
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(parsedTime);
+                calendar.add(Calendar.MINUTE, 30);
+                newEndTime = new Time(calendar.getTimeInMillis());
+
+                boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newStartTime, newEndTime);
+                if (success) {
+                    System.out.println("Appointment rescheduled successfully.");
+                } else {
+                    System.out.println("Failed to reschedule appointment. New time slot may not be available.");
+                }
+                break;
+            }catch (IllegalArgumentException e){
+                System.out.println("Invalid date or time format. Please try again. \n" + e.getMessage());
+            } catch (ParseException e) {
+                System.out.println("Invalid date or time format. Please try again.");
+            }finally{
+                System.out.println("End of appointment reschedule.");
+                sc.nextLine(); // Clear the buffer
+            }
+
+        }
     }
 
-    //cancel appointment
+    /* ---------------------------------------- Cancel Appointment Function ------------------------------------------ */
     private void cancelAppointment() {
-        ArrayList<Appointment> appointment = appointmentManager.viewPatientAppointments(userID);
+        ArrayList<Appointment> appointment = appointmentManager.getPatientAppointments(patient,0);
         appointmentManager.displayAppointment(appointment);
         System.out.print("Enter Appointment ID to Cancel: ");
         int appointmentID = appointmentManager.getValidAppointmentID(appointment);
@@ -281,40 +415,34 @@ public class PatientUI {
         }
     }
 
+    /* ---------------------------------------- View Scheduled Appointment Function ------------------------------------------ */
     protected void viewAppointments() {
         System.out.println("Viewing Appointments");
-        ArrayList appointment_record = appointmentManager.viewPatientAppointments(userID);
+        System.out.println("Appointments found for patient. " + patient.getUserID());
+        ArrayList<Appointment> appointment_record = appointmentManager.getPatientAppointments(patient, 1);
+        if (appointment_record.isEmpty()) {
+            System.out.println("No appointments found for patient. " + userID);
+            return;
+        }else {
+            System.out.println("Appointments found for patient. " + userID);
+        }
         appointmentManager.displayAppointment(appointment_record);
-        // ArrayList<Appointment> Appointment_Record =  appointmentManager.viewPatientAppointments(userID);
-        // if (Appointment_Record.size() == 0) {
-        //     System.out.println("No appointments found for patient. " + userID);
-        //     return;
-        // }
-        // for (Appointment appointment : Appointment_Record) {
-        //     System.out.println("Appointment ID: " + appointment.getAppointmentID());
-        //     System.out.println("Doctor: " + appointment.getDoctor());
-        //     System.out.println("Date: " + appointment.getStringDate());
-        //     System.out.println("Time: " + appointment.getStringTime());
-        //     System.out.println("Status: " + appointment.getAppointmentStatus());
-        //     System.out.println("Outcome: " + appointment.getOutcome());
-        //     System.out.println("-----------------------------------");
-        // }
         System.out.println("End of Appointments");
     }
 
+    /* ---------------------------------------- View Appointment Outcome Function ------------------------------------------ */
     protected void viewAppointmentOutcome() {
-        System.out.print("Enter Appointment ID to view outcome: ");
-        int appointmentID = sc.nextInt();
-        sc.nextLine(); // Consume newline
-    
-        Appointment appointment = appointmentManager.findAppointmentByID(appointmentID);
-        if (appointment != null && appointment.getPatient().getPatientID().equals(userID)) {
-            String outcome = appointment.getOutcome();
-            System.out.println("Appointment Outcome: " + (outcome.isEmpty() ? "No outcome recorded" : outcome));
-        } else {
-            System.out.println("Appointment not found or not authorized to view.");
+        System.out.println("Viewing Past Appointments Outcome Records");
+        ArrayList<Appointment> appointment_record = appointmentManager.getPatientAppointments(patient, -1);
+        if (appointment_record.isEmpty()) {
+            System.out.println("No past appointments found for patient. " + userID);
+            return;
+        }else {
+            System.out.println("Appointments found for patient. " + userID);
         }
-
-        sc.nextLine(); // Clear the buffer
+        appointmentManager.displayAppointment(appointment_record);
+        System.out.println("End of Appointments");
     }
+
+
 }

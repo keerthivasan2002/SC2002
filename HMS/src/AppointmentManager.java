@@ -1,332 +1,232 @@
-
-
-/*This class manage multiple appointment instances. it acts as a centralized controller
- * that handles the scheduling, approval, cancellation, and tracking of appointments.
- * This class typically includes:
- * 1. Adding new appointments
- * 2. Removing existing appointments
- * 3. Check available time slots
- * 4. Allowing doctor to review and approve or reject appointment requests
- * 5. Allowing patients to view, schedule, reschedule, or cancel appointments
- * 6. Providing a list of appointments for a specific date, doctor, or patient
- * 7. Record the outcome of an appointment
- * 8. view a list of upcoming appointments for doctors and patients
- * 9.
- *
- */
-
-import java.io.File;
-import java.lang.reflect.Array;
-import java.sql.Time;
 import java.util.Date;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
-
 public class AppointmentManager {
+    //initialising the interface 
+    private AppointmentStorage appointmentStorage; //this is to store the data
+    private AppointmentScheduler appointmentScheduler;
+    private AppointmentValidator appointmentValidator;
+    private AppointmentFilter appointmentFilter;
+    private AppointmentLookup appointmentLookup;
+
+    //initialising the variables
     private ArrayList<Appointment> appointments;
-    private Schedule schedule;
     private String appointment_File = "Appointment_List.csv";
-    private static ArrayList <Patient> patients = new ArrayList<>();
-    private static ArrayList <Staff> staffList = new ArrayList<>();
+    private ScheduleManager scheduleManager;
 
-    public AppointmentManager() {
-        this.appointments = new ArrayList<>();
-        initializeAppointments();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
+    // //constructor for appointmentManager
+    // public AppointmentManager() {
+    //     this.appointmentStorage = new AppointmentStorage();
+    //     this.appointmentValidator = new AppointmentValidator(appointmentStorage);
+    //     this.appointmentScheduler = new AppointmentScheduler(appointmentValidator,appointmentStorage);
+    //     this.appointmentFilter = new AppointmentFilter(appointmentStorage, appointmentValidator);
+    //     this.appointmentLookup = new AppointmentLookup(appointmentStorage);
+    //     // displayAppointment(appointments);
+    // }
+
+    public AppointmentManager(AppointmentStorage appointmentStorage, AppointmentValidator appointmentValidator){
+       if (appointmentStorage == null) {
+            throw new IllegalArgumentException("AppointmentStorage cannot be null");
+        }
+        if (appointmentValidator == null) {
+            throw new IllegalArgumentException("AppointmentValidator cannot be null");
+        }
+        this.appointmentStorage  = appointmentStorage;
+        this.appointmentValidator = appointmentValidator;
+        this.appointmentFilter = new AppointmentFilter(appointmentStorage,appointmentValidator);
+        this.appointmentLookup = new AppointmentLookup(appointmentStorage);
+        this.appointmentScheduler = new AppointmentScheduler(appointmentValidator,appointmentStorage, appointmentLookup);
+        System.out.println("AppointmentManager received AppointmentStorage: [AppointmentManager]" + (appointmentStorage != null));
+        System.out.println("AppointmentManager received AppointmentValidator: [AppointmentManager]" + (appointmentValidator != null));
+        System.out.println("AppointmentFilter initialized with valid dependencies.");
+        this.appointments = appointmentStorage.getAppointments();
+
     }
 
+   
 
-    public AppointmentManager(Schedule schedule) {
-        this.appointments = new ArrayList<>();
-        this.schedule = schedule;
-        initializeAppointments();
-    }
 
-    /* ------------------------------------------------- Start Initialization Function ------------------------------------------ */
+
+    // //POSSIBLE NEW CONSTRUCTOR
+    // public AppointmentManager(AppointmentStorage appointmentStorage, AppointmentScheduler appointmentScheduler, AppointmentValidator appointmentValidator, AppointmentFilter appointmentFilter, AppointmentLookup appointmentLookup){
+    //     this.appointmentStorage  = appointmentStorage;
+    //     this.appointmentScheduler = appointmentScheduler;
+    //     this.appointmentValidator = appointmentValidator;
+    //     this.appointmentFilter = appointmentFilter;
+    //     this.appointmentLookup = appointmentLookup;
+    // }
+
     public void initializeAppointments() {
-        FileManager appointmentFileManager = new FileManager(appointment_File);
-        String[][] appointmentArray = appointmentFileManager.readFile();
-        patients = PatientManager.getPatients();
-        staffList = StaffManager.getStaffList();
-
-
-        //debug purpose
-        // if (patients == null) {
-        //     System.out.println("Failed to load patient data.[AppointmentManager]");
-        // }else {
-        //     // PatientManager patientManager = new PatientManager();
-        //     // patientManager.displayPatient();
-        //     System.out.println("Patient data loaded successfully.[AppointmentManager]");
-        // }
-
-        // if (staffList == null) {
-        //     System.out.println("Failed to load staff data. [AppointmentManager]");
-        // }else{
-        //     // StaffManager staffManager = new StaffManager();
-        //     // staffManager.displayStaffMembers();
-        //     System.out.println("Staff data loaded successfully. [AppointmentManager]");
-        // }
-
-        if (appointmentArray == null || appointmentArray.length == 0) {
-            System.out.println("Failed to load appointment data.[AppointmentManager]");
-            return;
-        }
-
-        SimpleDateFormat originalFormat = new SimpleDateFormat("d/M/yyyy");
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Adjust the pattern as needed
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-
-        for (int i = 1; i < appointmentArray.length; i++) {
-            String[] row = appointmentArray[i];
-            if (row.length >= 7) {
-                String appointmentID = row[0];
-                String patientID = row[1];
-                // System.out.println("I am here: " + patientID);
-                String doctorID = row[2];
-
-                Date date = null;
-                Time time = null;
-
-                // Parse date and time from the CSV file
-                try {
-                    // String dateInput = row[3].trim(); // Assuming date is in the third column
-                    // date = originalFormat.parse(dateInput); // Assuming date is in the third column
-                    // String formattedDate = dateFormat.format(date); // Format the date to desired format
-                    // String formattedDate = dateFormat.format(dateInput); // Format the date to desired format
-                    // row[3] = formattedDate; // Update the date in the record
-                    date = dateFormat.parse(row[3]); // Convert String to Date
-                    Date parsedTime = timeFormat.parse(row[4]);
-                    time = new Time(parsedTime.getTime()); // Convert Date to Time
-                } catch (ParseException e) {
-                    System.out.println("Error parsing time: hey hey " + e.getMessage());
-                    // Handle the error appropriately
-                }
-                AppointmentStatus status = AppointmentStatus.valueOf(row[5].toUpperCase()); // Assuming status is in the fifth column
-                String outcome = row[6]; // Assuming outcome is in the sixth column
-
-                Appointment appointment = new Appointment(patientID, doctorID, date, time);
-                appointment.setAppointmentStatus(status);
-                appointment.setOutcome(outcome);
-                appointments.add(appointment);
-            } else {
-                System.out.println("Incomplete data in row, skipping: " + String.join(",", row));
-            }
-            // For debug purposes [ensure file from appointment is read properly]
-            // for (Appointment appointment : appointments) {
-            //     System.out.println("Appointment ID: " + appointment.getAppointmentID());
-            //     System.out.println("Patient ID: " + appointment.getPatient().getUserID());
-            //     System.out.println("Doctor ID: " + appointment.getDoctor().getUserID());
-            //     System.out.println("Date: " + appointment.getDate());
-            //     System.out.println("Time: " + appointment.getTime());
-            //     System.out.println("Status: " + appointment.getAppointmentStatus());
-            //     System.out.println("Outcome: " + appointment.getOutcome());
-            //     System.out.println("-----------------------------------");
-            // }
-        }
+        appointmentStorage.loadAppointments();
     }
 
-    /* ------------------------------------------------- Start Scheduling Function ------------------------------------------ */
-
-    public boolean patientIsMatch(String patientID, String doctorID, Date date, Time time) {
-        for (Appointment appointment : appointments) {
-            if (appointment.getPatient().getUserID().equals(patientID) && appointment.getDoctor().getUserID().equals(doctorID) && appointment.getDate().equals(date) && appointment.getTime().equals(time)) {
-                return true;
-            }
-        }
-        return false;
+    //using a schedule manager
+    public void setScheduleManager(ScheduleManager scheduleManager) {
+        this.scheduleManager = scheduleManager; // Set scheduleManager after both objects are created
     }
 
-    public boolean doctorAndTimeMatch(String doctorID, Date date, Time time) {
-        for (Appointment appointment : appointments) {
-            if (appointment.getDoctor().getUserID().equals(doctorID) && appointment.getDate().equals(date) && appointment.getTime().equals(time)) {
-                return true;
-            }
+    /* ---------------------------------------- Start Scheduling Function ------------------------------------------ */
+    public boolean addAppointment(Patient patient, Staff doctor, Date date, Time startTime, Time endTime) {
+        if (appointmentScheduler == null) {
+            throw new IllegalStateException("AppointmentScheduler is not initialized[AppointmentManager][addAppointment]");
         }
-        return false;
+        return appointmentScheduler.addAppointment(patient, doctor, date, startTime, endTime);
     }
 
-    // Add a new appointment
-    public boolean addAppointment(String patientID, String doctorID, Date date, Time time) {
-        System.out.println("Scheduling appointment for Patient ID: " + patientID + ", Doctor ID: " + doctorID + ", Date: " + date + ", Time: " + time);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        int appointmentID = appointments.size() + 1;
-
-        if (patientIsMatch(patientID, doctorID, date, time) == true || doctorAndTimeMatch(doctorID, date, time) == true) {
-            System.out.println("Appointment already exists.");
-            return false;
-        }else {
-            Appointment newAppointment = new Appointment(patientID, doctorID, date, time);
-            appointments.add(newAppointment);
-            System.out.println("Appointment scheduled with ID: " + newAppointment.getAppointmentID());
-
-             // Save the new appointment to the file
-             String[] appointment = new String[]{String.valueOf(appointmentID), patientID, doctorID, dateFormat.format(date), timeFormat.format(time), "PENDING", "NULL"};
-             FileManager appointmentFM = new FileManager(appointment_File);
-             appointmentFM.addNewRow(appointment);
-            
-            return true;
+    public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newStartTime, Time newEndTime) {
+        if (appointmentScheduler == null) {
+            throw new IllegalStateException("AppointmentScheduler is not initialized[AppointmentManager][rescheduleAppointment]");
         }
-
-        // if (schedule.isTimeSlotAvailable(date, time)) {
-        //     Appointment newAppointment = new Appointment(patientID, doctorID, date, time);
-        //     appointments.add(newAppointment);
-        //     schedule.bookTimeSlot(date, time); // Mark the slot as booked
-        //     System.out.println("Appointment scheduled with ID: " + newAppointment.getAppointmentID());
-
-        //     // Save the new appointment to the file
-        //     String[] appointment = new String[]{String.valueOf(appointmentID), patientID, doctorID, dateFormat.format(date), timeFormat.format(time), "PENDING", "NULL"};
-        //     FileManager appointmentFM = new FileManager(appointment_File);
-        //     appointmentFM.addNewRow(appointment);
-
-        //     return true;
-        // } else {
-        //     System.out.println("Selected time slot is not available.");
-        //     return false;
-        // }
-
-        
+        return appointmentScheduler.rescheduleAppointment(appointmentID, newDate, newStartTime, newEndTime);
     }
 
-
-    //reschedule an existing appointment
-    public boolean rescheduleAppointment(int appointmentID, Date newDate, Time newTime) {
-        Appointment appointment = findAppointmentByID(appointmentID);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        
-        if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELLED) {
-            String doctorID = appointment.getDoctor().getUserID();
-
-            try{
-                String dateString =  appointment.getStringDate();
-                String timeString = appointment.getStringTime();
-
-                Date oldDate = dateFormat.parse(dateString);
-                Date praseTime = timeFormat.parse(timeString);
-                Time oldTime = new Time(praseTime.getTime());
-
-                
-            } catch (ParseException e) {
-                System.out.println("Error parsing date: " + e.getMessage());
-                return false;
-            }
-
-            if (doctorAndTimeMatch(doctorID, newDate, newTime) == true) {
-                System.out.println("Appointment already occupied.");
-                return false;
-            }else {
-                appointment.setDate(newDate);
-                appointment.setTime(newTime);
-                System.out.println("Appointment ID " + appointmentID + " rescheduled.");
-                System.out.println("New Date: " + newDate + ", New Time: " + newTime);
-                saveAppointments();
-                
-                return true;
-            }
-
-            // // Check availability for the new time slot
-            // if (schedule.isTimeSlotAvailable(newDate, newTime)) {
-            //     // Update appointment and free the old slot
-            //     schedule.freeTimeSlot(oldDate, oldTime);
-            //     appointment.setDate(newDate);
-            //     appointment.setTime(newTime);
-            //     schedule.bookTimeSlot(newDate, newTime);
-            //     System.out.println("Appointment ID " + appointmentID + " rescheduled.");
-            //     System.out.println("New Date: " + newDate + ", New Time: " + newTime);
-            //     saveAppointments();
-            //     return true;
-            // } else {
-            //     System.out.println("New time slot is not available.");
-            //     return false;
-            // }
-        } else {
-            System.out.println("Appointment not found or already canceled.");
-            return false;
-        }
-    }
-
-    //change the existing appointemnt's status to cancelled
     public boolean cancelAppointment(int appointmentID) {
-        Appointment appointment = findAppointmentByID(appointmentID);
-        if (appointment != null && appointment.getAppointmentStatus() != AppointmentStatus.CANCELLED) {
-            appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
-            // schedule.freeTimeSlot(appointment.getDate(),appointment.getTime());
-            System.out.println("Appointment ID " + appointmentID + " has been canceled.");
-            saveAppointments();
-            return true;
-        } else {
-            System.out.println("Appointment not found or already canceled.");
-            return false;
+        if (appointmentScheduler == null) {
+            throw new IllegalStateException("AppointmentScheduler is not initialized[AppointmentManager][cancelAppointment]");
         }
+        return appointmentScheduler.cancelAppointment(appointmentID);
     }
 
-    //update the outcome of an appointment
     public boolean updateAppointmentOutcome(int appointmentID, String outcome) {
-        Appointment appointment = findAppointmentByID(appointmentID);
-        if (appointment != null && appointment.getAppointmentStatus() == AppointmentStatus.CONFIRMED) {
-            appointment.setOutcome(outcome);
-            System.out.println("Outcome updated for Appointment ID " + appointmentID);
-            return true;
-        } else {
-            System.out.println("Appointment not found or not confirmed.");
-            return false;
+        if (appointmentScheduler == null) {
+            throw new IllegalStateException("AppointmentScheduler is not initialized[AppointmentManager][updateAppointmentOutcome]");
         }
+        return appointmentScheduler.updateAppointmentOutcome(appointmentID, outcome);
     }
-    /* ------------------------------------------------- End Scheduling Function ------------------------------------------ */
 
-    /* ------------------------------------------------- Start Look up functions ---------------------------------------------- */
+    /* ---------------------------------------- End Scheduling Function ------------------------------------------ */
 
-    // Helper method to find an appointment by ID
+    /* ---------------------------------------- Start Look Up Function ------------------------------------------ */
+    public Staff findStaffByID(String staffID) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][findStaffByID]");
+        }
+        return appointmentLookup.findStaffByID(staffID);
+    }
+
+    public Patient findPatientByID(String patientID) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][findPatientByID]");
+        }
+        return appointmentLookup.findPatientByID(patientID);
+    }
+
     public Appointment findAppointmentByID(int id) {
-        for (Appointment appointment : appointments) {
-            if (appointment.getAppointmentID() == id) {
-                return appointment;
-            }
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][findAppointmentByID]");
         }
-        return null;
+        return appointmentLookup.findAppointmentByID(id);
     }
 
-    public static Patient findPatientByID(String patientID) {
-        for (Patient patient : patients) {
-            if (patient.getPatientID().equals(patientID)) {
-                return patient;
-            }
+    public int getFirstAppointmentID(ArrayList<Appointment> filteredAppointments) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][getFirstAppointmentID]");
         }
-        return null; // Return null if patient not found
+        return appointmentLookup.getFirstAppointmentID(filteredAppointments);
     }
 
-    public static Staff findStaffByID(String staffID) {
-        for (Staff staff : staffList) {
-            if (staff.getUserID().equals(staffID)) {
-                return staff;
-            }
+    public int getLastAppointmentID(ArrayList<Appointment> appointments) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][getLastAppointmentID]");
         }
-        return null; // Return null if staff not found
+        return appointmentLookup.getLastAppointmentID(appointments);
     }
-    /* ------------------------------------------------- End Look up functions ------------------------------------------ */
+
+    public int getValidAppointmentID(ArrayList<Appointment> filteredAppointments) {
+        if (appointmentLookup == null) {
+            throw new IllegalStateException("AppointmentLookup is not initialized[AppointmentManager][getValidAppointmentID]");
+        }
+        return appointmentLookup.getValidAppointmentID(filteredAppointments);
+    }
+    /* ---------------------------------------- End Look Up Function ------------------------------------------ */
+
+    /* ---------------------------------------- Start Filtering Function ------------------------------------------ */
+    public ArrayList<Appointment> getPatientAppointments(Patient patient, int status) {
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient cannot be null[AppointmentManager][getPatientAppointments]");
+        }
+        return appointmentFilter.getPatientAppointments(patient, status);
+    }
+    public ArrayList<Appointment> getDoctorAppointments(Staff doctor, int status) {
+        if (doctor == null) {
+            throw new IllegalArgumentException("Doctor cannot be null[AppointmentManager][getDoctorAppointments]");
+        }
+        return appointmentFilter.getDoctorAppointments(doctor, status);
+    }
+
+    public ArrayList<Appointment> getAppointmentsByStatus(ArrayList<Appointment> appointments, AppointmentStatus status) {
+        if (appointments == null) {
+            throw new IllegalArgumentException("Appointments cannot be null[AppointmentManager][getAppointmentsByStatus]");
+        }
+        return appointmentFilter.getAppointmentsByStatus(appointments, status);
+    }
+
+    public ArrayList<Appointment> getAppointmentByDate(ArrayList<Appointment> appointments, Calendar cal) {
+        if (appointments == null) {
+            throw new IllegalArgumentException("Appointments cannot be null[AppointmentManager][getAppointmentByDate]");
+        }
+        return appointmentFilter.getAppointmentByDate(appointments, cal);
+    }
+
+    /* ---------------------------------------- End Filtering Function ------------------------------------------ */
+
+    /* ---------------------------------------- Start Validator Function ------------------------------------------ */
+    public boolean checkAppointmentConflict(Patient patient, Staff doctor, Date date, Time startTime, Time endTime) {
+        if (patient == null || doctor == null) {
+            throw new IllegalArgumentException("Patient and Doctor cannot be null[AppointmentManager][checkAppointmentConflict]");
+        }
+        return appointmentValidator.checkAppointmentConflict(patient, doctor, date, startTime, endTime);
+    }
+
+    public boolean appointmentAlreadyCompletedOrCancelled(int appointmentID) {
+        if (appointmentID <= 0) {
+            throw new IllegalArgumentException("Invalid appointment ID[AppointmentManager][appointmentAlreadyCompletedOrCancelled]");
+        }
+        return appointmentValidator.appointmentAlreadyCompletedOrCancelled(appointmentID);
+    }
+
+    public boolean appointmentAlreadyHasOutcome(int appointmentID) {
+        if (appointmentID <= 0) {
+            throw new IllegalArgumentException("Invalid appointment ID[AppointmentManager][appointmentAlreadyHasOutcome]");
+        }
+        return appointmentValidator.appointmentAlreadyHasOutcome(appointmentID);
+    }
+    /* ---------------------------------------- End Validator Function ------------------------------------------ */
+
+    /* ---------------------------------------- Start Storage Function ------------------------------------------ */
+    public void saveAppointments() {
+        if (appointmentStorage == null) {
+            throw new IllegalStateException("AppointmentStorage is not initialized[AppointmentManager][saveAppointments]");
+        }
+        appointmentStorage.saveAppointments();
+    }
+
+    public void addAppointmentToCSV(String[] appointment) {
+        if (appointmentStorage == null) {
+            throw new IllegalStateException("AppointmentStorage is not initialized[AppointmentManager][addAppointmentToCSV]");
+        }
+        appointmentStorage.addAppointmentToCSV(appointment);
+    }
 
     /* ---------------------------------------- Start Appointment Request Function ------------------------------------------ */
 
     public void appointmentRequest(Staff doctor){
-        ArrayList appointmentByDoctorID = new ArrayList();
-        // System.out.println("i am here first ");
-        for (Appointment appointment : appointments){
-            if (appointment.getDoctor().getUserID().equalsIgnoreCase(doctor.getUserID())){
-                // System.out.println("i am here second ");
-                if (appointment.getAppointmentStatus() == AppointmentStatus.PENDING){
-                    // System.out.println("i am here third ");
-                    appointmentByDoctorID.add(appointment);
-                }
-            }
-        }
+        ArrayList<Appointment> appointmentByDoctorID = appointmentFilter.getDoctorAppointments(doctor, 1);
+        appointmentByDoctorID = appointmentFilter.getAppointmentsByStatus(appointmentByDoctorID, AppointmentStatus.PENDING);
+        // for (Appointment appointment : appointments){
+        //     if (appointment.getDoctor().getUserID().equals(doctor.getUserID())){
+        //         if (appointment.getAppointmentStatus() == AppointmentStatus.PENDING){
+        //             appointmentByDoctorID.add(appointment);
+        //         }
+        //     }
+        // }
         if (appointmentByDoctorID.isEmpty()){
             System.out.println("No pending appointment request found.");
             return;
@@ -335,11 +235,12 @@ public class AppointmentManager {
 
         while(true){
             System.out.println("Enter the appointment ID you want to approve or reject: ");
-            int selectedAppID = getValidAppointmentID(appointmentByDoctorID); 
+            System.out.println("Enter 0 to go back to the main menu.");
+            int selectedAppID = getValidAppointmentID(appointmentByDoctorID);
             if (selectedAppID == -1) {
                 break; // Exit the loop if user wants to go back to the main menu
             }
-            Appointment selectedAppointment = findAppointmentByID(selectedAppID);
+            Appointment selectedAppointment = appointmentLookup.findAppointmentByID(selectedAppID);
             if (selectedAppointment == null) {
                 System.out.println("Appointment not found. Please enter a valid appointment ID.");
                 continue; // Restart the loop for a valid appointment ID
@@ -352,7 +253,7 @@ public class AppointmentManager {
 
             OptionHandling oh = new OptionHandling();
             int choice = oh.getOption(1, 3);
-            
+
             if (choice == 3) {
                 break; // Exit to the main menu
             } else if (choice == 1) {
@@ -366,260 +267,136 @@ public class AppointmentManager {
         }
     }
 
-    
-
-    public int getValidAppointmentID(ArrayList<Appointment> filteredAppointments) {
-        OptionHandling oh = new OptionHandling();
-        int selectedAppointmentID = -1;
-        boolean valid = false;
-    
-        while (!valid) {
-            selectedAppointmentID = oh.getOption(0, Integer.MAX_VALUE);
-            
-            if (selectedAppointmentID == 0) {
-                return -1; // Return -1 to indicate user wants to go back to the main menu
-            }
-            // Check if the entered appointment ID is in the filtered list
-            for (Appointment appointment : filteredAppointments) {
-                if (appointment.getAppointmentID() == selectedAppointmentID) {
-                    valid = true;
-                    break;
-                }
-            }
-    
-            if (!valid) {
-                System.out.println("Invalid appointment ID. Please enter a valid appointment ID from the list.");
-            }
-        }
-    
-        return selectedAppointmentID;
-    }
-
-    public int getFirstAppointmentID(ArrayList<Appointment> filteredappointments){
-        int firstAppointmentID = getLastAppointmentID(filteredappointments);
-        for (Appointment appointment : filteredappointments){
-            if (appointment.getAppointmentID() < firstAppointmentID){
-                firstAppointmentID = appointment.getAppointmentID();
-            }
-        }
-        // System.out.println("First Appointment ID: " + firstAppointmentID);
-        return firstAppointmentID;
-    }
-    public int getLastAppointmentID(ArrayList<Appointment> appointments) {
-        int lastAppointmentID = 0;
-        for (Appointment appointment : appointments) {
-            if (appointment.getAppointmentID() > lastAppointmentID) {
-                lastAppointmentID = appointment.getAppointmentID();
-            }
-        }
-        // System.out.println("Last Appointment ID: " + lastAppointmentID);
-        return lastAppointmentID;
-    }
     // Approve or reject an appointment request
     public void approveAppointmentRequest(Appointment appointment, boolean isApproved) {
+        if (appointment == null) {
+            throw new IllegalArgumentException("Appointment cannot be null[AppointmentManager][approveAppointmentRequest]");
+        }
         if (isApproved) {
             appointment.setAppointmentStatus(AppointmentStatus.CONFIRMED);
         } else {
             appointment.setAppointmentStatus(AppointmentStatus.REJECTED);
         }
-        saveAppointments();
+        appointmentStorage.setAppointments(appointments);
+        appointmentStorage.saveAppointments();
     }
     /* ---------------------------------------- End Appointment Request Function ------------------------------------------ */
 
     /* ---------------------------------------- Start Saving Upcoming Appointments Function ------------------------------------------ */
     //save all the upcoming appointments for a doctor
     public void getUpcomingAppointmentsForDoctor(Staff doctor) {
-        // Get the current date without time (using LocalDate)
-        LocalDate currentDate = LocalDate.now();
-        // System.out.println("Current Date: " + currentDate);
-        
         //get the current time
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        // String currentTime = sdf.format(cal.getTime());
-        String currentTime = "12:00";
-        // System.out.println("Current Time: " + currentTime);
-
-        ArrayList upcomingAppointments = new ArrayList<>();
-    
-        for (Appointment appointment : appointments) {
-            System.out.println("Doctor ID: " + doctor.getUserID());
-            if (appointment.getDate() == null){
-                System.out.println("Skipping appointment with ID " + appointment.getAppointmentID() + " because the date is null.");
-                continue;
-            }
-            if (appointment.getDoctor() == null){
-                System.out.println("Skipping appointment with ID " + appointment.getAppointmentID() + " because the doctor is null.");
-                continue;
-            }
-            // System.out.println("Appointment Doctor ID: " + appointment.getDoctor());
-            // System.out.println("compare with : " + doctor);
-            if (appointment.getDoctor().getUserID().equalsIgnoreCase(doctor.getUserID())) {
-                // Convert appointment date to LocalDate for comparison
-                // System.out.println("i am here2");
-                LocalDate appointmentDate = appointment.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                
-                // System.out.println("Appointment Date: " + appointmentDate);
-                // System.out.println("Current Date: " + currentDate);
-                // Compare if the appointment date is in the future or today
-                if (appointmentDate.isAfter(currentDate) || appointmentDate.isEqual(currentDate)) {
-                    // System.out.println("Upcoming Appointment Date: " + appointmentDate);
-
-                    // Check if the appointment time is after the current time
-                    if (appointmentTimeIsAfterCurrentTime(appointment, currentTime)) {
-                        upcomingAppointments.add(appointment);
-                    }
-                    // upcomingAppointments.add(appointment);
-                }
-            }
+        if (doctor == null) {
+            throw new IllegalArgumentException("Doctor cannot be null[AppointmentManager][getUpcomingAppointmentsForDoctor]");
         }
+        Calendar cal = Calendar.getInstance();
+        String currentTimeString = timeFormat.format(cal.getTime());
+        String currentDateString = dateFormat.format(cal.getTime());
 
         //debug purpose
-        // System.out.println("Display before filter out the status of the appointment");
-        //Display the upcoming appointments
-        // displayAppointment(upcomingAppointments);
-
-        // Filter out the appointments that are not confirmed
-        ArrayList confirmedAppointments = getAppointmentsByStatus(upcomingAppointments, AppointmentStatus.CONFIRMED);
-        // System.out.println("Display after filter out the status of the appointment");
+        System.out.println("Current Date: " + currentDateString);
+        System.out.println("Current Time: " + currentTimeString);
         
-        
-        displayAppointment(confirmedAppointments);
-
-    }
-
-    //check if the appointment time is after the current time
-    public boolean appointmentTimeIsAfterCurrentTime(Appointment appointment, String currentTime) {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        try {
-            Date appointmentTime = timeFormat.parse(appointment.getStringTime());
-            Date currentTimeDate = timeFormat.parse(currentTime);
-            return appointmentTime.after(currentTimeDate);
-        } catch (ParseException e) {
-            System.out.println("[appointmentTimeIsAfterCurrentTime] Error parsing time: " + e.getMessage());
-            return false;
-        }
+        ArrayList<Appointment> upcomingAppointments = new ArrayList<>();
+        upcomingAppointments = appointmentFilter.getDoctorAppointments(doctor, 1);
+        upcomingAppointments = appointmentFilter.getAppointmentsByStatus(upcomingAppointments, AppointmentStatus.CONFIRMED);
+        displayAppointment(upcomingAppointments);
     }
     /* ---------------------------------------- End Saving Upcoming Appointments Function ------------------------------------------ */
 
-    //save all the upcoming appointments for a patient
-    public List<Appointment> getUpcomingAppointmentsForPatient(Patient patient) {
-        List<Appointment> upcomingAppointments = new ArrayList<>();
-        Date currentDate = new Date();
-        for (Appointment appointment : appointments) {
-            if (appointment.getPatient().equals(patient) && appointment.getDate().after(currentDate)) {
-                upcomingAppointments.add(appointment);
-            }
-        }
-        return upcomingAppointments;
-    }
 
-    //display all the appointments based on the selected patientID
-    public ArrayList<Appointment> viewPatientAppointments(String patientID) {
-        ArrayList<Appointment> patientAppointments = new ArrayList<>();
-
-        System.out.println("\nAppointments for Patient ID: " + patientID);
-        for (Appointment appointment : appointments) {
-            if (appointment.getPatient().getUserID().equals(patientID)) {
-                patientAppointments.add(appointment);
-            }
-        }
-        return patientAppointments;
-    }
-
-    //Write from meomory to CSV file
-    public void saveAppointments() {
-        // Save all appointments to a file
-        FileManager appointmentFileManager = new FileManager(appointment_File);
-
-        // Header for CSV
-        String[][] appointmentData = new String[appointments.size() + 1][7];
-        appointmentData[0] = new String[]{"AppointmentID", "PatientID", "DoctorID", "Date", "Time", "Appointment Status", "Appointment Outcome"};
-
-        for (int i = 0 ; i < appointments.size() ; i ++) {
-            // Appointment appointment = appointments.get(i);
-            // appointmentData[i + 1][0] = String.valueOf(appointment.getAppointmentID());
-            // appointmentData[i + 1][1] = appointment.getPatient().getUserID();
-            // appointmentData[i + 1][2] = appointment.getDoctor().getUserID();
-            // appointmentData[i + 1][3] = new SimpleDateFormat("yyyy-MM-dd").format(appointment.getDate());
-            // appointmentData[i + 1][4] = new SimpleDateFormat("HH:mm").format(appointment.getTime());
-            // appointmentData[i + 1][5] = appointment.getAppointmentStatus().toString();
-            // appointmentData[i + 1][6] = appointment.getOutcome();
-
-            appointmentData[i + 1] = appointments.get(i).toArray();
-        }
-
-        //Write to file
-        appointmentFileManager.writeFile(appointmentData, false);
-    }
-
-
-    //save the appointment based on doctorID
-    public ArrayList<Appointment> getAppointmentsByDoctorID(String doctorID) {
-        ArrayList<Appointment> filteredAppointments = new ArrayList<>();
-        for (Appointment appointment : appointments) {
-            if (appointment.getUserID().equalsIgnoreCase(doctorID)) {
-                filteredAppointments.add(appointment);
-            }
-        }
-        return filteredAppointments;
-    }
-    
-
-    //save the appointment based on patientID
-    public ArrayList<Appointment> getAppointmentsByPatientID(String patientID) {
-        ArrayList<Appointment> filteredAppointments = new ArrayList<>();
-        for (Appointment appointment : appointments) {
-            if (appointment.getPatientID().equalsIgnoreCase(patientID)) {
-                filteredAppointments.add(appointment);
-            }
-        }
-        return filteredAppointments;
-    }
-
-
-    //save the apppointment based on the status 
-    public ArrayList<Appointment> getAppointmentsByStatus(ArrayList<Appointment> filteredAppointments, AppointmentStatus status) {
-        ArrayList<Appointment> filteredStatusAppointments = new ArrayList<>();
-        System.out.println("I am here teehee");
-        for (Appointment appointment : filteredAppointments) {
-            if (appointment.getAppointmentStatus() == status) {
-                filteredStatusAppointments.add(appointment);
-            }
-        }
-        return filteredStatusAppointments;
-    }
+    /* ---------------------------------------- Start Display Function ------------------------------------------ */
 
     // Display a list of appointments in a tabular format
-public void displayAppointment(ArrayList<Appointment> filteredAppointments) {
-    // System.out.println("-----------------------------------");
-    // System.out.println("Appointments: ");
-    // System.out.println("-----------------------------------");
+    public void displayAppointment(ArrayList<Appointment> filteredAppointments) {
+        // System.out.println("-----------------------------------");
+        // System.out.println("Appointments: ");
+        // System.out.println("-----------------------------------");
 
-    if (filteredAppointments.isEmpty()) {
-        System.out.println("No appointments found.");
-        return;
-    } else {
-        // Print table headers
-        System.out.println("------------------------------------------------------------------------------------------------------");
-        System.out.printf("%-15s %-15s %-15s %-15s %-10s %-15s %-15s%n",
-                "Appointment ID", "Patient ID", "Doctor ID", "Date", "Time", "Status", "Outcome");
-        System.out.println("------------------------------------------------------------------------------------------------------");
+        if (filteredAppointments.isEmpty()) {
+            System.out.println("No appointments found.[AppointmentManager][displayAppointment]");
+            return;
+        } else {
+            // Print table headers
+            System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
+                    "Appointment ID", "Patient ID", "Doctor ID", "Date", "Time", "End time","Status", "Outcome");
+            System.out.println("--------------------------------------------------------------------------------------------------------------------------");
 
-        // Print each appointment's details in a formatted manner
-        for (Appointment appointment : filteredAppointments) {
-            System.out.printf("%-15s %-15s %-15s %-15s %-10s %-15s %-15s%n",
-                    appointment.getAppointmentID(),
-                    appointment.getPatientID(),
-                    appointment.getUserID(),
-                    appointment.getStringDate(),
-                    appointment.getStringTime(),
-                    appointment.getAppointmentStatus(),
-                    appointment.getOutcome() != null ? appointment.getOutcome() : "N/A");
+            // Print each appointment's details in a formatted manner
+            for (Appointment appointment : filteredAppointments) {
+                System.out.printf("%-15s %-15s %-15s %-15s %-10s %-10s %-15s %-15s%n",
+                        appointment.getAppointmentID(),
+                        appointment.getPatient().getPatientID(),
+                        appointment.getDoctor().getUserID(),
+                        appointment.getStringDate(),
+                        appointment.getStringStartTime(),
+                        appointment.getStringEndTime(),
+                        appointment.getAppointmentStatus(),
+                        appointment.getOutcome() != null ? appointment.getOutcome() : "N/A");
+            }
         }
     }
-}
+
+    // In AppointmentManager
+    public List<Appointment> getAppointments(){
+        return appointments;
+    }
 
 
+    //tester function
+    public void printAllAppointmentsFromCSV() {
+        FileManager appointmentFileManager = new FileManager(appointment_File);
+        String[][] appointmentArray = appointmentFileManager.readFile();
+
+        if (appointmentArray == null || appointmentArray.length == 0) {
+            System.out.println("No appointments found in the CSV file."); //check if there are appointments
+            return;
+        }
+
+        // Print the header row (assuming the first row contains headers)
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-40s%n",
+                "Appointment ID", "Patient ID", "Doctor ID", "Date", "Start Time", "End Time", "Status", "Outcome");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        // Loop through each row and print appointment details
+        for (int i = 1; i < appointmentArray.length; i++) {  // Start from 1 if the first row is a header
+            String[] row = appointmentArray[i];
+            if (row.length >= 8) {  // Adjust based on expected columns
+                System.out.printf("%-15s %-15s %-15s %-15s %-15s %-15s %-15s %-40s%n",
+                        row[0], // Appointment ID
+                        row[1], // Patient ID
+                        row[2], // Doctor ID
+                        row[3], // Date
+                        row[4], // Start Time
+                        row[5], // End Time
+                        row[6], // Status
+                        row[7] != null ? row[7] : "N/A" // Outcome, handle null values
+                );
+            }
+        }
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+    }
+
+
+
+    //Function to see the available appointment
+    public void ViewAvailableTime(Date date){
+        // boolean unavailableTimeSlot = false;
+        for(Schedule schedule: scheduleManager.getSchedules()){
+            if(schedule.getDate().equals(date)){
+
+            }
+        }
+
+        for(Appointment appointment: appointments){
+            if(appointment.getDate().equals(date)){
+                System.out.println("");
+            }
+        }
+    }
+
+    /* ---------------------------------------- End Display Function ------------------------------------------ */
 
 }

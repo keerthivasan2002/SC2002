@@ -1,6 +1,7 @@
 PatientID,DateOfDiagnosis,Diagnosis,Prescription,PrescriptionStatus
 P1003,2000-05-14,Flu,Glue,TRUE
 P1003,2000-05-17,Addiction,Nicotine,FALSE
+<<<<<<< HEAD
 P1003,2020-01-23,druggy,drug,false
 P1002,2020-01-01,meow,meow,true
 P1003,2002-10-20 ,fight club,ethan,false
@@ -8,3 +9,16 @@ P1003,2024-10-14,stupid,ethan,false
 P1003,2024-10-24,dumb dumb,need eat more drug,false
 P1003,2024-10-12,druggy,meo,false
 p1002,2024-11-18,dying,ibuprofen,false
+=======
+P1003,2020-01-23,druggy,drug,FALSE
+P1002,2020-01-01,meow,meow,TRUE
+P1003,2002-10-20,fight club,ethan,FALSE
+P1003,2024-10-14,stupid,ethan,FALSE
+P1003,2024-10-24,dumb dumb,need eat more drug,FALSE
+P1003,2024-10-12,druggy,meo,FALSE
+P1001,2024-04-04,Flu,paracetamol,TRUE
+P1002,2024-11-16,Flu,amoxicillin ibuprofen paracetamol,TRUE
+P1002,2024-11-15,heart attack,eat med till die,TRUE
+P1003,2024-11-15,stupid,dumbpills,FALSE
+P1001,2024-11-17,Chest Infection,amoxicillin,FALSE
+>>>>>>> main

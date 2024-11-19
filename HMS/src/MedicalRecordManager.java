@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.util.Date;
-import java.io.File;
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -45,7 +43,7 @@ public class MedicalRecordManager {
                 MedicalRecord medicalRecord = new MedicalRecord(patientID, dateOfDiagnosis,diagnosis,prescription,prescriptionStatus);
                 MedicalRecords.add(medicalRecord);
             }else{
-                System.out.println("Incomplete data in row, skipping: " + String.join(",", row));
+                System.out.println("Incomplete data in row, skipping: [Medical Record Manager]" + String.join(",", row));
             }
             // For debug purposes [ensure file from medical record is read properly]
             // System.out.println("Loaded Medical Records:");
@@ -70,6 +68,17 @@ public class MedicalRecordManager {
             }
         }
         return patientRecords;
+    }
+
+    public void changeMedicalRecordPrescriptionStatus(String patientID, Date dateOfDiagnosis, Boolean newStatus) {
+        for (MedicalRecord record : MedicalRecords) {
+            if (record.getPatientID().equals(patientID) && record.getDateOfDiagnosis().equals(dateOfDiagnosis)) {
+                record.setPrescriptionStatus(newStatus);
+                saveMedicalRecords();
+                return;
+            }
+        }
+        System.out.println("No medical record found for patient ID " + patientID + " and diagnosis date " + dateOfDiagnosis);
     }
 
     public void saveMedicalRecords() {
@@ -124,7 +133,41 @@ public class MedicalRecordManager {
         return patientRecords;
     }
 
+    public ArrayList<MedicalRecord> setMedicalRecords(String userID){
+        ArrayList<MedicalRecord> patientRecords = new ArrayList<>();
+        for(MedicalRecord record : MedicalRecords){
+            if (record.getPatientID().equals(userID)) {
+                patientRecords.add(record);
+            }
+        }
+        return patientRecords;
+    }
+
     public ArrayList<MedicalRecord> getMedicalRecords(){
         return MedicalRecords;
     }
+
+    // Display a list of appointments in a tabular format
+    public void displayMedicalRecords(ArrayList<MedicalRecord> medicalRecords) {
+        if (medicalRecords.isEmpty()) {
+            System.out.println("No medical records found.");
+            return;
+        } else {
+            // Print table headers
+            System.out.println("-----------------------------------------------------------------------------------------------");
+            System.out.printf("%-20s %-30s %-20s %-20s%n",
+                    "Diagnosis Date", "Diagnosis", "Prescription", "Prescription Status");
+            System.out.println("-----------------------------------------------------------------------------------------------");
+    
+            // Print each medical record's details in a formatted manner
+            for (MedicalRecord medicalRecord : medicalRecords) {
+                System.out.printf("%-20s %-30s %-20s %-20s%n",
+                        medicalRecord.getStringDateOfDiagnosis(),
+                        medicalRecord.getDiagnosis(),
+                        medicalRecord.getPrescription(),
+                        medicalRecord.isPrescriptionStatus() ? "Approved" : "Not Approved");
+            }
+        }
+    }
+    
 }

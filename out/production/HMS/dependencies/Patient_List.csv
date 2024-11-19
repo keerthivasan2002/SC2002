@@ -1,4 +1,4 @@
 UserID,Password,Name,DateOfBirth,Gender,BloodType,EmailAddress,PhoneNumber,Role
-P1001,password,Alice Brown,14/5/1980,FEMALE,A_POSITIVE,alice.brown@example.com,12345678,PATIENT
-P1002,password,Bob Stone,22/11/1975,MALE,B_POSITIVE,skeerthi@gmail.com,99981743,PATIENT
-P1003,password,Charlie White,8/7/1990,MALE,O_NEGATIVE,Ethanstupid@stupid.com,77778888,PATIENT
+P1001,password,Alice Brown,1980-05-14,FEMALE,A_POSITIVE,meowmeow@hotmail.com,81238123,PATIENT
+P1002,password,Bob Stone,1975-11-22,MALE,B_POSITIVE,skeerthi@gmail.com,99981743,PATIENT
+P1003,password,Charlie White,1990-07-08,MALE,O_NEGATIVE,Ethanstupid@stupid.com,77778888,PATIENT

@@ -1,4 +1,4 @@
 MedicineName,Initial Stock,LowStockAlert,requestStatus,requestQuantity
-Paracetamol,100,20,NIL,0
+Paracetamol,88,20,NIL,0
 Ibuprofen,10,10,PENDING,50
-Amoxicillin,75,30,NIL,0
+Amoxicillin,5,30,PENDING,50

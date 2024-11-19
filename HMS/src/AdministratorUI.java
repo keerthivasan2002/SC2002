@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class AdministratorUI {
+public class AdministratorUI implements UserUI{
         // Need DoctorID, Need patientID,
         // Staff management UI
     /*
@@ -28,13 +29,13 @@ public class AdministratorUI {
     request is approved, the stock level will be updated automatically
     */
 
-        private String userID; // Why is there error here
-        private Staff staff, admin, doctor;
         private StaffManager sm;
         private PatientManager pm;
         private Patient patient;
         private AppointmentManager am;
-        private MedicineInventory mi;
+        private PatientManager pm;
+
+        private MedicineInventory mi = new MedicineInventory();
         
        // private InventoryManager im;
         
@@ -46,26 +47,31 @@ public class AdministratorUI {
          AdminManager am;
          ..
           */
-        public AdministratorUI(String userID, StaffManager sm, AppointmentManager am, MedicineInventory mi ) {
+        public AdministratorUI(String userID, StaffManager sm, AppointmentManager am, PatientManager pm, MedicineInventory mi) {
             this.userID = userID;
             this.sm = sm;
             this.admin = sm.selectStaff(userID);
             this.am = am;
             this.mi = mi;
-
-
+            this.pm = pm;
+            System.out.println("AdministratorUI initialized with valid dependencies.[AdministratorUI]");
+            System.out.println("UserID: " + userID);
+            System.out.println("StaffManager is null: [AdministratorUI]" + (sm == null));
+            System.out.println("Admin is null: [AdministratorUI]" + (admin == null));
+            System.out.println("AppointmentManager is null: [AdministratorUI]" + (am == null));
+            System.out.println("PatientManager is null: [AdministratorUI]" + (pm == null));
             //Handling errors with the code
             if (this.admin == null) {
                 System.out.println("No administrators found with the given ID:" + userID);
             } else {
-                adminOption();
+                userOption();
             }
         }
 
-    public void adminOption() {
+    public void userOption() {
         int choice = -1;
 
-        System.out.println("Hello " + admin.getName() + ".");
+        System.out.println("Hello " + admin.getName() + " (UserID: " + userID + ").");
         System.out.println("What would you like to do today?");
 
         while (true){
@@ -132,9 +138,7 @@ public class AdministratorUI {
         System.out.println("3. Completed");
         System.out.println("4. Rejected");
         System.out.println("5. Pending");
-        System.out.println("6. Approved");
-        System.out.println("7. Scheduled");
-        System.out.println("8. Back to Main Menu");
+        System.out.println("6. Back to Main Menu");
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -156,12 +160,24 @@ public class AdministratorUI {
                 case 1:
                     System.out.print("Enter Patient ID: ");
                     String patientID = sc.nextLine().trim();
-                    filteredAppointments = am.getAppointmentsByPatientID(patientID);
+                    System.out.println("PatientID = " + patientID);
+                    Patient patient = pm.selectPatient(patientID);
+                    System.out.println("Patient = " + patient.getName());
+                    filteredAppointments = am.getPatientAppointments(patient,0);
+                    if (filteredAppointments.isEmpty()) {
+                        System.out.println("No appointments found for the given criteria.[AdministratorUI]");
+                        continue;
+                    }
                     break;
                 case 2:
                     System.out.print("Enter Doctor ID: ");
                     String doctorID = sc.nextLine().trim();
-                    filteredAppointments = am.getAppointmentsByDoctorID(doctorID);
+                    Staff doctor = sm.selectStaff(doctorID);
+                    filteredAppointments = am.getDoctorAppointments(doctor,0);
+                    if (filteredAppointments.isEmpty()) {
+                        System.out.println("No appointments found for the given criteria.[AdministratorUI]");
+                        continue;
+                    }
                     break;
                 case 3:
                     break;
@@ -178,10 +194,10 @@ public class AdministratorUI {
 
             ArrayList<Appointment> filteredStatusAppointments = new ArrayList<>();
             int statusChoice = -1;
-            while (statusChoice != 8){
+            while (statusChoice != 6){
                 statusMenu();
                 System.out.print("Enter your choice: ");
-                statusChoice = oh.getOption(1, 8);
+                statusChoice = oh.getOption(1, 6);
                 // sc.nextLine();
                 switch (statusChoice){
                     case 1:
@@ -201,12 +217,6 @@ public class AdministratorUI {
                         filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.PENDING);
                         break;
                     case 6:
-                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments, AppointmentStatus.APPROVED);
-                        break;
-                    case 7:
-                        filteredStatusAppointments = am.getAppointmentsByStatus(filteredAppointments,AppointmentStatus.SCHEDULED);
-                        break;
-                    case 8:
                         break;
                     default:
                         System.out.println("Invalid choice. Please enter a valid option.");
@@ -249,7 +259,7 @@ public class AdministratorUI {
                     System.out.println("Enter the ID of the staff member to remove: ");
                     staffIDString = sc.nextLine();
                     System.out.println("StaffID = " + staffIDString);
-                    sm.removeStaffMember(staffIDString);
+                    StaffManager.removeStaffMember(staffIDString);
                     break;
                 case 4:
                     sm.displayStaffMembers();
@@ -262,11 +272,6 @@ public class AdministratorUI {
         }
     }
 
-
-
-    private void manageAppointment(){
-        
-    }
     public void MedicationInventoryMenu() {
         System.out.println("-----------------------------------");
         System.out.println("Medication Inventory Menu");

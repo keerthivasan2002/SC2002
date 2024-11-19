@@ -6,6 +6,7 @@ public class Patient extends User {
     // Constructor with additional parameters
     public Patient(String patientID, String password, String name, Gender gender, String emailAddress, int phoneNumber, String dateOfBirth, BloodType bloodType, HospitalRole role) {
         super(patientID, password, name, gender, emailAddress, phoneNumber,role);
+        this.patientID = patientID;
         this.dateOfBirth = dateOfBirth;
         this.bloodType = bloodType;
 
@@ -13,7 +14,8 @@ public class Patient extends User {
 
     //constructor to use in the
     public Patient(String userID){
-        super(userID); //call it from the user class
+        super(userID);
+        this.patientID = userID;
     }
 
     //function used to add to the csv

@@ -1,12 +1,17 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class PatientManager{
     private static ArrayList<Patient> patients = new ArrayList<>(); // List of all patients
     private String patient_File = "Patient_List.csv";
-
+    
+    private Scanner sc = new Scanner(System.in);
     // Constructor for PatientManager
     public PatientManager() {
+        System.out.println("Initializing PatientManager...");
         initializePatients(); // Load patient data from file
+        System.out.println("PatientManager initialized with " + patients.size() + " patients.");
+
     }
 
     //initialise the array based on the csv that is loaded in
@@ -44,6 +49,8 @@ public class PatientManager{
         // displayPatient(); // Display all patients
     }
 
+    
+
     //selecting the specific patient that we want to look at
     public Patient selectPatient(String patientID){
         for(Patient patient : patients){
@@ -73,6 +80,8 @@ public class PatientManager{
         patientFileManager.writeFile(patientData, false);
     }
 
+    
+    
     //tester function
     public void printPatients() {
         for (Patient patient : patients) {
@@ -108,6 +117,80 @@ public class PatientManager{
         }
     }
 
+    public String setPatientEmail(){
+        String email = "";
+        while (true) {
+            System.out.println("Enter the staff member's email (must end with @hotmail.com, @gmail.com, @outlook.com, or @yahoo.com): ");
+            email = sc.nextLine();
+            if (email.matches(".+@(hotmail|gmail|outlook|yahoo)\\.com")) {
+                return email;
+            }else{
+                System.out.println("Invalid email. Please enter a valid email address ending with @hotmail.com, @gmail.com, @outlook.com, or @yahoo.com.");
+            }
+        }
+    }
 
+    public int setPatientPhoneNumber(){
+        String phone = "";
+        while (true) {
+            System.out.println("Enter the staff member's phone number (must be 8 digits and start with 8 or 9): ");
+            phone = sc.nextLine();
+            if (phone.matches("[89]\\d{7}")) {
+                try {
+                    // Convert phone number from String to Integer
+                    return Integer.valueOf(phone);
+                } catch (NumberFormatException e) {
+                    System.out.println("Error: Phone number is not valid for integer conversion.");
+                    return 0; // Return null if the conversion fails
+                }
+            }
+        }
+    }
+    
+    public String changePasswordString(){
+        String newPassword = "";
+        while (true) {
+            changePasswordMenu();
+            System.out.print("Enter your new password: ");
+            newPassword = sc.nextLine();
+            if (isValidPassword(newPassword)) {
+                break;
+            } else {
+                System.out.println("Password does not meet the requirements. Please try again.");
+            }
+        }
+        return newPassword;
+    }
+    public void changePasswordMenu(){
+        System.out.println("Change Password");
+        System.out.println("Your password must meet the following criteria:");
+        System.out.println("- At least 8 characters long");
+        System.out.println("- Contain at least one uppercase letter");
+        System.out.println("- Contain at least one lowercase letter");
+        System.out.println("- Contain at least one number");
+        System.out.println("- Contain at least one special character (!@#$%^&*()-+=)");
+        System.out.println("-------------------------------------------------------------------");
+    }
+    public void setPassword(String password, String userID) {
+        for (Patient patient : patients) {
+            if (patient.getUserID().equals(userID)) {
+                patient.setPassword(password);
+                System.out.println("Password updated successfully.[patientmanager]" + patient.getPassword());
+                savePatients(); // Save the updated password to the CSV file
+                return;
+            }
+        }
+    }
+
+    public boolean isValidPassword(String password) {
+        // Enforce password requirements
+        boolean hasUppercase = password.chars().anyMatch(Character::isUpperCase);
+        boolean hasLowercase = password.chars().anyMatch(Character::isLowerCase);
+        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        boolean hasSpecial = password.matches(".*[!@#$%^&*()-+=].*"); // Check for at least one special character
+        boolean isLengthValid = password.length() >= 8; // Minimum length 8 characters
+    
+        return hasUppercase && hasLowercase && hasDigit && hasSpecial && isLengthValid;
+    }
 
 }

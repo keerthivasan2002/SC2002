@@ -1,13 +1,14 @@
 import java.util.Scanner;
 
-public class PharmacistUI {
-    private String userID;
+public class PharmacistUI implements UserUI{
     Staff pharmacist;
     StaffManager sm;
     private MedicineInventory mi;
     private ReplenishmentRequest request;
+    private String userID;
 
     Scanner sc = new Scanner(System.in);
+    OptionHandling oh = new OptionHandling();
 
     public PharmacistUI(String userID, StaffManager sm, MedicineInventory mi){
         this.userID = userID;
@@ -18,50 +19,21 @@ public class PharmacistUI {
         if(this.pharmacist == null){
             System.out.println("No pharmacists found with the given ID: " + userID);
         }else{
-            pharmacistOption();
+            userOption();
         }
     }
 
-    public int getOption(){
-        int option = 0;
-        boolean valid = false;
-        Scanner sc = new Scanner(System.in);
-        while (!valid){
-            try{
-                System.out.println("Enter your option from 1 to 5: ");
-                option = sc.nextInt();
-                System.out.println("You entered: " + option);
-                if (option < 0){
-                    throw new IntNonNegativeException();
-                }else if (option == 0 || option > 9){
-                    throw new InvalidPositiveOptionException();
-                }else {
-                    valid = true;
-                }
-            } catch (IntNonNegativeException e){
-                System.out.println(e.getMessage());
-                option = getOption();
-            } catch (InvalidPositiveOptionException e){
-                System.out.println(e.getMessage());
-                option = getOption();
-            }catch (Exception e){
-                System.out.println("Invalid input. Please enter a valid number. ");
-                option = getOption();
-            }
-        }
-        return option;
-    }
-
-    public void pharmacistOption(){
+    public void userOption(){
         int choice = 0;
         System.out.println("Hello " + pharmacist.getName() + ".");
         System.out.println("What would you like to do today?");
 
         while(true){  //change accordingly
             pharmacistMenu();
-            choice = getOption();
+            choice = oh.getOption(1, 5);
             switch (choice){
                 case 1: //view appointment outcome records
+                
                     break;
                 case 2: //update prescription status
                     mi.updateMedicalInventory();
@@ -80,8 +52,11 @@ public class PharmacistUI {
                     System.exit(0);
                     return;
             }
-            System.out.println("What else would you like to do today?");
+            // System.out.println("What else would you like to do today?");
+            // sc.nextLine();
         }
+        
+
     }
 
     private void pharmacistMenu(){

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 AppointmentID,PatientID,DoctorID,Date,Time,Appointment Status,Appointment Outcome
 1,P1003,D001,2024-11-07,05:00,CONFIRMED, null
 2,P1002,D002,2024-11-08,06:00,PENDING,You dying soon
@@ -14,3 +15,25 @@ AppointmentID,PatientID,DoctorID,Date,Time,Appointment Status,Appointment Outcom
 13,P1001,D001,2025-12-16,11:00,PENDING,NULL
 14,P1001,d001,2024-11-16,14:00,CONFIRMED,NULL
 15,P1002,D001,2024-11-18,11:30,CONFIRMED,NULL
+=======
+AppointmentID,PatientID,DoctorID,Date,Time,Appointment Status,Appointment Outcome,
+1,P1003,D001,2025-01-17,11:00,11:30,CONFIRMED,NULL
+2,P1002,D002,2025-01-18,6:00,6:30,REJECTED,You are advised to take rest
+3,P1001,D001,2025-01-19,7:00,7:30,CANCELLED,Consider lifestyle changes
+4,P1003,D001,2025-01-20,8:00,8:30,CANCELLED,Reviewed with no further action
+5,P1002,D001,2025-01-21,9:00,9:30,CONFIRMED,Follow-up scheduled
+6,P1003,D001,2025-01-22,10:00,10:30,CANCELLED,Medication adjustment required
+7,P1003,D002,2025-01-23,10:00,10:30,CANCELLED,Appointment rescheduled by patient
+8,P1001,D001,2025-01-24,14:00,14:30,CONFIRMED,Test results reviewed
+9,P1002,D001,2025-01-25,9:00,9:30,REJECTED,Awaiting additional test results
+10,P1001,D001,2025-01-01,14:00,14:30,PENDING,Pending approval from the doctor
+11,P1003,D001,2025-01-27,14:00,14:30,PENDING,Not too shabby
+12,P1001,D001,2025-01-28,14:00,14:30,CANCELLED,Waiting for confirmation
+13,P1002,D001,2025-01-29,11:00,11:30,PENDING,Further consultation required
+14,P1001,D001,2025-01-30,14:00,14:30,CONFIRMED,Review completed successfully
+15,P1002,D001,2025-01-31,10:00,10:30,CONFIRMED,see u soon
+16,P1001,D002,2025-02-01,3:00,3:30,CANCELLED,see u tmr
+17,P1001,D001,2024-11-16,12:00,12:30,CONFIRMED,really dropout soon?
+18,P1001,D001,2024-11-16,12:00,12:30,CONFIRMED,NULL
+19,P1003,D001,2024-12-01,11:00,11:30,PENDING,NULL
+>>>>>>> main

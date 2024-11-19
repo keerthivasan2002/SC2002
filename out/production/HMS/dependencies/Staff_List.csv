@@ -1,5 +1,9 @@
 UserID, Password, Name, Role, Gender, Age, Email, Phone
+<<<<<<< HEAD
 D001,password,John Smith,DOCTOR,MALE,45,alice.brown@example.com,7777777
+=======
+D001,password,John Smith,DOCTOR,MALE,45,alice.brown@example.com,77777777
+>>>>>>> main
 D002,password,Emily Clarke,DOCTOR,FEMALE,38,alice.brown@example.com,66666666
 P001,password,Mark Lee,PHARMACIST,MALE,29,alice.brown@example.com,0
 A001,password,Sarah Lee,ADMINISTRATOR,FEMALE,40,alice.brown@example.com,11111111

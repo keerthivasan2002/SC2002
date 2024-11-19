@@ -4,19 +4,30 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ScheduleManager {
+    private static ScheduleManager instance;
     private ArrayList<Schedule> schedules;
     private String scheduleFile = "Schedule.csv";
-    private Map<Date, Boolean> availabilityMap;
+    private AppointmentManager am;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
-    public ScheduleManager() {
-        this.schedules = new ArrayList<>();
-        this.availabilityMap = new HashMap<>();
-        initialiseSchedule();
+    // Setter to set AppointmentManager after initial creation
+    public void setAppointmentManager(AppointmentManager am) {
+        this.am = am;
     }
 
+    public ScheduleManager() {
+        this.schedules = new ArrayList<>();
+    }
+
+    // Static method to get the instance
+    public static synchronized ScheduleManager getInstance() {
+        if (instance == null) {
+            instance = new ScheduleManager();
+        }
+        return instance;
+    }
     public void initialiseSchedule() {
         // Load schedules from the file
         FileManager scheduleFileManager = new FileManager(scheduleFile);
@@ -42,7 +53,7 @@ public class ScheduleManager {
         }
     }
 
-    public void printMonthlyCalendar(int month, int year,String id) {
+    public void printMonthlyCalendar(int month, int year, String id) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month - 1, 1); // Set to the first day of the specified month
 
@@ -126,35 +137,77 @@ public class ScheduleManager {
         }
     }
 
-    //function to view today event
-    public void viewTodaysEvents(String id) {
+    //function to view today's events(events = schedule + appointment)
+    public void viewTodaysEvent(String id) {
         Calendar calendar = Calendar.getInstance();
-        Date now = calendar.getTime(); // Current date and time
-
-        ///System.out.println("Today's Date and Time: " + now); // Tester output for the current date and time
+        Date now = calendar.getTime();
 
         System.out.println("Today's Events:");
         System.out.println("================");
 
         boolean hasEvents = false;
-        for (Schedule schedule : schedules) {
-            // Check if the event is today and belongs to the correct doctor
-            if (isSameDay(schedule.getDate(), now) && schedule.getDoctor().getUserID().equals(id)) {
-                // Combine the event date with the end time for accurate comparison
-                Date endTimeWithDate = combineDateAndTime(schedule.getDate(), schedule.getEndTime());
+        List<Events> todaysEvents = new ArrayList<>();//create an events list
 
-                // Compare the combined date-time end time to the current time
-                String status = endTimeWithDate.before(now) ? "Done" : "Upcoming";
-                displaySchedule(schedule);
-                System.out.println("Status: " + status);
-                System.out.println("-----------------------------------");
-                hasEvents = true;
+        //add appointments to the events list
+        if (am != null) {
+            for (Appointment appointment : am.getAppointments()) {
+                if (isSameDay(appointment.getDate(), now) && appointment.getDoctor().getUserID().equals(id) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+                    String userid = appointment.getDoctor().getUserID();
+                    Date dte = appointment.getDate();
+                    Time st = appointment.getStartTime();
+                    Time et = appointment.getEndTime();
+                    String desc = appointment.getDescription();
+
+                    Events event = new Events(userid, dte, st, et, desc);
+                    todaysEvents.add(event);
+                }
+            }
+        } else {
+            System.out.println("AppointmentManager not initialized.");
+        }
+
+        //add schedule to the events list
+        for (Schedule schedule : schedules) {
+            if (isSameDay(schedule.getDate(), now) && schedule.getDoctor().getUserID().equals(id)) {
+                todaysEvents.add(schedule);
             }
         }
 
-        if (!hasEvents) {
-            System.out.println("No events scheduled for today.");
+        for (Events events : todaysEvents) {
+            Date startTimewithDate = combineDateAndTime(events.getDate(), events.getStartTime()); //format start time for comparison
+            Date endTimewithDate = combineDateAndTime(events.getDate(), events.getEndTime()); //format end time for comparison
+
+            //logic to print out the progress for that day
+            String status = " ";
+
+            //logic to decide the status
+            if (startTimewithDate.after(now)) {
+                status = "Upcoming";
+            } else if (startTimewithDate.before(now) && endTimewithDate.after(now)) {
+                status = "Ongoing";
+            } else {
+                status = "Done";
+            }
+
+            displayEvents(events);
+            System.out.println("Status: " + status);
+            System.out.println("-----------------------------------");
+            hasEvents = true;
         }
+
+        if (!hasEvents) {
+            System.out.println("No appointments or events scheduled for today.");
+        }
+
+    }
+
+    //helper function to displayevents
+    private void displayEvents(Events event) {
+        System.out.println("User ID: " + event.getDoctor().getUserID());
+        System.out.println("Date: " + event.getStringDate());
+        System.out.println("Start Time: " + event.getStringStartTime());
+        System.out.println("End Time: " + event.getStringEndTime());
+        System.out.println("Description: " + event.getDescription());
     }
 
     // Helper method to combine a date with a time
@@ -174,19 +227,7 @@ public class ScheduleManager {
         return dateCal.getTime(); // Return combined Date object
     }
 
-
-    //method to display schedule
-    private void displaySchedule(Schedule schedule) {
-        System.out.println("Doctor ID: " + schedule.getDoctor().getUserID());
-        System.out.println("Date: " + schedule.getStringDate());
-        System.out.println("Start Time: " + schedule.getStringStartTime());
-        System.out.println("End Time: " + schedule.getStringEndTime());
-        System.out.println("Description: " + schedule.getDescription());
-    }
-
-
-
-
+    //add the doctor's personal events
     public boolean addSchedule(Staff doctor, Date date, Time startTime, Time endTime, String description) {
         System.out.println("Adding period of unavailability for " + doctor.getName());
         System.out.println("User ID: " + doctor.getUserID());
@@ -211,6 +252,21 @@ public class ScheduleManager {
             }
         }
 
+        //check conflict with existing appointments
+        for (Appointment appointment : am.getAppointments()) {
+            if (appointment.getDoctor().userID.equals(doctor.getUserID()) && isSameDay(appointment.getDate(), date) && appointment.getAppointmentStatus().equals(AppointmentStatus.CONFIRMED)) {
+                Date existingStart = combineDateAndTime(appointment.getDate(), appointment.getStartTime());
+                Date existingEnd = combineDateAndTime(appointment.getDate(), appointment.getEndTime());
+
+                if (startDateTime.before(existingEnd) && endDateTime.after(existingStart) ||
+                        startDateTime.equals(existingStart) || endDateTime.equals(existingEnd)) {
+                    System.out.println("Conflict detected with existing schedule: "
+                            + appointment.getStringStartTime() + "-" + appointment.getStringEndTime());
+                    return false;
+                }
+            }
+        }
+
         // If no conflict, add the schedule
         Schedule newSchedule = new Schedule(doctor.getUserID(), date, startTime, endTime, description);
         schedules.add(newSchedule);
@@ -220,6 +276,11 @@ public class ScheduleManager {
         FileManager appointmentFM = new FileManager(scheduleFile);
         appointmentFM.addNewRow(schedule);
         return true;
+    }
+
+
+    public List<Schedule> getSchedules() {
+        return schedules;
     }
 
 }

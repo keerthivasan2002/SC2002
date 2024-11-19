@@ -7,16 +7,22 @@ public abstract class User {
     protected String userID;
     protected String password;
     protected int age;
+    protected boolean isDefaultPassword; 
 
     //constructor for User class
     public User(String userID){
         this.userID = userID;
     }
 
-    // Constructor for User class
     public User(String userID, String password) {
         this.userID = userID;
         this.password = password;
+    }
+
+    public User(String userID, String password, boolean isDefaultPassword) {
+        this.userID = userID;
+        this.password = password;
+        this.isDefaultPassword = isDefaultPassword;
     }
 
     // Additional constructor to initialise Patients
@@ -115,5 +121,21 @@ public abstract class User {
     protected String updateEmailAddress(String new_Email_Address){
         emailAddress = new_Email_Address;
         return emailAddress;
+    }
+
+    public boolean isDefaultPassword() {
+        return isDefaultPassword;
+    }
+
+    public void setDefaultPassword(boolean isDefaultPassword) {
+        this.isDefaultPassword = isDefaultPassword;
+    }
+
+    public String[] toArray() {
+        return new String[]{
+                userID,
+                password,
+                isDefaultPassword ? "1" : "0"
+        };
     }
 }
