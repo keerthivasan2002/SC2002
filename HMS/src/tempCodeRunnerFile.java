@@ -1,2 +1,0 @@
-
-            StudentManager stump = new StudentManag
