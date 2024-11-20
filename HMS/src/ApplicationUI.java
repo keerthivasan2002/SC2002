@@ -15,18 +15,18 @@ public class ApplicationUI{
 
                     System.out.println();
                     System.out.print("UserID: ");
-                    //String userIDString = sc.next().toUpperCase();
-                    String userIDString = "S2001"; // speed up testing purpose
+                    String userIDString = sc.next().toUpperCase();
+                    //String userIDString = "P1001"; // speed up testing purpose
 
                     System.out.print("Password: ");
-                    //String password = sc.next();
-                    String password = "password123";
+                    String password = sc.next();
+                    // String password = "Password@001";
 
                     LogInManager login = new LogInManager(userIDString, password);
-                    System.out.println("\nLogInManager initialized");
+                    // System.out.println("\nLogInManager initialized");
 
                     boolean accept = login.authoriseLogin();
-                    System.out.println("Login authorised: " + accept);
+                    // System.out.println("Login authorised: " + accept);
 
                     if (accept) {
                         System.out.println("\nWelcome");
@@ -51,25 +51,29 @@ public class ApplicationUI{
         
         try {
             AppointmentStorage as = new AppointmentStorage();
-            System.out.println("AppointmentStorage initialized: [ApplicationUI]" + (as != null));
+            // System.out.println("AppointmentStorage initialized: [ApplicationUI]" + (as != null));
 
             AppointmentValidator av = new AppointmentValidator(as);
-            System.out.println("AppointmentValidator received AppointmentStorage: [ApplicationUI]" + (av != null));
+            // System.out.println("AppointmentValidator received AppointmentStorage: [ApplicationUI]" + (av != null));
 
             // AppointmentFilter af = new AppointmentFilter(as, av);
             // System.out.println("AppointmentFilter initialized with AppointmentStorage: [ApplicationUI]" + (as != null));
 
             AppointmentManager am = new AppointmentManager(as,av);
-            System.out.println("AppointmentManager initialized with valid dependencies.[ApplicationUI]" + (am != null));
+            // System.out.println("AppointmentManager initialized with valid dependencies.[ApplicationUI]" + (am != null));
 
             LessonManager lm = new LessonManager();
 
             MedicineInventory mi = new MedicineInventory();
-            System.out.println("MedicalInventory initialized: [ApplicationUI]" + (mi != null));
+            // System.out.println("MedicalInventory initialized: [ApplicationUI]" + (mi != null));
             
             MedicalRecordManager mrm = new MedicalRecordManager();
-            System.out.println("MedicalRecordManager initialized: [ApplicationUI]" + (mrm != null));
+            // System.out.println("MedicalRecordManager initialized: [ApplicationUI]" + (mrm != null));
             
+            StudentManager stump = new StudentManager();
+
+            // System.out.println("StudentManager initialized: [ApplicationUI]" + (stump != null));
+
             ScheduleManager scheduleManager = new ScheduleManager();
             scheduleManager.setAppointmentManager(am);
             am.setScheduleManager(scheduleManager);
@@ -84,8 +88,7 @@ public class ApplicationUI{
                     PatientManager pm = new PatientManager();
                     new PatientUI(useString, pm, mrm, scheduleManager, am);
                 }else if(useString.startsWith("S")){
-                    InternManager stump = new InternManager();
-                    new InternUI(useString, stump, lm);
+                    new MedStudentUI(useString, stump, lm);
                 }
             } else if (useString.length() == 4) {
                 if (useString.startsWith("D")) {

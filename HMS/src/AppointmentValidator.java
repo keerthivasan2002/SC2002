@@ -16,10 +16,10 @@ public class AppointmentValidator {
         if (as == null) {
             throw new IllegalArgumentException("AppointmentStorage cannot be null");
         }
-        System.out.println("AppointmentValidator received AppointmentStorage: [AppointmentValidator]" + (as != null));
+        // System.out.println("AppointmentValidator received AppointmentStorage: [AppointmentValidator]" + (as != null));
     
         this.as = as;
-        System.out.println("AppointmentValidator initialized with a valid AppointmentStorage.");
+        // System.out.println("AppointmentValidator initialized with a valid AppointmentStorage.");
 
         this.appointments = as.getAppointments();
         // if (this.appointments == null) {

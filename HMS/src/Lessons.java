@@ -7,7 +7,7 @@ public class Lessons extends Events {
     private String day; // New attribute for day
 
     Staff doctor;
-    Intern intern;
+    Student student;
 
     public Lessons(String userID, Time startTime, Time endTime, int courseCode, String description, String moduleDescription, String moduleDifficulty,String internID, String name, String day) {
         super(userID, startTime, endTime, description); //doctor id, start time, end time, description
@@ -17,7 +17,7 @@ public class Lessons extends Events {
         this.day = day; // Initialize the day attribute
 
         this.doctor = new Staff(userID);
-        this.intern = new Intern(userID);
+        this.student = new Student(userID);
     }
 
     // Getter methods

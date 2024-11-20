@@ -8,7 +8,7 @@ public class ScheduleManager {
     private ArrayList<Schedule> schedules;
     private String scheduleFile = "Schedule.csv";
     private AppointmentManager am;
-    ArrayList<Appointment> appointments;
+    List<Appointment> appointments;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -16,6 +16,7 @@ public class ScheduleManager {
     // Setter to set AppointmentManager after initial creation
     public void setAppointmentManager(AppointmentManager am) {
         this.am = am;
+        this.appointments = am.getAppointments();
     }
 
     public ScheduleManager() {

@@ -15,6 +15,7 @@ public class LessonManager {
 
     public LessonManager() {
         this.lessons = new ArrayList<>();
+        initializeLessons();
     }
 
     // Static method to get the instance (Singleton pattern)

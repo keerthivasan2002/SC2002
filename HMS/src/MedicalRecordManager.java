@@ -13,7 +13,7 @@ public class MedicalRecordManager {
     }
 
     public void initializeMedicalRecords(){
-        System.out.println("Loading Medical Records..." );
+        // System.out.println("Loading Medical Records..." );
         FileManager medicalRecordFM = new FileManager(Mr_file);
         String[][] medicalRecordArray = medicalRecordFM.readFile();
 
@@ -63,6 +63,16 @@ public class MedicalRecordManager {
     public ArrayList<MedicalRecord> getMedicalRecord(){
         return MedicalRecords;
     }
+
+    public MedicalRecord getRecordByID(int medicalRecordID){
+        for(MedicalRecord record : MedicalRecords){
+            if(record.getMedicalRecordID() == medicalRecordID){
+                return record;
+            }
+        }
+        return null;
+    }
+
 
     // Method to get all medical records for a specific patient by userID
     public ArrayList<MedicalRecord> getAllRecordsForPatient(String userID) {
@@ -223,7 +233,6 @@ public class MedicalRecordManager {
     
         // Print each medical record's details in a formatted manner
         for (MedicalRecord medicalRecord : medicalRecords) {
-            String diagnosisStatus = medicalRecord.isPrescriptionStatus() ? "Approved" : "Not Approved";
             System.out.printf("%-20s %-30s %-20s %-30s %-20s %-20s%n",
                     medicalRecord.getMedicalRecordID(),
                     medicalRecord.getPatientID(),
