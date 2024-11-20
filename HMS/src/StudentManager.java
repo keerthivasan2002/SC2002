@@ -11,7 +11,7 @@ public class StudentManager {
     // Constructor for PatientManager
     public StudentManager() {
             if(students.isEmpty()|| students == null){
-                System.out.println("Failed to load student data. [Intern Manager]"); //exception statement to show the data is loaded properly
+                // System.out.println("Failed to load student data. [Intern Manager]"); //exception statement to show the data is loaded properly
             }
             
             intializeStudents();

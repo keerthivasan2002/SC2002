@@ -43,9 +43,9 @@ public class AppointmentManager {
         this.appointmentFilter = new AppointmentFilter(appointmentStorage,appointmentValidator);
         this.appointmentLookup = new AppointmentLookup(appointmentStorage);
         this.appointmentScheduler = new AppointmentScheduler(appointmentValidator,appointmentStorage, appointmentLookup);
-        System.out.println("AppointmentManager received AppointmentStorage: [AppointmentManager]" + (appointmentStorage != null));
-        System.out.println("AppointmentManager received AppointmentValidator: [AppointmentManager]" + (appointmentValidator != null));
-        System.out.println("AppointmentFilter initialized with valid dependencies.");
+        // System.out.println("AppointmentManager received AppointmentStorage: [AppointmentManager]" + (appointmentStorage != null));
+        // System.out.println("AppointmentManager received AppointmentValidator: [AppointmentManager]" + (appointmentValidator != null));
+        // System.out.println("AppointmentFilter initialized with valid dependencies.");
         this.appointments = appointmentStorage.getAppointments();
 
     }
@@ -381,18 +381,22 @@ public class AppointmentManager {
 
 
 
-    //Function to see the available appointment
-    public void ViewAvailableTime(Date date){
-        // boolean unavailableTimeSlot = false;
-        for(Schedule schedule: scheduleManager.getSchedules()){
-            if(schedule.getDate().equals(date)){
-
-            }
-        }
-
-        for(Appointment appointment: appointments){
-            if(appointment.getDate().equals(date)){
-                System.out.println("");
+    public void displayAppointmentsDateAndTime(ArrayList<Appointment> appointments) {
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments found.");
+            return;
+        } else {
+            System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("Doctor not available at the following date and time: ");
+            System.out.printf("%-20s %-20s %-20s %-20s%n",
+                    "Doctor ID", "Date", "Start Time", "End Time");
+            System.out.println("--------------------------------------------------------------------------------------------------------------------------");
+            for (Appointment appointment : appointments) {
+                System.out.printf("%-20s %-20s %-20s %-20s%n",
+                appointment.getDoctor().getUserID(),
+                appointment.getStringDate(),
+                appointment.getStringStartTime(),
+                appointment.getStringEndTime());
             }
         }
     }

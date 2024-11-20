@@ -56,7 +56,7 @@ public class DoctorUI implements UserUI{
                 case 2: //Update patient Medical Record
                     System.out.println("Update Patient Medical Record");
                     //am.printAllAppointmentsFromCSV(); -> the data in the csv is correct
-                    updatePatientMedicalRecord();
+                    updatePatientMedicalRecordV2();
                     break;
                 case 3: //view Personal Schedule
                     System.out.println("View Personal Schedule");
@@ -162,12 +162,13 @@ public class DoctorUI implements UserUI{
         // mrm.addNewRecord(newRecord); // Add to MedicalRecordManager
         mrm.addNewRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus); // Add to MedicalRecordManager
     
-        System.out.println("Medical record added successfully.");
+        // Medical record added successfully.
     }
 
     public void updatePatientMedicalRecordV2(){
         PatientManager pm = new PatientManager();
         
+        // Get the patient
         System.out.println("Enter the patient ID: ");
         String patientID = sc.next().toUpperCase();
         Patient patient = pm.selectPatient(patientID);
@@ -176,48 +177,49 @@ public class DoctorUI implements UserUI{
             return;
         }
 
+        // Get the medical records for the patient
         ArrayList<MedicalRecord> records = mrm.getAllRecordsForPatient(patientID);
         if (records.isEmpty()) {
             System.out.println("No medical records found for patient " + patientID);
             return;
         }
+        // Display the medical records
         mrm.displayMedicalRecords(records);
         if (records.isEmpty()) {
             System.out.println("No medical records found for patient " + patientID);
             return;
         }
 
-        for (MedicalRecord record : records){
-            try {
-                
-                System.out.println("Enter the date of diagnosis (yyyy-MM-dd): ");
-                String dateInput = sc.next();
-                sc.nextLine(); // Clear the buffer
-               
-                if (!record.getDateOfDiagnosis().equals(dateInput)){
-                    throw new Exception("Invalid date. Please try again.");
-                }else{
-                    Date dateOfDiagnosis = dateFormat.parse(dateInput);
-                    record.setDateOfDiagnosis(dateOfDiagnosis);
-                    System.out.println("Enter the diagnosis: ");
-                    String diagnosis = sc.nextLine();
-                    record.setDiagnosis(diagnosis);
-                    System.out.println("Enter the prescription: ");
-                    String prescription = sc.nextLine();
-                    record.setPrescription(prescription);
-                    // System.out.println("Enter the prescription status (true/false): ");
-                    boolean prescriptionStatus = false;
-                    record.setPrescriptionStatus(prescriptionStatus);
-                    // MedicalRecord newRecord = new MedicalRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus);
-                    // mrm.addNewRecord(newRecord);
-                }
-            } catch (ParseException e) {
-                System.out.println("Error parsing date: [DoctorUI]" + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Error: [DoctorUI]" + e.getMessage());
+        // Update the medical records
+        try{
+            System.out.println("Enter the record ID to update: ");
+            int recordID = sc.nextInt();
+            sc.nextLine(); // Clear the buffer
+            MedicalRecord record = mrm.getRecordByID(recordID);
+            if (record == null) {
+                System.out.println("Record not found.");
+                return;
             }
-        }
-       
+            System.out.println("Enter the date of diagnosis (yyyy-MM-dd): ");
+            String dateInput = sc.nextLine();
+            Date dateOfDiagnosis = dateFormat.parse(dateInput);
+            record.setDateOfDiagnosis(dateOfDiagnosis);
+            System.out.println("Enter the diagnosis: ");
+            String diagnosis = sc.nextLine();
+            record.setDiagnosis(diagnosis);
+            System.out.println("Enter the prescription: ");
+            String prescription = sc.nextLine();
+            record.setPrescription(prescription);
+            // System.out.println("Enter the prescription status (true/false): ");
+            boolean prescriptionStatus = false;
+            record.setPrescriptionStatus(prescriptionStatus);
+            // MedicalRecord newRecord = new MedicalRecord(patientID, dateOfDiagnosis, diagnosis, prescription, prescriptionStatus);
+            // mrm.addNewRecord(newRecord);
+            System.out.println("Medical record updated successfully.");
+        } catch (ParseException e) {
+            System.out.println("Error parsing date: " + e.getMessage());
+        }       
+        mrm.saveMedicalRecords();
         System.out.println("Medical record added successfully.");
     }
     
@@ -232,49 +234,44 @@ public class DoctorUI implements UserUI{
             System.out.println("Patient not found.");
             return;
         }
-    
+
         ArrayList<Appointment> appointments = am.getPatientAppointments(patient, 0);
         if (appointments == null || appointments.isEmpty()) {
             System.out.println("No appointments found for the patient.");
             return;
         }
+        am.displayAppointment(appointments);
 
         //am.displayAppointment(appointments);
-    
-        System.out.println("Enter the appointment ID: ");
-        System.out.println("Enter 0 to go back.");
-        int appointmentID = -1;
-        Appointment selectedAppointment = null;
-    
-        // Loop until a valid appointment is selected
-        while (true) {
-            appointmentID = am.getValidAppointmentID(appointments);
-            if (appointmentID == -1) {
+        try{
+            System.out.println("Enter the appointment ID: ");
+            System.out.println("Enter 0 to go back.");
+            int appointmentID = sc.nextInt();
+            if (appointmentID == 0) {
                 return;
             }
-    
-            selectedAppointment = am.findAppointmentByID(appointmentID);
-            if (selectedAppointment == null) {
-                System.out.println("Appointment not found. Please try again.");
-            } else if (am.appointmentAlreadyCompletedOrCancelled(appointmentID)) {
-                System.out.println("Appointment has already been completed or cancelled. Please try again.");
-            } else if (am.appointmentAlreadyHasOutcome(appointmentID)) {
-                System.out.println("Appointment already has an outcome recorded. Please try again.");
+            Appointment selectedAppointment = am.findAppointmentByID(appointmentID);
+            System.out.println(selectedAppointment.getAppointmentID());
+            System.out.println(selectedAppointment.getOutcome());
+            sc.nextLine(); // Clear the buffer
+            if (selectedAppointment.getOutcome() != null && !selectedAppointment.getOutcome().equals("NULL")) {
+                System.out.println("Outcome already recorded for this appointment.");
             } else {
-                break;
+                System.out.println("Enter the outcome of the appointment: ");
+                String outcome = sc.nextLine();
+                if (outcome.isEmpty()) {
+                    outcome = "No outcome recorded.";
+                }
+            
+                selectedAppointment.setOutcome(outcome);
+                am.saveAppointments();
             }
-        }
-    
-        sc.nextLine(); // Clear the buffer
-    
-        System.out.println("Enter the outcome of the appointment: ");
-        String outcome = sc.nextLine();
-        if (outcome.isEmpty()) {
-            outcome = "No outcome recorded.";
-        }
-    
-        selectedAppointment.setOutcome(outcome);
-        am.saveAppointments();
+        }catch (Exception e){
+            System.out.println("Invalid appointment ID. Please try again.");
+            sc.nextLine();
+            recordAppointmentOutcome();
+        }  
+       
         System.out.println("Appointment outcome recorded successfully.");
     }
     

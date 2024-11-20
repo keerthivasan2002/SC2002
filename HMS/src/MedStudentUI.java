@@ -54,7 +54,7 @@ public class MedStudentUI implements StudentUI {
 
     private void InternMenu() {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("Intern Menu:");
+        System.out.println("Student Menu:");
         System.out.println("1. View Profile");
         System.out.println("2. Update Profile");
         System.out.println("3. View Weekly Timetable");

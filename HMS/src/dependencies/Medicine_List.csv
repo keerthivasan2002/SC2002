@@ -2,5 +2,6 @@ MedicineName,Initial Stock,LowStockAlert,requestStatus,requestQuantity
 Paracetamol,700,10,NIL,0
 Aspirin,100,1000,TOREQUEST,0
 Insulin,100,10,NIL,0
-Amoxicillin,80,10,NIL,0
-Cetrizine,95,10,NIL,0
+Amoxicillin,80,90,TOREQUEST,0
+Cetrizine,100,200,TOREQUEST,0
+Antibiotics,500,100,NIL,0

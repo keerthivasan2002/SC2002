@@ -1,14 +1,12 @@
-import java.io.File;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Iterator;
 
 public class StaffManager {
     private static ArrayList<Staff> staffs;
     private static ArrayList<Staff> users = new ArrayList<>();
-    private String staff_file = "Staff_List.csv";
+    private static String staff_file = "Staff_List.csv";
     private String user_file = "UserID.csv";
 
     Scanner sc = new Scanner(System.in);
@@ -248,7 +246,7 @@ public class StaffManager {
         }
     }
 
-    public void saveStaff(){
+    public static void saveStaff(){
         FileManager staffFileManager = new FileManager(staff_file);
 
         String[][] staffData = new String[staffs.size() + 1][8]; // Create a 2D array to store the data
@@ -362,28 +360,39 @@ public class StaffManager {
 
     public void displayStaffMembers() {
         System.out.println("Displaying all staff members");
+    
+        // Check if staff list is empty
         if (staffs.isEmpty()) {
             System.out.println("No staff members to display.");
         } else {
-            // Print table headers
-            System.out.printf("%-10s %-10s %-15s %-15s %-10s %-5s %-25s %-15s%n",
+            // Print table headers with better alignment
+            System.out.printf("%-12s %-12s %-20s %-20s %-12s %-6s %-30s %-20s%n",
                     "ID", "Password", "Name", "Role", "Gender", "Age", "Email", "Phone");
-            System.out.println("--------------------------------------------------------------------------------------------------------");
+            System.out.println("---------------------------------------------------------------------------------------------------------------");
     
-            // Print each staff member's details in a formatted manner
+            // Print each staff member's details
             for (Staff staff : staffs) {
-                System.out.printf("%-10s %-10s %-15s %-15s %-10s %-5d %-25s %-15s%n",
+                // Handle null fields gracefully by using ternary operators or defaults
+                String password = (staff.getPassword() != null) ? staff.getPassword() : "N/A";
+                String role = (staff.getrole() != null) ? String.valueOf(staff.getrole()) : "N/A";
+                String gender = (staff.getGender() != null) ? String.valueOf(staff.getGender()) : "N/A";
+                String email = (staff.getEmailAddress() != null) ? staff.getEmailAddress() : "N/A";
+                String phone = (staff.getPhoneNumber() != 0) ? String.valueOf(staff.getPhoneNumber()) : "N/A";
+    
+                // Print formatted details
+                System.out.printf("%-12s %-12s %-20s %-20s %-12s %-6d %-30s %-20s%n",
                         staff.getUserID(),
-                        staff.getPassword(),
+                        password,
                         staff.getName(),
-                        staff.getrole(),
-                        staff.getGender(),
+                        role,
+                        gender,
                         staff.getAge(),
-                        staff.getEmailAddress(),
-                        staff.getPhoneNumber());
+                        email,
+                        phone);
             }
         }
     }
+    
     public void displayAllDoctors() {
         System.out.println("Displaying all doctors");
         if (staffs.isEmpty()) {
@@ -422,7 +431,9 @@ public class StaffManager {
             if (staff.getUserID().trim().equals(staffIDRecord)) {
                 iterator.remove();
                 removed = true;
+                saveStaff();
                 System.out.println("Staff member with ID " + staffIDRecord + " has been removed successfully.");
+                
                 break;
             }
         }

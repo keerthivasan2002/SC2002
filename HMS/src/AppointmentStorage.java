@@ -25,7 +25,7 @@ public class AppointmentStorage{
 
     public ArrayList<Appointment> getAppointments() {
         if (appointments == null || appointments.isEmpty()) {
-            System.out.println("Appointments list is null or empty. Loading appointments from CSV. [AppointmentStorage]");
+            // System.out.println("Appointments list is null or empty. Loading appointments from CSV. [AppointmentStorage]");
             loadAppointments(); // Ensure data is loaded
         }
         return appointments != null ? appointments : new ArrayList<>();
@@ -97,6 +97,7 @@ public class AppointmentStorage{
 
         //Write to file
         appointmentFileManager.writeFile(appointmentData, false);
+        System.out.println("Appointments saved to file. [AppointmentStorage]");
     }
 
 

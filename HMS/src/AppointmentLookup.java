@@ -18,18 +18,19 @@ public class AppointmentLookup {
         }
         this.as = as;
         this.appointments = as.getAppointments();
+        initializePatientsAndStaff();
         
     }    
 
     private void initializePatientsAndStaff() {
-        System.out.println("Initializing patients and staff lists... [ AppointmentLookup ]");
+        // System.out.println("Initializing patients and staff lists... [ AppointmentLookup ]");
 
         // Use PatientManager to load patient data
         PatientManager patientManager = new PatientManager();
         ArrayList<Patient> loadedPatients = patientManager.getPatients();
         if (loadedPatients != null) {
             patients.addAll(loadedPatients);
-            System.out.println("Loaded " + loadedPatients.size() + " patients.");
+            // System.out.println("Loaded " + loadedPatients.size() + " patients.");
         } else {
             System.out.println("Failed to load patient data.[ AppointmentLookup ]");
         }
@@ -39,7 +40,7 @@ public class AppointmentLookup {
         ArrayList<Staff> loadedStaff = staffManager.getStaffList();
         if (loadedStaff != null) {
             staffList.addAll(loadedStaff);
-            System.out.println("Loaded " + loadedStaff.size() + " staff members.");
+            // System.out.println("Loaded " + loadedStaff.size() + " staff members.");
         } else {
             System.out.println("Failed to load staff data.[ AppointmentLookup ]");
         }
@@ -63,7 +64,7 @@ public class AppointmentLookup {
         
         for (Patient patient : patients) {
             if (patient.getPatientID().equals(patientID)) {
-                System.out.println("Patient found: " + patient.getPatientID());
+                // System.out.println("Patient found: " + patient.getPatientID());
                 return patient;
             }
         }
@@ -73,15 +74,15 @@ public class AppointmentLookup {
 
     // find staff by staff ID
     public Staff findStaffByID(String staffID) {
-        System.out.println("Staff ID: " + staffID);
+        // System.out.println("Staff ID: " + staffID);
     //     System.out.println("I am here okaaaaaayyy ");
     //     System.out.println("Size of staffList: " + staffList.size());
 
         for (Staff staff : as.getDoctors()) {
             // System.out.println("I am here okaaaaaayyy too");
-            System.out.println("compare to Staff ID: " + staff.getUserID());
+            // System.out.println("compare to Staff ID: " + staff.getUserID());
             if (staff.getUserID().equalsIgnoreCase(staffID)) {
-                System.out.println("found staff " + staff.getUserID());
+                // System.out.println("found staff " + staff.getUserID());
                 return staff;
             }
         }

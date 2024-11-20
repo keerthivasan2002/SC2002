@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.lang.IllegalArgumentException;
+import java.lang.reflect.Array;
 
 
 public class PatientUI implements UserUI{
@@ -104,62 +105,65 @@ public class PatientUI implements UserUI{
         sm.displayAllDoctors();
 
         // Step 1: Get and validate the Doctor ID
-        while(true){
-            System.out.print("Enter Doctor ID to view available slots: ");
-            doctorID = sc.nextLine().trim().toUpperCase();
-            Staff doctor = appointmentManager.findStaffByID(doctorID);
+        System.out.print("Enter Doctor ID to view available slots: ");
+        doctorID = sc.nextLine().trim().toUpperCase();
+        Staff doctor = appointmentManager.findStaffByID(doctorID);
 
-            if(doctor == null){
-                System.out.println("Doctor ID not found. Please try again.");
-            } else {
-                System.out.println("Doctor found: " + doctor.getName());
-                break; // Exit loop if doctor exists
-            }
+        if(doctor == null){
+            System.out.println("Doctor ID not found. Please try again.");
+        } else {
+            System.out.println("Doctor found: " + doctor.getName());
         }
+        ArrayList<Appointment> appointment = appointmentManager.getDoctorAppointments(doctor, 0);
+        appointment = appointmentManager.getAppointmentByDate(appointment, cal);
 
-
+        // Display available appointment slots
+        appointmentManager.displayAppointmentsDateAndTime(appointment);
+        
+        
         // Step 2: Get and validate the date input
-        while(true){
-            try{
-                System.out.print("Date (yyyy-MM-dd): ");
-                String dateInput = sc.next().trim();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                dateFormat.setLenient(false); // Strict parsing
-                choiceOfDate = dateFormat.parse(dateInput);
-                Date today = cal.getTime();
-                if (choiceOfDate.before(today) && !choiceOfDate.equals(today)){
-                    throw new IllegalArgumentException("Date cannot be in the past.");
-                }
+        // while(true){
+        //     try{
+        //         System.out.print("Date (yyyy-MM-dd): ");
+        //         String dateInput = sc.next().trim();
+        //         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        //         dateFormat.setLenient(false); // Strict parsing
+        //         choiceOfDate = dateFormat.parse(dateInput);
+        //         Date today = cal.getTime();
+        //         if (choiceOfDate.before(today) && !choiceOfDate.equals(today)){
+        //             throw new IllegalArgumentException("Date cannot be in the past.");
+        //         }
 
-                // Check if the date is a weekend
-                cal.setTime(choiceOfDate);
-                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-                if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
-                    throw new IllegalArgumentException("Date cannot be on a weekend.");
-                }
+        //         // Check if the date is a weekend
+        //         cal.setTime(choiceOfDate);
+        //         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        //         if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
+        //             throw new IllegalArgumentException("Date cannot be on a weekend.");
+        //         }
 
-                // Check if the date is a public holiday (Optional)
-                // if (scheduleManager.isPublicHoliday(choiceOfDate)) {
-                //     throw new IllegalArgumentException("Date cannot be on a public holiday.");
-                // }
+        //         // Check if the date is a public holiday (Optional)
+        //         // if (scheduleManager.isPublicHoliday(choiceOfDate)) {
+        //         //     throw new IllegalArgumentException("Date cannot be on a public holiday.");
+        //         // }
 
-                // Check if the doctor is available on the selected date
-                // if (!scheduleManager.isDoctorAvailable(doctorID, choiceOfDate)) {
-                //     throw new IllegalArgumentException("Doctor is not available on the selected date.");
-                // }else {
-                //     System.out.println("Doctor is available on the selected date.");
-                // }
+        //         // Check if the doctor is available on the selected date
+        //         // if (!scheduleManager.isDoctorAvailable(doctorID, choiceOfDate)) {
+        //         //     throw new IllegalArgumentException("Doctor is not available on the selected date.");
+        //         // }else {
+        //         //     System.out.println("Doctor is available on the selected date.");
+        //         // }
 
-                break; // Exit loop if date is valid
-            } catch (IllegalArgumentException e) {
-                System.out.println("Error: " + e.getMessage());
-            } catch (ParseException e) {
-                System.out.println("Invalid date format. Please try again.");
-            }
-        }
+        //         break; // Exit loop if date is valid
+        //     } catch (IllegalArgumentException e) {
+        //         System.out.println("Error: " + e.getMessage());
+        //     } catch (ParseException e) {
+        //         System.out.println("Invalid date format. Please try again.");
+        //     }
+        // }
 
         
     }
+
 
     // Function to view medical records
     private void viewMedicalRecords() {
@@ -219,7 +223,8 @@ public class PatientUI implements UserUI{
         System.out.println("- Contain at least one special character (!@#$%^&*()-+=)");
         System.out.println("-------------------------------------------------------------------");
     }
-
+    /* ---------------------------------------- View Available Function ------------------------------------------ */
+    
     /* ---------------------------------------- Update Personal Information Function ------------------------------------------ */
     private void updatePatientInfo(){
         int changeChoice = -1;
@@ -317,6 +322,8 @@ public class PatientUI implements UserUI{
                 boolean success = appointmentManager.addAppointment(patient, doctor, date, startTime, endTime);
                 if (success) {
                     System.out.println("Appointment scheduled successfully.");
+                    // appointmentManager.displayAppointment(appointment);
+
                 } else {
                     System.out.println("Failed to schedule appointment. Please try another time slot.");
                 }
@@ -434,6 +441,7 @@ public class PatientUI implements UserUI{
     protected void viewAppointmentOutcome() {
         System.out.println("Viewing Past Appointments Outcome Records");
         ArrayList<Appointment> appointment_record = appointmentManager.getPatientAppointments(patient, -1);
+        appointmentManager.displayAppointment(appointment_record);
         if (appointment_record.isEmpty()) {
             System.out.println("No past appointments found for patient. " + userID);
             return;

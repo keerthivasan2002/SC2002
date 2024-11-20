@@ -25,9 +25,9 @@ public class AppointmentFilter {
             System.out.println("AppointmentStorage returned null. Initializing an empty list.[AppointmentFilter]");
             this.appointments = new ArrayList<>();
         }
-        System.out.println("AppointmentFilter initialized with valid AppointmentStorage: [AppointmentFilter]" + (as != null));
-        System.out.println("AppointmentFilter initialized with valid AppointmentValidator:  [AppointmentFilter] " + (av != null));
-        System.out.println("AppointmentFilter initialized with " + this.appointments.size() + " appointments.");
+        // System.out.println("AppointmentFilter initialized with valid AppointmentStorage: [AppointmentFilter]" + (as != null));
+        // System.out.println("AppointmentFilter initialized with valid AppointmentValidator:  [AppointmentFilter] " + (av != null));
+        // System.out.println("AppointmentFilter initialized with " + this.appointments.size() + " appointments.");
 
     }
     
@@ -125,5 +125,4 @@ public class AppointmentFilter {
         return appointmentByDate;
     }
 
- 
 }

@@ -53,12 +53,12 @@ public class AdministratorUI implements UserUI{
             this.am = am;
             this.mi = mi;
             this.pm = pm;
-            System.out.println("AdministratorUI initialized with valid dependencies.[AdministratorUI]");
-            System.out.println("UserID: " + userID);
-            System.out.println("StaffManager is null: [AdministratorUI]" + (sm == null));
-            System.out.println("Admin is null: [AdministratorUI]" + (admin == null));
-            System.out.println("AppointmentManager is null: [AdministratorUI]" + (am == null));
-            System.out.println("PatientManager is null: [AdministratorUI]" + (pm == null));
+            // System.out.println("AdministratorUI initialized with valid dependencies.[AdministratorUI]");
+            // System.out.println("UserID: " + userID);
+            // System.out.println("StaffManager is null: [AdministratorUI]" + (sm == null));
+            // System.out.println("Admin is null: [AdministratorUI]" + (admin == null));
+            // System.out.println("AppointmentManager is null: [AdministratorUI]" + (am == null));
+            // System.out.println("PatientManager is null: [AdministratorUI]" + (pm == null));
             //Handling errors with the code
             if (this.admin == null) {
                 System.out.println("No administrators found with the given ID:" + userID);
@@ -158,7 +158,7 @@ public class AdministratorUI implements UserUI{
             switch (choice){
                 case 1:
                     System.out.print("Enter Patient ID: ");
-                    String patientID = sc.nextLine().trim();
+                    String patientID = sc.nextLine().trim().toUpperCase();
                     System.out.println("PatientID = " + patientID);
                     Patient patient = pm.selectPatient(patientID);
                     System.out.println("Patient = " + patient.getName());
@@ -170,7 +170,7 @@ public class AdministratorUI implements UserUI{
                     break;
                 case 2:
                     System.out.print("Enter Doctor ID: ");
-                    String doctorID = sc.nextLine().trim();
+                    String doctorID = sc.nextLine().trim().toUpperCase();
                     Staff doctor = sm.selectStaff(doctorID);
                     filteredAppointments = am.getDoctorAppointments(doctor,0);
                     if (filteredAppointments.isEmpty()) {

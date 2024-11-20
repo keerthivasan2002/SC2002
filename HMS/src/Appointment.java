@@ -56,6 +56,7 @@ public class Appointment extends Events {
         return outcome;
     }
 
+
     public void setOutcome(String outcome) {
         this.outcome = outcome;
     }

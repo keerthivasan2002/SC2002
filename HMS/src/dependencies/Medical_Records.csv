@@ -1,17 +1,17 @@
 MedicalRecordID,PatientID,DateOfDiagnosis,Diagnosis,Prescription,PrescriptionStatus
-1,P1001,2020-01-01,Diabetes,Insulin,false
-2,P1002,2020-01-02,Diabetes,Insulin,false
-3,P1003,2020-01-03,Diabetes,Insulin,false
-4,P1002,2020-01-04,Diabetes,Insulin,false
-5,P1001,2025-01-05,Heart Disease,Aspirin,false
-6,P1003,2020-01-06,Heart Disease,Aspirin,false
-7,P1001,2020-01-07,Heart Disease,Aspirin,false
-8,P1002,2020-01-08,fungal infection,Amoxicillin,false
-9,P1003,2020-01-09,fungal infection,Amoxicillin,true
-10,P1001,2020-01-10,fungal infection,Amoxicillin,false
-11,P1002,2025-01-11,Allergy,Cetrizine,false
-12,P1003,2025-01-12,Allergy,Cetrizine,true
-13,P1001,2025-01-13,Allergy,Cetrizine,false
-14,P1002,2025-01-14,Headache,Paracet,false
-15,P1003,2025-01-15,Headache,Paracet,true
-16,P1001,2025-01-16,Headache,Paracet,false
+17,P1001,2020-01-01,Allergy,Cetrizine,false
+18,P1002,2020-01-02,Diabetes,Insulin,false
+19,P1003,2020-01-03,Diabetes,Insulin,false
+20,P1002,2020-01-04,Diabetes,Insulin,false
+21,P1001,2025-01-05,Heart Disease,Aspirin,false
+22,P1003,2020-01-06,Heart Disease,Aspirin,false
+23,P1001,2020-01-07,Heart Disease,Aspirin,false
+24,P1002,2020-01-08,fungal infection,Amoxicillin,false
+25,P1003,2020-01-09,fungal infection,Amoxicillin,true
+26,P1001,2020-01-10,fungal infection,Amoxicillin,false
+27,P1002,2025-01-11,Allergy,Cetrizine,false
+28,P1003,2025-01-12,Allergy,Cetrizine,true
+29,P1001,2025-01-13,Allergy,Cetrizine,false
+30,P1002,2025-01-14,Headache,Paracet,false
+31,P1003,2025-01-15,Headache,Paracet,true
+32,P1001,2025-01-16,Headache,Paracet,false

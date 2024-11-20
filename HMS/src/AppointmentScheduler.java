@@ -23,9 +23,9 @@ public class AppointmentScheduler {
         this.al = al;
         this.appointments = as.getAppointments();
         // this.appointments = as.getAppointments();
-        System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (as == null)); // Debug check
-        System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (av == null)); // Debug check
-        System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (al == null)); // Debug check
+        // System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (as == null)); // Debug check
+        // System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (av == null)); // Debug check
+        // System.out.println("AppointmentStorage is null: [AppointmentSchedule]" + (al == null)); // Debug check
     }
 
 
@@ -47,6 +47,7 @@ public class AppointmentScheduler {
             System.out.println("Appointment slot is already occupied.");
             return false;
         }  
+
         // if (av.patientIsMatch(patient.getPatientID(), doctor.getUserID(), date, startTime, endTime) ||
         //         av.doctorAndTimeMatch(doctor.getUserID(), date, startTime, endTime) ||
         //         av.isDuplicateInCSV(patient.getPatientID(), doctor.getUserID(), date, startTime, endTime)) { // Check CSV for duplicates
@@ -54,27 +55,24 @@ public class AppointmentScheduler {
         //     return false;
         // }       
         
-        int appointmentID = appointments.size() + 1;
+        // int appointmentID = appointments.size() + 1;
         Appointment newAppointment = new Appointment(patient.getPatientID(), doctor.getUserID(), date, startTime, endTime);
         newAppointment.setAppointmentStatus(AppointmentStatus.PENDING);
-        appointments.add(newAppointment);
-        as.saveAppointments();
-        // System.out.println("Appointment scheduled with ID: " + newAppointment.getAppointmentID());
-        System.out.println("Appointment successfully scheduled. ID: " + appointmentID);
-
-        // // Save the new appointment to the file
-        // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        // appointments.add(newAppointment);
+        // as.setAppointment(appointments);
+        // as.saveAppointments();
         // String[] appointment = new String[]{
-        //         String.valueOf(appointmentID),
-        //         patient.getPatientID(), 
-        //         doctor.getUserID(),   
-        //         dateFormat.format(date),
-        //         timeFormat.format(startTime),
-        //         timeFormat.format(endTime),
-        //         "PENDING", 
-        //         "NULL"
+        //     String.valueOf(appointmentID),
+        //     patient.getPatientID(), 
+        //     doctor.getUserID(),   
+        //     dateFormat.format(date),
+        //     timeFormat.format(startTime),
+        //     timeFormat.format(endTime),
+        //     "PENDING", 
+        //     "NULL"
         // };
+        // System.out.println(appointment);
+
         return true;
     }
 
@@ -130,6 +128,7 @@ public class AppointmentScheduler {
 
             // System.out.println("Appointment ID " + appointmentID + " rescheduled.");
             // System.out.println("New Date: " + newDate + ", New Start Time: " + newStartTime + ", New End Time: " + newEndTime);
+            as.setAppointment(appointments);
             as.saveAppointments();
             System.out.println("Appointment successfully scheduled. ID: " + appointmentID);
             return true;
@@ -148,6 +147,7 @@ public class AppointmentScheduler {
             appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
             // schedule.freeTimeSlot(appointment.getDate(),appointment.getTime());
             System.out.println("Appointment ID " + appointmentID + " has been canceled.");
+            as.setAppointment(appointments);
             as.saveAppointments();
             return true;
         } else {
